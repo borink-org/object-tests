@@ -132,7 +132,12 @@ impl Session {
         } else {
             check_assertions(checks, result, now)
         };
-        let missing = !refused && !declined_before_sending && !self.pending.is_empty();
+        let required_pending = self
+            .pending
+            .iter()
+            .filter(|exchange| !exchange.optional)
+            .count();
+        let missing = !refused && !declined_before_sending && required_pending > 0;
 
         // A missing field that the result declares in `unsupported_fields` makes the
         // case unsupported. A missing field without a declaration makes it wrong.
@@ -194,7 +199,7 @@ impl Session {
             "lane": self.lane,
             "verdict": verdict,
             "exchanges": self.completed,
-            "required_exchanges": self.completed + self.pending.len(),
+            "required_exchanges": self.completed + required_pending,
             "request_failures": self.failures,
             "result_differences": differences,
             "adapter_note": adapter_note,

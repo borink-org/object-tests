@@ -650,8 +650,47 @@ fn selected_branch_requires_its_follow_up_before_the_common_tail() {
     let mut corpus = load_core_suite();
     corpus.cases[0].exchanges[0].alternatives[0].then = vec![Exchange {
         alternatives: vec![],
+        optional: false,
     }];
     assert!(corpus.validate().is_err());
+}
+
+#[test]
+fn a_client_may_stop_before_an_optional_trailing_exchange() {
+    let mut case = load_core_suite().cases.remove(0);
+    let mut resumed = case.exchanges[0].clone();
+    resumed.optional = true;
+    case.exchanges.push(resumed);
+    let result = json!({"outcome": "ok", "value": {"body_base64": "aGVsbG8="}});
+
+    let mut stopped = create_azure_session(case.clone());
+    assert!(
+        stopped
+            .respond(&create_get_request(), test_time())
+            .is_some()
+    );
+    let stopped_report = stopped.finish(&result, test_time());
+    assert_eq!(stopped_report["verdict"], "pass");
+    assert_eq!(stopped_report["required_exchanges"], 1);
+
+    let mut continued = create_azure_session(case.clone());
+    assert!(
+        continued
+            .respond(&create_get_request(), test_time())
+            .is_some()
+    );
+    assert!(
+        continued
+            .respond(&create_get_request(), test_time())
+            .is_some()
+    );
+    assert_eq!(continued.finish(&result, test_time())["verdict"], "pass");
+
+    let mut suite = load_core_suite();
+    let required = case.exchanges[0].clone();
+    case.exchanges.push(required);
+    suite.cases[0] = case;
+    assert!(suite.validate().is_err());
 }
 
 #[test]

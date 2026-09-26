@@ -156,12 +156,30 @@ fn write_http_response(
         }
     }
     write!(writer, "Connection: close\r\n")?;
-    if response.status != 204 && response.status != 304 {
-        write!(writer, "Content-Length: {content_length}\r\n")?;
-    }
-    write!(writer, "\r\n")?;
-    if !is_head && response.status != 204 && response.status != 304 {
-        writer.write_all(&body)?;
+    let has_body = response.status != 204 && response.status != 304;
+    let chunked = has_body && !is_head && response.framing == Framing::Chunked;
+    if chunked {
+        write!(writer, "Transfer-Encoding: chunked\r\n\r\n")?;
+        // Two chunks, so a client must join them.
+        let (first_chunk, second_chunk) = body.split_at(body.len() / 2);
+        for chunk in [first_chunk, second_chunk]
+            .into_iter()
+            .filter(|chunk| !chunk.is_empty())
+        {
+            write!(writer, "{:x}\r\n", chunk.len())?;
+            writer.write_all(chunk)?;
+            write!(writer, "\r\n")?;
+        }
+        write!(writer, "0\r\n\r\n")?;
+    } else {
+        if has_body {
+            write!(writer, "Content-Length: {content_length}\r\n")?;
+        }
+        write!(writer, "\r\n")?;
+        if !is_head && has_body {
+            let sent_length = response.truncate_body_after.unwrap_or(body.len());
+            writer.write_all(&body[..sent_length])?;
+        }
     }
     writer.flush()?;
     Ok(())
@@ -176,7 +194,14 @@ pub(crate) fn serve_connection(stream: TcpStream, state: &Mutex<Session>) {
         let now = SystemTime::now();
         let response = state.lock().unwrap().respond(&request, now);
         if let Some(response) = response {
-            write_http_response(connection.get_mut(), &request, response, now)?;
+            // One write per response. The Azure C++ SDK loses a chunked body whose head arrives
+            // in a segment of its own, and a service sends both together.
+            write_http_response(
+                &mut std::io::BufWriter::new(connection.get_mut()),
+                &request,
+                response,
+                now,
+            )?;
         } else {
             connection.get_mut().write_all(
                 b"HTTP/1.1 400 Fixture\r\nConnection: close\r\nContent-Length: 0\r\n\r\n",
@@ -256,6 +281,32 @@ mod tests {
             connection.get_ref().response,
             b"HTTP/1.1 100 Continue\r\n\r\n"
         );
+    }
+
+    fn written_response(framing: Framing, truncate_body_after: Option<usize>) -> String {
+        let response = Response {
+            status: 200,
+            headers: Default::default(),
+            body: Body::Utf8("hello".into()),
+            framing,
+            truncate_body_after,
+        };
+        let mut written = Vec::new();
+        let request = json!({"method": "GET"});
+        write_http_response(&mut written, &request, response, SystemTime::now()).unwrap();
+        String::from_utf8(written).unwrap()
+    }
+
+    #[test]
+    fn chunked_responses_split_the_body_and_truncated_ones_stop_short() {
+        let chunked = written_response(Framing::Chunked, None);
+        assert!(
+            chunked.contains("Transfer-Encoding: chunked\r\n\r\n2\r\nhe\r\n3\r\nllo\r\n0\r\n\r\n")
+        );
+        assert!(!chunked.contains("Content-Length"));
+
+        let truncated = written_response(Framing::ContentLength, Some(2));
+        assert!(truncated.ends_with("Content-Length: 5\r\n\r\nhe"));
     }
 
     #[test]

@@ -72,6 +72,11 @@ pub struct Case {
 pub struct Exchange {
     /// Permitted requests and the response to send for each one.
     pub alternatives: Vec<Alternative>,
+
+    /// `true` if the client may finish without this exchange, such as a retry it need not make.
+    /// Only the last exchanges of a case can be optional.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub optional: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -101,6 +106,33 @@ pub struct Response {
 
     #[serde(default)]
     pub body: Body,
+
+    /// How the server frames the body: with `Content-Length`, or chunked, as the service sends it.
+    #[serde(default, skip_serializing_if = "Framing::is_content_length")]
+    pub framing: Framing,
+
+    /// The number of body bytes the server sends before it closes the connection.
+    ///
+    /// The `Content-Length` still states the whole body, so the client receives a short body.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub truncate_body_after: Option<usize>,
+}
+
+/// How a response states the length of its body.
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Framing {
+    /// A `Content-Length` header.
+    #[default]
+    ContentLength,
+    /// `Transfer-Encoding: chunked`.
+    Chunked,
+}
+
+impl Framing {
+    fn is_content_length(&self) -> bool {
+        *self == Self::ContentLength
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -267,6 +299,16 @@ impl Suite {
                 }
                 validate_checks(refusal)?;
             }
+            if case
+                .exchanges
+                .iter()
+                .skip_while(|exchange| !exchange.optional)
+                .any(|exchange| !exchange.optional)
+            {
+                return Err(
+                    format!("{}: a required exchange follows an optional one", case.id).into(),
+                );
+            }
             let mut exchanges: Vec<_> = case.exchanges.iter().collect();
             while let Some(exchange) = exchanges.pop() {
                 if exchange.alternatives.is_empty() {
@@ -295,7 +337,12 @@ impl Response {
         if !(200..=599).contains(&self.status) {
             return Err("invalid response status".into());
         }
-        self.body.bytes()?;
+        let body = self.body.bytes()?;
+        if let Some(truncated_length) = self.truncate_body_after
+            && (self.framing == Framing::Chunked || truncated_length >= body.len())
+        {
+            return Err("a truncated body must be shorter than its length-framed body".into());
+        }
 
         let mut names = BTreeSet::new();
         for (name, header) in &self.headers {
