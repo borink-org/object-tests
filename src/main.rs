@@ -208,7 +208,7 @@ fn grade_selected_cases(grading_options: GradingOptions<'_>) -> Result<ExitCode>
     let mut run_failed = has_nonpassing_cases;
 
     if let Some(listed_cases) = &expected_unsupported_cases {
-        let mismatches = find_verdict_mismatches(listed_cases, &graded_verdicts);
+        let mismatches = find_verdict_mismatches(listed_cases, &suite.cases, &graded_verdicts);
         run_failed = !mismatches.is_empty();
         summary["expected_unsupported"] = json!({"mismatches": mismatches});
     }
@@ -216,10 +216,9 @@ fn grade_selected_cases(grading_options: GradingOptions<'_>) -> Result<ExitCode>
     if let Some(path) = grading_options.record_unsupported_path {
         let mut expected_lists = load_expected_unsupported_cases(path, false)?;
         let listed_cases = expected_lists.entry(suite_section_name).or_default();
-        record_unsupported_cases(listed_cases, &graded_reports);
+        record_unsupported_cases(listed_cases, &suite.cases, &graded_reports);
         // Keep the patterns, and drop the entries that cover no case of this suite.
-        listed_cases
-            .retain(|entry, _| suite.cases.iter().any(|case| entry_covers(entry, &case.id)));
+        listed_cases.retain(|entry, _| suite.cases.iter().any(|case| entry_covers(entry, case)));
         std::fs::write(
             path,
             format!("{}\n", serde_json::to_string_pretty(&expected_lists)?),

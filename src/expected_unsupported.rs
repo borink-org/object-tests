@@ -2,23 +2,49 @@
 //!
 //! The list maps a suite name to entries, and each entry to the reason its cases
 //! are unsupported. A suite name is the suite file's name without `.json`. An
-//! entry is a case ID, or a pattern in which `*` matches any run of characters,
-//! such as `operations/s3/*` for every S3 case of the operations suite.
+//! entry is one of these:
+//!
+//! - A case ID.
+//! - A pattern in which `*` matches any run of characters, such as
+//!   `operations/s3/*` for every S3 case of the operations suite.
+//! - A result field, such as `field:/value/content_md5_base64`. It covers every
+//!   case whose expectations require that field, for a client that cannot
+//!   report it.
 //!
 //! A run graded against the list passes only if every case an entry covers is
 //! unsupported and every other case passes. A regression fails the run, and so
 //! does a case that the client now supports. An entry that covers no case of
 //! its suite is an error.
-use crate::{Result, model::Suite};
+use crate::{
+    Result,
+    model::{Case, Rule, Suite},
+};
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, path::Path};
 
 /// Entries and the reason their cases are unsupported, by suite name.
 pub type ExpectedUnsupportedCases = BTreeMap<String, BTreeMap<String, String>>;
 
-/// Returns whether a list entry covers a case: the entry is the case's ID, or a
-/// pattern whose `*` wildcards match any run of characters in it.
-pub fn entry_covers(entry: &str, case_id: &str) -> bool {
+/// The prefix of an entry that names a result field rather than cases.
+pub const FIELD_ENTRY_PREFIX: &str = "field:";
+
+/// Returns whether a list entry covers a case.
+///
+/// A field entry covers a case whose expectations require that field: a check
+/// at its pointer that is not optional and does not require it absent. Any
+/// other entry covers the case whose ID it matches.
+pub fn entry_covers(entry: &str, case: &Case) -> bool {
+    match entry.strip_prefix(FIELD_ENTRY_PREFIX) {
+        Some(pointer) => case.expect.iter().any(|check| {
+            check.at == pointer && !check.optional && !matches!(check.rule, Rule::Absent)
+        }),
+        None => id_matches(entry, &case.id),
+    }
+}
+
+/// Returns whether an entry matches a case ID: the entry is the ID, or a pattern
+/// whose `*` wildcards match any run of characters in it.
+pub fn id_matches(entry: &str, case_id: &str) -> bool {
     let mut parts = entry.split('*');
     let first = parts.next().unwrap_or_default();
     let Some(mut rest) = case_id.strip_prefix(first) else {
@@ -37,14 +63,9 @@ pub fn entry_covers(entry: &str, case_id: &str) -> bool {
     rest.len() >= last.len() && rest.ends_with(last)
 }
 
-fn is_pattern(entry: &str) -> bool {
-    entry.contains('*')
-}
-
-fn is_listed(listed_cases: &BTreeMap<String, String>, case_id: &str) -> bool {
-    listed_cases
-        .keys()
-        .any(|entry| entry_covers(entry, case_id))
+// An entry written by hand for a whole category of cases, which recording keeps.
+fn names_a_category(entry: &str) -> bool {
+    entry.contains('*') || entry.starts_with(FIELD_ENTRY_PREFIX)
 }
 
 /// The name a suite's section has in the list: its file name without `.json`.
@@ -83,22 +104,27 @@ pub fn unknown_listed_case_ids<'a>(
 ) -> Vec<&'a str> {
     listed_cases
         .keys()
-        .filter(|entry| !suite.cases.iter().any(|case| entry_covers(entry, &case.id)))
+        .filter(|entry| !suite.cases.iter().any(|case| entry_covers(entry, case)))
         .map(String::as_str)
         .collect()
 }
 
 /// Returns a mismatch for every graded case whose verdict differs from the
 /// expected one. A case that an entry covers must be `unsupported`, and any other
-/// case must pass.
+/// case must pass. `cases` holds the suite's cases, to read what they expect.
 pub fn find_verdict_mismatches(
     listed_cases: &BTreeMap<String, String>,
+    cases: &[Case],
     graded_verdicts: &[(String, String)],
 ) -> Vec<Value> {
+    let covered = |case_id: &str| match cases.iter().find(|case| case.id == case_id) {
+        Some(case) => listed_cases.keys().any(|entry| entry_covers(entry, case)),
+        None => listed_cases.keys().any(|entry| id_matches(entry, case_id)),
+    };
     graded_verdicts
         .iter()
         .filter_map(|(case_id, verdict)| {
-            let expected_verdict = if is_listed(listed_cases, case_id) {
+            let expected_verdict = if covered(case_id) {
                 "unsupported"
             } else {
                 "pass"
@@ -128,20 +154,27 @@ pub fn unsupported_reason(report: &Value) -> String {
 }
 
 /// Replaces the case IDs of the graded cases with the ones graded unsupported,
-/// keeping entries for cases this run did not grade. Patterns are written by
-/// hand and kept: a case that a pattern covers gets no entry of its own.
+/// keeping entries for cases this run did not grade. Patterns and field entries
+/// are written by hand and kept: a case that one covers gets no entry of its own.
 pub fn record_unsupported_cases(
     listed_cases: &mut BTreeMap<String, String>,
+    cases: &[Case],
     graded_reports: &[Value],
 ) {
     for report in graded_reports {
         let Some(case_id) = report["id"].as_str() else {
             continue;
         };
-        let covered_by_pattern = listed_cases
-            .keys()
-            .any(|entry| is_pattern(entry) && entry_covers(entry, case_id));
-        if report["verdict"] == "unsupported" && !covered_by_pattern {
+        let covered_by_category =
+            cases
+                .iter()
+                .find(|case| case.id == case_id)
+                .is_some_and(|case| {
+                    listed_cases
+                        .keys()
+                        .any(|entry| names_a_category(entry) && entry_covers(entry, case))
+                });
+        if report["verdict"] == "unsupported" && !covered_by_category {
             listed_cases.insert(case_id.to_owned(), unsupported_reason(report));
         } else {
             listed_cases.remove(case_id);
@@ -153,10 +186,10 @@ pub fn record_unsupported_cases(
 mod tests {
     use super::*;
 
-    fn listed(case_ids: &[&str]) -> BTreeMap<String, String> {
-        case_ids
+    fn listed(entries: &[&str]) -> BTreeMap<String, String> {
+        entries
             .iter()
-            .map(|case_id| (case_id.to_string(), "reason".to_owned()))
+            .map(|entry| (entry.to_string(), "reason".to_owned()))
             .collect()
     }
 
@@ -167,10 +200,35 @@ mod tests {
             .collect()
     }
 
+    // A case whose expectations require the given result fields.
+    fn case_expecting(case_id: &str, fields: &[&str]) -> Case {
+        serde_json::from_value(json!({
+            "id": case_id,
+            "profile": "azure",
+            "lane": "core",
+            "purpose": "test",
+            "sources": ["test"],
+            "call": {},
+            "expect": fields
+                .iter()
+                .map(|field| json!({"at": field, "rule": {"is": "present"}}))
+                .collect::<Vec<_>>(),
+        }))
+        .unwrap()
+    }
+
+    fn cases(case_ids: &[&str]) -> Vec<Case> {
+        case_ids
+            .iter()
+            .map(|case_id| case_expecting(case_id, &[]))
+            .collect()
+    }
+
     #[test]
     fn listed_unsupported_and_unlisted_passes_match() {
         let mismatches = find_verdict_mismatches(
             &listed(&["snapshot"]),
+            &cases(&["snapshot", "get"]),
             &graded(&[("snapshot", "unsupported"), ("get", "pass")]),
         );
         assert!(mismatches.is_empty());
@@ -180,6 +238,7 @@ mod tests {
     fn regressions_new_support_and_wrong_answers_mismatch() {
         let mismatches = find_verdict_mismatches(
             &listed(&["snapshot", "version"]),
+            &cases(&["get", "snapshot", "version", "head"]),
             &graded(&[
                 ("get", "unsupported"),
                 ("snapshot", "pass"),
@@ -198,36 +257,34 @@ mod tests {
 
     #[test]
     fn a_pattern_covers_every_case_its_wildcards_match() {
-        assert!(entry_covers("operations/s3/get", "operations/s3/get"));
-        assert!(!entry_covers(
-            "operations/s3/get",
-            "operations/s3/get-whole"
-        ));
-        assert!(entry_covers("operations/s3/*", "operations/s3/get-whole"));
-        assert!(!entry_covers(
+        assert!(id_matches("operations/s3/get", "operations/s3/get"));
+        assert!(!id_matches("operations/s3/get", "operations/s3/get-whole"));
+        assert!(id_matches("operations/s3/*", "operations/s3/get-whole"));
+        assert!(!id_matches(
             "operations/s3/*",
             "operations/s3-express/get-whole"
         ));
-        assert!(entry_covers(
+        assert!(id_matches(
             "operations/azure*/lease-*",
             "operations/azure-hns/lease-break"
         ));
-        assert!(!entry_covers(
+        assert!(!id_matches(
             "operations/azure*/lease-*",
             "operations/azure/put-leased"
         ));
-        assert!(entry_covers(
-            "*-key-*",
-            "operations/s3/put-created-key-space"
-        ));
-        assert!(!entry_covers("a*a", "a"));
+        assert!(id_matches("*-key-*", "operations/s3/put-created-key-space"));
+        assert!(!id_matches("a*a", "a"));
     }
 
     #[test]
     fn a_case_that_a_pattern_covers_must_be_unsupported() {
-        let listed_cases = listed(&["operations/s3/*"]);
         let mismatches = find_verdict_mismatches(
-            &listed_cases,
+            &listed(&["operations/s3/*"]),
+            &cases(&[
+                "operations/s3/get",
+                "operations/s3/head",
+                "operations/azure/get",
+            ]),
             &graded(&[
                 ("operations/s3/get", "unsupported"),
                 ("operations/s3/head", "pass"),
@@ -242,18 +299,62 @@ mod tests {
     }
 
     #[test]
-    fn recording_keeps_patterns_and_lists_only_the_cases_they_miss() {
-        let mut listed_cases = listed(&["operations/s3/*", "operations/s3/get"]);
+    fn a_field_entry_covers_the_cases_that_require_the_field() {
+        let entry = "field:/value/content_md5_base64";
+        let requires = case_expecting("get", &["/value/content_md5_base64"]);
+        assert!(entry_covers(entry, &requires));
+        assert!(!entry_covers(
+            entry,
+            &case_expecting("head", &["/value/size"])
+        ));
+
+        let mut optional = requires.clone();
+        optional.expect[0].optional = true;
+        assert!(!entry_covers(entry, &optional));
+        let mut absent = requires.clone();
+        absent.expect[0].rule = Rule::Absent;
+        assert!(!entry_covers(entry, &absent));
+
+        let mismatches = find_verdict_mismatches(
+            &listed(&[entry]),
+            &[requires, case_expecting("head", &["/value/size"])],
+            &graded(&[("get", "unsupported"), ("head", "unsupported")]),
+        );
+        let mismatched_ids: Vec<&str> = mismatches
+            .iter()
+            .map(|mismatch| mismatch["id"].as_str().unwrap())
+            .collect();
+        assert_eq!(mismatched_ids, ["head"]);
+    }
+
+    #[test]
+    fn recording_keeps_categories_and_lists_only_the_cases_they_miss() {
+        let mut listed_cases = listed(&[
+            "operations/s3/*",
+            "operations/s3/get",
+            "field:/value/content_md5_base64",
+        ]);
+        let suite_cases = [
+            case_expecting("operations/s3/get", &[]),
+            case_expecting("operations/azure/tier", &[]),
+            case_expecting("operations/azure/get", &["/value/content_md5_base64"]),
+        ];
         record_unsupported_cases(
             &mut listed_cases,
+            &suite_cases,
             &[
                 json!({"id": "operations/s3/get", "verdict": "unsupported", "adapter_note": "no S3"}),
                 json!({"id": "operations/azure/tier", "verdict": "unsupported", "adapter_note": "no tiers"}),
+                json!({"id": "operations/azure/get", "verdict": "unsupported", "adapter_note": "no MD5"}),
             ],
         );
         assert_eq!(
             listed_cases.keys().collect::<Vec<_>>(),
-            ["operations/azure/tier", "operations/s3/*"]
+            [
+                "field:/value/content_md5_base64",
+                "operations/azure/tier",
+                "operations/s3/*"
+            ]
         );
     }
 
@@ -262,6 +363,7 @@ mod tests {
         let mut listed_cases = listed(&["now-supported", "not-graded"]);
         record_unsupported_cases(
             &mut listed_cases,
+            &cases(&["now-supported", "not-graded", "new-limit", "field-limit"]),
             &[
                 json!({"id": "now-supported", "verdict": "pass"}),
                 json!({"id": "new-limit", "verdict": "unsupported", "adapter_note": "no mapping"}),
