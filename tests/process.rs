@@ -89,3 +89,39 @@ fn non_object_output_is_a_protocol_failure() {
         runner::grade_case(&case, &profile, &adapter_command("non-object-result"), None).unwrap();
     assert_eq!(report["verdict"], "failed");
 }
+
+// A recorded list keeps its hand-written patterns and lists only the cases they
+// miss, and a later run held to that list passes.
+#[test]
+fn recording_keeps_patterns_and_a_run_then_meets_the_list() {
+    let list = std::env::temp_dir().join(format!("object-tests-list-{}.json", std::process::id()));
+    std::fs::write(&list, r#"{"vectors": {"azure/*": "no Azure"}}"#).unwrap();
+    let grade = |list_option: &str| {
+        std::process::Command::new(env!("CARGO_BIN_EXE_object-tests"))
+            .args([
+                "grade",
+                concat!(env!("CARGO_MANIFEST_DIR"), "/cases/vectors.json"),
+                list_option,
+            ])
+            .arg(&list)
+            .arg("--")
+            .args(adapter_command("check-input"))
+            .output()
+            .unwrap()
+    };
+
+    assert!(grade("--record-unsupported").status.success());
+    let recorded: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&list).unwrap()).unwrap();
+    let entries = recorded["vectors"].as_object().unwrap();
+    assert!(entries.contains_key("azure/*"));
+    assert!(entries.len() > 1);
+    assert!(
+        entries
+            .keys()
+            .all(|entry| entry == "azure/*" || !entry.starts_with("azure/"))
+    );
+
+    assert!(grade("--expected-unsupported").status.success());
+    std::fs::remove_file(&list).unwrap();
+}

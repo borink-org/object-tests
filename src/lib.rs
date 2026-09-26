@@ -122,17 +122,35 @@ impl Session {
             _ => (&self.expect, false),
         };
 
-        // An unsupported call passes where the service ignores one of its parameters.
-        // A refusal of that call is graded by the refusal checks.
-        let declined_before_sending =
-            self.decline_permitted && self.completed == 0 && outcome == Some("unsupported");
+        // An unsupported call passes where the service ignores one of its parameters, if
+        // the adapter names that parameter, as a refusal must. Any other unsupported call
+        // stays unsupported. A refusal of that call is graded by the refusal checks.
+        let names_the_ignored_parameter = || {
+            self.refusal.as_ref().is_some_and(|checks| {
+                let parameter_checks: Vec<Check> = checks
+                    .iter()
+                    .filter(|check| check.at == "/parameter")
+                    .cloned()
+                    .collect();
+                check_assertions(&parameter_checks, result, now).is_empty()
+            })
+        };
+        let declined_before_sending = self.decline_permitted
+            && self.completed == 0
+            && outcome == Some("unsupported")
+            && names_the_ignored_parameter();
 
         let differences = if declined_before_sending {
             vec![]
         } else {
             check_assertions(checks, result, now)
         };
-        let missing = !refused && !declined_before_sending && !self.pending.is_empty();
+        let required_pending = self
+            .pending
+            .iter()
+            .filter(|exchange| !exchange.optional)
+            .count();
+        let missing = !refused && !declined_before_sending && required_pending > 0;
 
         // A missing field that the result declares in `unsupported_fields` makes the
         // case unsupported. A missing field without a declaration makes it wrong.
@@ -167,6 +185,8 @@ impl Session {
         } else {
             "pass"
         };
+        // The declared fields whose absence made the case unsupported, by pointer.
+        let mut unsupported_fields = Vec::new();
         let (limitation_scope, adapter_note) = if outcome == Some("unsupported") {
             (
                 result.get("scope").cloned().unwrap_or(json!("adapter")),
@@ -176,6 +196,10 @@ impl Session {
             let limited_fields: Vec<&Value> = differences
                 .iter()
                 .filter_map(|difference| declared_unsupported_field(&difference.at))
+                .collect();
+            unsupported_fields = differences
+                .iter()
+                .map(|difference| difference.at.clone())
                 .collect();
             let scope = limited_fields
                 .iter()
@@ -189,16 +213,20 @@ impl Session {
         } else {
             (Value::Null, result.get("reason").cloned())
         };
-        json!({
+        let mut report = json!({
             "id": self.id,
             "lane": self.lane,
             "verdict": verdict,
             "exchanges": self.completed,
-            "required_exchanges": self.completed + self.pending.len(),
+            "required_exchanges": self.completed + required_pending,
             "request_failures": self.failures,
             "result_differences": differences,
             "adapter_note": adapter_note,
             "limitation_scope": limitation_scope,
-        })
+        });
+        if !unsupported_fields.is_empty() {
+            report["unsupported_fields"] = json!(unsupported_fields);
+        }
+        report
     }
 }
