@@ -11,7 +11,7 @@ publish = false
 [dependencies]
 # The adapter itself lives in borink-org/object-storage, beside the crates whose
 # API it calls. This is the commit whose adapter speaks this revision's protocol.
-borink-object-tests-adapter = { git = "https://github.com/borink-org/object-storage.git", rev = "55274d8c1728c72055d237d07c491ca6284e22c5" }
+borink-object-tests-adapter = { git = "https://github.com/borink-org/object-storage.git", rev = "11b60cab51d501ba50d55255054d8a4cb53e10fb" }
 
 [features]
 # HTTPS, which only the live probes need. Offline grading uses plain HTTP on loopback.
