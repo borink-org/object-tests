@@ -27,17 +27,13 @@ dependencies = [
 name = "borink-adapter"
 version = "0.0.0"
 dependencies = [
- "base64 0.22.1",
- "borink-crypto",
- "borink-object-storage-proto",
- "serde_json",
- "ureq",
+ "borink-object-tests-adapter",
 ]
 
 [[package]]
 name = "borink-crypto"
 version = "0.0.1"
-source = "git+https://github.com/borink-org/object-storage.git?branch=master#d7bd59fde448ab56063b6a04218c49c4bcdd9104"
+source = "git+https://github.com/borink-org/object-storage.git?rev=ec871cc51443b2a560f40c6efed278b1c0be707a#ec871cc51443b2a560f40c6efed278b1c0be707a"
 dependencies = [
  "borink-object-storage-proto",
  "md-5",
@@ -46,7 +42,19 @@ dependencies = [
 [[package]]
 name = "borink-object-storage-proto"
 version = "0.0.1"
-source = "git+https://github.com/borink-org/object-storage.git?branch=master#d7bd59fde448ab56063b6a04218c49c4bcdd9104"
+source = "git+https://github.com/borink-org/object-storage.git?rev=ec871cc51443b2a560f40c6efed278b1c0be707a#ec871cc51443b2a560f40c6efed278b1c0be707a"
+
+[[package]]
+name = "borink-object-tests-adapter"
+version = "0.0.0"
+source = "git+https://github.com/borink-org/object-storage.git?rev=ec871cc51443b2a560f40c6efed278b1c0be707a#ec871cc51443b2a560f40c6efed278b1c0be707a"
+dependencies = [
+ "base64 0.22.1",
+ "borink-crypto",
+ "borink-object-storage-proto",
+ "serde_json",
+ "ureq",
+]
 
 [[package]]
 name = "bytes"
