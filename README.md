@@ -14,7 +14,7 @@ There are also a few live tests that are just to see if you can actually make a 
 
 ## Example test of `borink-object-storage`
 
-`adapters/borink` drives `borink-object-storage-proto` from the master branch of borink-org/object-storage.
+`adapters/borink` builds the adapter that borink-org/object-storage keeps in [`hosts/object-tests`](https://github.com/borink-org/object-storage/tree/master/hosts/object-tests), at the commit its `Cargo.toml` pins. That adapter lives beside the crates whose API it calls, and object-storage grades every change against this suite.
 
 ```bash
 cargo build --release --locked
@@ -23,6 +23,10 @@ cargo build --release --locked --manifest-path adapters/borink/Cargo.toml
 ```
 
 The compilation takes longer than running the tests! It currently just dumps a large JSON.
+
+The adapter reports some cases unsupported, and without a list of those the grader fails the run. `--record-unsupported FILE` writes the list and fails only on a case the adapter gets wrong; `--expected-unsupported FILE` then holds a later run to it.
+
+The grader sends a protocol `version` in every message, and the adapter refuses one it does not speak. A change to the protocol bumps it, and object-storage updates its adapter before this example moves its pin.
 
 ## LLM disclaimer
 

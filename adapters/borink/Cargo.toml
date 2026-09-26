@@ -9,14 +9,10 @@ publish = false
 [workspace]
 
 [dependencies]
-borink-object-storage-proto = { git = "https://github.com/borink-org/object-storage.git", branch = "master" }
-borink-crypto = { git = "https://github.com/borink-org/object-storage.git", branch = "master", features = ["md5", "crc64"] }
-# `default-features = false` drops gzip and brotli decoding, which the crate
-# forbids: it reads byte counts from the head that a decoded body contradicts.
-ureq = { version = "3.1", default-features = false }
-serde_json = "1"
-base64 = "0.22"
+# The adapter itself lives in borink-org/object-storage, beside the crates whose
+# API it calls. This is the commit whose adapter speaks this revision's protocol.
+borink-object-tests-adapter = { git = "https://github.com/borink-org/object-storage.git", rev = "ec871cc51443b2a560f40c6efed278b1c0be707a" }
 
 [features]
 # HTTPS, which only the live probes need. Offline grading uses plain HTTP on loopback.
-live = ["ureq/rustls"]
+live = ["borink-object-tests-adapter/live"]

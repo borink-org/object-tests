@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  grader:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: cargo test --locked
+      - name: Validate the suites
+        run: |
+          cargo build --release --locked
+          for suite in cases/*.json; do
+            ./target/release/object-tests validate "$suite"
+          done
+
+  # The example adapter, graded on every offline suite. It reports some cases
+  # unsupported, so the run records those to a scratch file, which fails only
+  # on a case the adapter gets wrong. borink-org/object-storage keeps the list
+  # of unsupported cases that it holds its crates to.
+  example-adapter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: cargo build --release --locked
+      - run: cargo build --release --locked --manifest-path adapters/borink/Cargo.toml
+      - name: Grade the offline suites
+        run: |
+          for suite in core operations s3-express vectors; do
+            ./target/release/object-tests grade "cases/$suite.json" \
+              --record-unsupported "$RUNNER_TEMP/unsupported.json" \
+              -- adapters/borink/target/release/borink-adapter | tail -n 1
+          done
