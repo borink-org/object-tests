@@ -1,10 +1,11 @@
 //! A client's own list of the cases it expects to report unsupported.
 //!
-//! The list is keyed by suite name, the suite file's name without `.json`, and
-//! maps each case ID to the reason it is unsupported. Graded against the list,
-//! every other case must pass, and every listed case must still be unsupported:
-//! a regression and a newly supported case both fail, so the list says exactly
-//! what the client supports.
+//! The list maps a suite name to case IDs, and each case ID to the reason it is
+//! unsupported. A suite name is the suite file's name without `.json`.
+//!
+//! A run graded against the list passes only if every listed case is
+//! unsupported and every other case passes. A regression fails the run, and so
+//! does a case that the client now supports.
 use crate::{Result, model::Suite};
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, path::Path};
@@ -41,7 +42,7 @@ pub fn load_expected_unsupported_cases(
     }
 }
 
-/// Listed case IDs that the suite does not have, which are stale entries.
+/// Returns the listed case IDs that the suite does not have.
 pub fn unknown_listed_case_ids<'a>(
     listed_cases: &'a BTreeMap<String, String>,
     suite: &Suite,
@@ -53,8 +54,8 @@ pub fn unknown_listed_case_ids<'a>(
         .collect()
 }
 
-/// Every graded case whose verdict differs from the one the list expects:
-/// `unsupported` for a listed case and `pass` for any other.
+/// Returns a mismatch for every graded case whose verdict differs from the
+/// expected one. A listed case must be `unsupported`, and any other case must pass.
 pub fn find_verdict_mismatches(
     listed_cases: &BTreeMap<String, String>,
     graded_verdicts: &[(String, String)],
@@ -78,7 +79,7 @@ pub fn find_verdict_mismatches(
         .collect()
 }
 
-/// The reason a report gives for an unsupported verdict.
+/// Returns the reason that a report gives for an unsupported verdict.
 pub fn unsupported_reason(report: &Value) -> String {
     match &report["adapter_note"] {
         Value::String(reason) => reason.clone(),

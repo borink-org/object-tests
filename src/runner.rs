@@ -1,13 +1,14 @@
-//! Synchronous process and HTTP transport. Two workers serve each isolated case.
+//! Runs one adapter process per case and serves the case's loopback endpoint.
 use crate::{Result, Session, model::*};
 use serde_json::{Value, json};
 use std::{
+    collections::BTreeMap,
     io::{Read, Write},
     net::TcpListener,
     process::{Command, Stdio},
     sync::{
         Mutex,
-        atomic::{AtomicBool, Ordering},
+        atomic::{AtomicBool, AtomicUsize, Ordering},
         mpsc,
     },
     thread,
@@ -15,6 +16,9 @@ use std::{
 };
 
 const MAX_MESSAGE_BYTES: usize = 16 * 1024 * 1024;
+
+// Each case serves its loopback endpoint from this many threads.
+const HTTP_WORKERS: usize = 2;
 
 fn invoke_adapter_process(command: &[String], message: &Value, timeout: Duration) -> Result<Value> {
     let mut input_bytes = serde_json::to_vec(message)?;
@@ -67,7 +71,8 @@ fn invoke_adapter_process(command: &[String], message: &Value, timeout: Duration
             if Instant::now() >= deadline {
                 return Err("adapter process deadline exceeded".into());
             }
-            thread::sleep(Duration::from_millis(5));
+            // The adapter closed its output, so it exits within moments.
+            thread::sleep(Duration::from_millis(1));
         }
         let value: Value = serde_json::from_slice(&bytes)?;
         if !value.is_object() {
@@ -88,7 +93,8 @@ fn invoke_adapter_process(command: &[String], message: &Value, timeout: Duration
 ///
 /// # Errors
 /// Returns an error if the adapter command is empty or the loopback listener cannot start.
-/// Adapter execution failures are returned as grading reports with a `failed` verdict.
+/// An adapter that crashes, times out or prints malformed output gets a report
+/// with the `failed` verdict.
 pub fn grade_case(
     case: &Case,
     profile: &Profile,
@@ -102,7 +108,6 @@ pub fn grade_case(
     let mut endpoint = live_endpoint.unwrap_or(&profile.endpoint).clone();
     let server = if live_endpoint.is_none() && !case.exchanges.is_empty() {
         let server = TcpListener::bind("127.0.0.1:0")?;
-        server.set_nonblocking(true)?;
         let loopback_url = json!(format!("http://{}", server.local_addr()?));
         if endpoint.get("url").is_some() {
             endpoint["proxy_url"] = loopback_url;
@@ -123,15 +128,16 @@ pub fn grade_case(
     let stop = AtomicBool::new(false);
     let result = thread::scope(|scope| {
         if let Some(server) = &server {
-            for _ in 0..2 {
+            for _ in 0..HTTP_WORKERS {
                 scope.spawn(|| {
-                    while !stop.load(Ordering::Relaxed) {
-                        match server.accept() {
+                    loop {
+                        let accepted = server.accept();
+                        if stop.load(Ordering::Acquire) {
+                            break;
+                        }
+                        match accepted {
                             Ok((stream, _)) => {
                                 crate::http_transport::serve_connection(stream, &session)
-                            }
-                            Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
-                                thread::sleep(Duration::from_millis(5));
                             }
                             Err(error) => {
                                 session
@@ -147,7 +153,15 @@ pub fn grade_case(
             }
         }
         let result = invoke_adapter_process(command, &message, Duration::from_secs(30));
-        stop.store(true, Ordering::Relaxed);
+        stop.store(true, Ordering::Release);
+        // A worker blocks in accept, so one connection per worker wakes it to see the stop.
+        if let Some(server) = &server
+            && let Ok(address) = server.local_addr()
+        {
+            for _ in 0..HTTP_WORKERS {
+                let _ = std::net::TcpStream::connect(address);
+            }
+        }
         result
     });
     let session = session.into_inner().unwrap();
@@ -163,6 +177,46 @@ pub fn grade_case(
             })
         }
     })
+}
+
+/// Grades `cases` on up to `worker_count` threads and returns their reports in the order of `cases`.
+///
+/// # Errors
+/// Returns the first error from [`grade_case`] in the order of `cases`.
+pub fn grade_cases(
+    cases: &[&Case],
+    profiles: &BTreeMap<String, Profile>,
+    command: &[String],
+    live_endpoints: Option<&BTreeMap<String, Value>>,
+    worker_count: usize,
+) -> Result<Vec<Value>> {
+    let next_case_index = AtomicUsize::new(0);
+    let reports: Vec<Mutex<Option<Result<Value>>>> =
+        cases.iter().map(|_| Mutex::new(None)).collect();
+    thread::scope(|scope| {
+        for _ in 0..worker_count.min(cases.len()) {
+            scope.spawn(|| {
+                loop {
+                    let case_index = next_case_index.fetch_add(1, Ordering::Relaxed);
+                    let Some(case) = cases.get(case_index) else {
+                        break;
+                    };
+                    let live_endpoint = live_endpoints.map(|endpoints| &endpoints[&case.profile]);
+                    let report = grade_case(case, &profiles[&case.profile], command, live_endpoint);
+                    *reports[case_index].lock().unwrap() = Some(report);
+                }
+            });
+        }
+    });
+    reports
+        .into_iter()
+        .map(|report| {
+            report
+                .into_inner()
+                .unwrap()
+                .expect("a worker grades every case")
+        })
+        .collect()
 }
 
 #[cfg(test)]

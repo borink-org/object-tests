@@ -4,9 +4,13 @@ Conformance cases for Azure Blob and S3 clients, and the grader that runs them. 
 
 ## Grading
 
-```sh
+```nu
 cargo build --release --locked
-./target/release/object-tests grade cases/operations.json --provider azure -- ADAPTER [ARGS...]
+(
+  ./target/release/object-tests grade cases/operations.json
+  --provider azure
+  -- ADAPTER [ARGS...]
+)
 ```
 
 | Suite | Contents |
@@ -15,21 +19,32 @@ cargo build --release --locked
 | `vectors.json` | Digests and signatures |
 | `live.json`, `s3-express-live.json` | Probes against a real account |
 
-`--provider` selects the profiles of one provider and `--case ID` one case. Output is one JSON line per case, then the counts. The exit code is 0 when every case passes, 1 when any is wrong, failed or unsupported, and 2 for a configuration error.
+`--provider` selects the profiles of one provider and `--case ID` one case. `--jobs N` grades N cases at once instead of one per CPU. Output is one JSON line per case, then the counts. The exit code is 0 when every case passes, 1 when any is wrong, failed or unsupported, and 2 for a configuration error.
 
 ## borink adapter
 
 `adapters/borink` drives `borink-object-storage-proto` from the master branch of borink-org/object-storage.
 
-```sh
+```nu
 cargo build --release --locked --manifest-path adapters/borink/Cargo.toml
-./target/release/object-tests grade cases/operations.json --provider azure -- adapters/borink/target/release/borink-adapter
+(
+  ./target/release/object-tests grade cases/operations.json
+  --provider azure
+  -- adapters/borink/target/release/borink-adapter
+)
 ```
+
+The live probes need HTTPS, so add `--features live` to the build for them.
 
 To build it against a checkout at `../object-storage` instead:
 
-```sh
-cargo build --release --manifest-path adapters/borink/Cargo.toml --config 'patch."https://github.com/borink-org/object-storage.git".borink-object-storage-proto.path="../object-storage/crates/object-storage-proto"' --config 'patch."https://github.com/borink-org/object-storage.git".borink-crypto.path="../object-storage/crates/crypto"'
+```nu
+(
+  cargo build --release
+  --manifest-path adapters/borink/Cargo.toml
+  --config 'patch."https://github.com/borink-org/object-storage.git".borink-object-storage-proto.path="../object-storage/crates/object-storage-proto"'
+  --config 'patch."https://github.com/borink-org/object-storage.git".borink-crypto.path="../object-storage/crates/crypto"'
+)
 ```
 
 The adapter tells the crate the account kind of the profile. `--namespace unknown` grades a client that was not told.
@@ -42,11 +57,16 @@ A client can list the cases it expects to be unsupported, with the reason for ea
 {"operations":{"operations/azure/get-snapshot":"PhysicalGet selects no snapshot or version"}}
 ```
 
-```sh
-./target/release/object-tests grade cases/operations.json --provider azure --expected-unsupported unsupported.json -- ADAPTER
+```nu
+(
+  ./target/release/object-tests grade cases/operations.json
+  --provider azure
+  --expected-unsupported unsupported.json
+  -- ADAPTER
+)
 ```
 
-The run then passes only when every listed case is unsupported and every other case passes. A regression, a wrong answer and a newly supported case each fail it, and a listed case the suite does not have is a configuration error. `--record-unsupported FILE` writes the list from a run instead, keeping the entries of cases the run did not grade.
+The run then passes only when every listed case is unsupported and every other case passes. A regression, a wrong answer and a newly supported case each fail it. A listed case that the suite does not have is a configuration error. `--record-unsupported FILE` writes the list from a run instead, keeping the entries of cases the run did not grade.
 
 ## Adapter protocol
 
@@ -86,8 +106,12 @@ Create an object named `object-tests-auth-probe` containing `authentication prob
 {"azure":{"url":"https://ACCOUNT.blob.core.windows.net","account":"ACCOUNT","bucket":"CONTAINER"},"s3":{"url":"https://s3.REGION.amazonaws.com","region":"REGION","bucket":"BUCKET"}}
 ```
 
-```sh
-./target/release/object-tests live cases/live.json endpoints.live.local.json --provider azure -- ADAPTER
+```nu
+(
+  ./target/release/object-tests live cases/live.json endpoints.live.local.json
+  --provider azure
+  -- ADAPTER
+)
 ```
 
 Azure reads `AZURE_STORAGE_KEY`, or `AZURE_STORAGE_ACCESS_TOKEN` with `"auth":"bearer"`. S3 reads `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and, if set, `AWS_SESSION_TOKEN`.

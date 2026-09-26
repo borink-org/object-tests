@@ -44,8 +44,8 @@ pub fn normalize_http_request(
         }
     }
 
-    // HTTP/1.1 permits absolute-form targets too. Split without a URL library:
-    // URL normalization would incorrectly collapse object-key dot segments.
+    // HTTP/1.1 also permits an absolute-form target. A URL library would collapse
+    // dot segments in an object key, so this code splits the target by hand.
     let target = if let Some(rest) = target
         .strip_prefix("http://")
         .or_else(|| target.strip_prefix("https://"))

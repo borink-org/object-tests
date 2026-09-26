@@ -122,9 +122,8 @@ impl Session {
             _ => (&self.expect, false),
         };
 
-        // A case whose parameter the service ignores also passes a client that
-        // reported the operation unsupported before sending. A refusal of it is
-        // judged by the case's refusal checks, which name that parameter.
+        // An unsupported call passes where the service ignores one of its parameters.
+        // A refusal of that call is graded by the refusal checks.
         let declined_before_sending =
             self.decline_permitted && self.completed == 0 && outcome == Some("unsupported");
 
@@ -135,9 +134,8 @@ impl Session {
         };
         let missing = !refused && !declined_before_sending && !self.pending.is_empty();
 
-        // An asserted field the result leaves out while declaring it unsupported,
-        // with the scope and reason of that limitation, is a limitation rather
-        // than a wrong answer. A field left out silently stays wrong.
+        // A missing field that the result declares in `unsupported_fields` makes the
+        // case unsupported. A missing field without a declaration makes it wrong.
         let declared_unsupported_fields: Vec<&Value> = result
             .get("unsupported_fields")
             .and_then(Value::as_array)

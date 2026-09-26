@@ -13,6 +13,10 @@ borink-object-storage-proto = { git = "https://github.com/borink-org/object-stor
 borink-crypto = { git = "https://github.com/borink-org/object-storage.git", branch = "master", features = ["md5", "crc64"] }
 # `default-features = false` drops gzip and brotli decoding, which the crate
 # forbids: it reads byte counts from the head that a decoded body contradicts.
-ureq = { version = "3.1", default-features = false, features = ["rustls"] }
+ureq = { version = "3.1", default-features = false }
 serde_json = "1"
 base64 = "0.22"
+
+[features]
+# HTTPS, which only the live probes need. Offline grading uses plain HTTP on loopback.
+live = ["ureq/rustls"]

@@ -14,7 +14,7 @@ const USAGE: &str = concat!(
     "usage: object-tests validate SUITE | ",
     "grade SUITE [OPTIONS] -- ADAPTER [ARGS...] | ",
     "live SUITE CONFIG [OPTIONS] -- ADAPTER [ARGS...]; ",
-    "OPTIONS: --case ID, --provider PROVIDER, ",
+    "OPTIONS: --case ID, --provider PROVIDER, --jobs N, ",
     "--expected-unsupported FILE or --record-unsupported FILE",
 );
 
@@ -23,6 +23,9 @@ struct GradingOptions<'a> {
     live_config_path: Option<&'a str>,
     case_id: Option<&'a str>,
     provider_name: Option<&'a str>,
+
+    /// The number of cases graded at once, or one per CPU if absent.
+    job_count: Option<&'a str>,
 
     /// Check every verdict against this list of expected unsupported cases.
     expected_unsupported_path: Option<&'a str>,
@@ -68,6 +71,7 @@ fn parse_command_line_arguments(arguments: &[String]) -> Result<CommandLineInvoc
         live_config_path,
         case_id: None,
         provider_name: None,
+        job_count: None,
         expected_unsupported_path: None,
         record_unsupported_path: None,
         adapter_command,
@@ -81,6 +85,7 @@ fn parse_command_line_arguments(arguments: &[String]) -> Result<CommandLineInvoc
         let selected_option = match option_name.as_str() {
             "--case" => &mut grading_options.case_id,
             "--provider" => &mut grading_options.provider_name,
+            "--jobs" => &mut grading_options.job_count,
             "--expected-unsupported" => &mut grading_options.expected_unsupported_path,
             "--record-unsupported" => &mut grading_options.record_unsupported_path,
             _ => return Err(format!("unknown option {option_name}").into()),
@@ -156,14 +161,22 @@ fn grade_selected_cases(grading_options: GradingOptions<'_>) -> Result<ExitCode>
     let mut has_wrong_or_failed_cases = false;
     let mut graded_verdicts = Vec::new();
     let mut graded_reports = Vec::new();
-    for case in cases {
-        let endpoint = config.as_ref().map(|config| &config[&case.profile]);
-        let report = runner::grade_case(
-            case,
-            &suite.profiles[&case.profile],
-            grading_options.adapter_command,
-            endpoint,
-        )?;
+    let worker_count = match grading_options.job_count {
+        Some(job_count) => job_count
+            .parse::<usize>()
+            .ok()
+            .filter(|&job_count| job_count > 0)
+            .ok_or_else(|| format!("--jobs takes a positive number, got {job_count}"))?,
+        None => std::thread::available_parallelism().map_or(1, usize::from),
+    };
+    let reports = runner::grade_cases(
+        &cases,
+        &suite.profiles,
+        grading_options.adapter_command,
+        config.as_ref(),
+        worker_count,
+    )?;
+    for (case, report) in cases.into_iter().zip(reports) {
         let verdict = report["verdict"]
             .as_str()
             .expect("runner returns a verdict");

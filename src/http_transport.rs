@@ -104,7 +104,8 @@ fn read_http_request(reader: &mut BufReader<impl Read + Write>) -> Result<Value>
     if content_length > MAX_BODY_BYTES {
         return Err("request exceeds 16 MiB".into());
     }
-    if expect_continue {
+    // Like Azure, send no interim response when no content follows (RFC 9110, section 10.1.1).
+    if expect_continue && (chunked || content_length > 0) {
         reader
             .get_mut()
             .write_all(b"HTTP/1.1 100 Continue\r\n\r\n")?;

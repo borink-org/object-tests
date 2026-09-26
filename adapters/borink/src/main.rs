@@ -1,10 +1,10 @@
 //! Adapter for `borink-object-storage-proto`, the sans-IO Azure Blob crate of
-//! borink-org/object-storage. The crate encodes each request into buffers this
-//! adapter sizes and reads the response head and body this adapter hands back;
-//! `ureq` carries the bytes between them, as the crate's own ureq host does.
+//! borink-org/object-storage. The crate encodes each request into buffers that
+//! this adapter sizes, and reads the response head and body that it hands back.
+//! `ureq` sends the requests, as in the crate's own ureq host.
 //!
-//! The crate authenticates with a bearer token only, so offline cases receive
-//! a placeholder token and live cases need `endpoint.auth = "bearer"`.
+//! The crate authenticates with a bearer token only. Offline cases receive a
+//! placeholder token, and live cases need `endpoint.auth = "bearer"`.
 
 use base64::{Engine, engine::general_purpose::STANDARD};
 use borink_crypto::{Checksum, Crc64, Md5};
@@ -139,9 +139,11 @@ fn refused_call_parameter(reason_name: &str, call: &Value) -> Option<&'static st
     })
 }
 
-/// A plan the crate will not encode is a refusal to send; a response it
-/// will not accept is a failed operation. A refusal carries the answer the
-/// crate says the account would have given, where it names one.
+/// Returns the result for an error from the crate.
+///
+/// A plan that the crate will not encode becomes a refusal to send. If the crate
+/// names the answer the account would give, the refusal carries it. Any other
+/// error becomes a failed operation.
 fn result_for_crate_error(error: CrateError) -> Value {
     match error {
         CrateError::InvalidPlan(invalid_plan) => {
@@ -294,7 +296,7 @@ fn requested_range(call: &Value) -> Result<RequestedRange, AdapterError> {
     })
 }
 
-/// Selecting a snapshot or a version is not something the crate's plans name.
+/// Returns `true` if the call selects a snapshot or a version, which the crate's plans cannot.
 fn names_snapshot_or_version(call: &Value) -> bool {
     call.get("snapshot").is_some() || call.get("version").is_some()
 }
@@ -358,7 +360,7 @@ fn read_object(
 
     Ok(match outcome {
         GetHeadOutcome::Body { meta, .. } | GetHeadOutcome::Complete { meta } => {
-            // The head's Content-MD5 is not something the crate reads.
+            // The crate does not read Content-MD5 from a response head.
             let unsupported_fields = json!([{
                 "at": "/value/content_md5_base64",
                 "scope": "sdk",
@@ -404,8 +406,8 @@ fn write_object(
     if call.get("content_type").is_some() {
         return Ok(unsupported_by_crate("PhysicalPut sets no content type"));
     }
-    // A plan holds one transactional checksum, so a write that names two is one
-    // the crate declines to send; Azure refuses such a request too.
+    // A plan holds one transactional checksum, so the crate cannot send a write
+    // that names two. Azure refuses such a write too.
     if call.get("checksums").is_some() {
         return Ok(json!({
             "outcome": "refused",

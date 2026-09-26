@@ -59,10 +59,10 @@ pub struct Case {
     #[serde(default)]
     pub refusal: Option<Vec<Check>>,
 
-    /// The service ignores a parameter of the call, such as a range it cannot
-    /// serve, and performs the rest. A client that reports the operation
-    /// unsupported before sending is as right as one that reports what the
-    /// service did; a refusal is judged by `refusal`, which names the parameter.
+    /// `true` if a client that reports the call unsupported before sending passes.
+    ///
+    /// The service ignores one parameter of such a call, such as a range it cannot
+    /// serve. A refusal of the call is graded by `refusal`, which names that parameter.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub decline_permitted: bool,
 }
