@@ -299,6 +299,19 @@ impl Suite {
                 }
                 validate_checks(refusal)?;
             }
+            if case.decline_permitted
+                && !case
+                    .refusal
+                    .iter()
+                    .flatten()
+                    .any(|check| check.at == "/parameter")
+            {
+                return Err(format!(
+                    "{}: a decline needs a refusal check that names the parameter",
+                    case.id
+                )
+                .into());
+            }
             if case
                 .exchanges
                 .iter()

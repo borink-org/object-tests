@@ -122,10 +122,23 @@ impl Session {
             _ => (&self.expect, false),
         };
 
-        // An unsupported call passes where the service ignores one of its parameters.
-        // A refusal of that call is graded by the refusal checks.
-        let declined_before_sending =
-            self.decline_permitted && self.completed == 0 && outcome == Some("unsupported");
+        // An unsupported call passes where the service ignores one of its parameters, if
+        // the adapter names that parameter, as a refusal must. Any other unsupported call
+        // stays unsupported. A refusal of that call is graded by the refusal checks.
+        let names_the_ignored_parameter = || {
+            self.refusal.as_ref().is_some_and(|checks| {
+                let parameter_checks: Vec<Check> = checks
+                    .iter()
+                    .filter(|check| check.at == "/parameter")
+                    .cloned()
+                    .collect();
+                check_assertions(&parameter_checks, result, now).is_empty()
+            })
+        };
+        let declined_before_sending = self.decline_permitted
+            && self.completed == 0
+            && outcome == Some("unsupported")
+            && names_the_ignored_parameter();
 
         let differences = if declined_before_sending {
             vec![]

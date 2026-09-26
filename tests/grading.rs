@@ -297,8 +297,22 @@ fn declining_passes_where_the_service_ignores_the_listed_parameter() {
     let verdict_for = |result: Value| session.finish(&result, test_time())["verdict"].clone();
 
     assert_eq!(
-        verdict_for(json!({"outcome": "unsupported", "reason": "no suffix option"})),
+        verdict_for(json!({
+            "outcome": "unsupported",
+            "reason": "no suffix option",
+            "parameter": "range",
+        })),
         "pass"
+    );
+    // An unsupported call that does not name the ignored parameter declined for another
+    // reason, so it is unsupported, not a pass.
+    assert_eq!(
+        verdict_for(json!({"outcome": "unsupported", "reason": "no suffix option"})),
+        "unsupported"
+    );
+    assert_eq!(
+        verdict_for(json!({"outcome": "unsupported", "reason": "no reads", "parameter": "key"})),
+        "unsupported"
     );
     assert_eq!(
         verdict_for(
