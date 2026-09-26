@@ -443,6 +443,10 @@ fn declared_unsupported_field_is_a_limitation_but_a_silent_omission_is_wrong() {
     );
     assert_eq!(declared["verdict"], "unsupported");
     assert_eq!(declared["limitation_scope"], "sdk");
+    assert_eq!(
+        declared["unsupported_fields"],
+        json!(["/value/content_md5_base64"])
+    );
 
     let mut wrong_value = result_with(json!([{"at": "/value/content_md5_base64"}]));
     wrong_value["value"]["content_md5_base64"] = json!("AAAA");

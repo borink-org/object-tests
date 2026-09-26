@@ -185,6 +185,8 @@ impl Session {
         } else {
             "pass"
         };
+        // The declared fields whose absence made the case unsupported, by pointer.
+        let mut unsupported_fields = Vec::new();
         let (limitation_scope, adapter_note) = if outcome == Some("unsupported") {
             (
                 result.get("scope").cloned().unwrap_or(json!("adapter")),
@@ -194,6 +196,10 @@ impl Session {
             let limited_fields: Vec<&Value> = differences
                 .iter()
                 .filter_map(|difference| declared_unsupported_field(&difference.at))
+                .collect();
+            unsupported_fields = differences
+                .iter()
+                .map(|difference| difference.at.clone())
                 .collect();
             let scope = limited_fields
                 .iter()
@@ -207,7 +213,7 @@ impl Session {
         } else {
             (Value::Null, result.get("reason").cloned())
         };
-        json!({
+        let mut report = json!({
             "id": self.id,
             "lane": self.lane,
             "verdict": verdict,
@@ -217,6 +223,10 @@ impl Session {
             "result_differences": differences,
             "adapter_note": adapter_note,
             "limitation_scope": limitation_scope,
-        })
+        });
+        if !unsupported_fields.is_empty() {
+            report["unsupported_fields"] = json!(unsupported_fields);
+        }
+        report
     }
 }
