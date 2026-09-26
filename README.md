@@ -1,117 +1,29 @@
 # object-tests
 
-Conformance cases for Azure Blob and S3 clients, and the grader that runs them. A case replays recorded HTTP exchanges on a loopback server, checks each request the client sends, and checks the result it reports.
+If you write an object storage client, you want to be sure it works with the real Azure Blob Storage and AWS S3. However, exactly matching their behaviors and knowing for sure you support all the features you want isn't easy! This project tries (but does not yet fully succeed) to make it easier. It records a large number of "cases", which are generated once against live Azure Blob and S3, which are used by a local HTTP server that you can then run your client against as if it's an object storage provider. This way we don't need to _reimplement_ S3/Azure Blob but can instead just copy their behavior on a predefined set of tests.
 
-## Grading
+The published code here is only the actual cases (in JSON format) and the grader, as well as an example adapter (because each JSON case has to be then actually turned into the right operations on your client, which of course cannot be done fully mechanically, although your clanker should be able to mostly do the work for you, at least that's the theory) for the client that this suite was designed for, [borink-object-storage](https://github.com/borink-org/object-storage).
 
-```nu
-cargo build --release --locked
-(
-  ./target/release/object-tests grade cases/operations.json
-  --provider azure
-  -- ADAPTER [ARGS...]
-)
-```
+There are also a few live tests that are just to see if you can actually make a valid request with credentials. We also include some useful vectors for testing the crypto parts of your object storage client.
 
 | Suite | Contents |
 |---|---|
 | `core.json`, `operations.json`, `s3-express.json` | Operations over recorded HTTP |
 | `vectors.json` | Digests and signatures |
-| `live.json`, `s3-express-live.json` | Probes against a real account |
+| `live.json`, `s3-express-live.json` | Probes against a live service |
 
-`--provider` selects the profiles of one provider and `--case ID` one case. `--jobs N` grades N cases at once instead of one per CPU. Output is one JSON line per case, then the counts. The exit code is 0 when every case passes, 1 when any is wrong, failed or unsupported, and 2 for a configuration error.
-
-## borink adapter
+## Example test of `borink-object-storage`
 
 `adapters/borink` drives `borink-object-storage-proto` from the master branch of borink-org/object-storage.
 
-```nu
+```bash
+cargo build --release --locked
 cargo build --release --locked --manifest-path adapters/borink/Cargo.toml
-(
-  ./target/release/object-tests grade cases/operations.json
-  --provider azure
-  -- adapters/borink/target/release/borink-adapter
-)
+./target/release/object-tests grade cases/operations.json --provider azure -- adapters/borink/target/release/borink-adapter
 ```
 
-The live probes need HTTPS, so add `--features live` to the build for them.
+The compilation takes longer than running the tests! It currently just dumps a large JSON.
 
-To build it against a checkout at `../object-storage` instead:
+## LLM disclaimer
 
-```nu
-(
-  cargo build --release
-  --manifest-path adapters/borink/Cargo.toml
-  --config 'patch."https://github.com/borink-org/object-storage.git".borink-object-storage-proto.path="../object-storage/crates/object-storage-proto"'
-  --config 'patch."https://github.com/borink-org/object-storage.git".borink-crypto.path="../object-storage/crates/crypto"'
-)
-```
-
-The adapter tells the crate the account kind of the profile. `--namespace unknown` grades a client that was not told.
-
-## Expected unsupported cases
-
-A client can list the cases it expects to be unsupported, with the reason for each, by suite name:
-
-```json
-{"operations":{"operations/azure/get-snapshot":"PhysicalGet selects no snapshot or version"}}
-```
-
-```nu
-(
-  ./target/release/object-tests grade cases/operations.json
-  --provider azure
-  --expected-unsupported unsupported.json
-  -- ADAPTER
-)
-```
-
-The run then passes only when every listed case is unsupported and every other case passes. A regression, a wrong answer and a newly supported case each fail it. A listed case that the suite does not have is a configuration error. `--record-unsupported FILE` writes the list from a run instead, keeping the entries of cases the run did not grade.
-
-## Adapter protocol
-
-An adapter runs once per case. It reads one JSON input on stdin and writes one JSON result on stdout, within 30 seconds and 16 MiB.
-
-```json
-{"version":1,"mode":"offline","provider":"azure","endpoint":{"url":"http://127.0.0.1:PORT","account":"fixture","bucket":"fixture"},"call":{"op":"get","key":"literal%20"}}
-```
-
-Use the endpoint and dummy credentials given. If `endpoint.proxy_url` is set, send through it and keep `endpoint.url` for addressing and signing. Map `call` to the library and return what it exposes. Do not encode keys, repair the library, retry, or make extra calls.
-
-```json
-{"outcome":"ok","value":{"body_base64":"aGVsbG8=","etag":"\"opaque\""}}
-{"outcome":"error","kind":"not_found","status":404,"code":"BlobNotFound"}
-{"outcome":"unsupported","scope":"sdk","reason":"no snapshot selection"}
-{"outcome":"refused","kind":"max_results","parameter":"page_size"}
-{"outcome":"ok","value":{"etag":"\"opaque\""},"unsupported_fields":[{"at":"/value/content_md5_base64","scope":"sdk","reason":"not exposed"}]}
-```
-
-- Keys are unescaped and bodies are base64. A range is a `start` with an exclusive `end`, a `start` alone, or a `suffix` length.
-- `list` returns every page; `list_page` returns one, with its entries, prefixes and continuation token.
-- Only the properties a case asserts are required. A missing property the result declares in `unsupported_fields` makes the case unsupported; any other missing property makes it wrong.
-- A refusal sends nothing. It passes only where the case has a `refusal`, which names the call parameter. Any status or code it gives must be the service's, and where the account kind decides the answer it must give both.
-- `unsupported` passes only where the case has `decline_permitted`, because the service ignores the parameter.
-
-## Cases
-
-[`src/model.rs`](src/model.rs) defines the format. A case names a profile, a lane (`core`, `vectors` or `live`), the `call`, the HTTP `exchanges` and the `expect` checks on the result. Each exchange lists request alternatives with the response to send; an alternative's `then` exchanges must follow it. Unexpected requests fail.
-
-A check addresses a JSON pointer with one rule: `equal`, `one_of`, `array_length`, `present`, `absent`, `matches`, `fresh` or `xml`. `optional: true` permits absence only.
-
-## Live probes
-
-Create an object named `object-tests-auth-probe` containing `authentication probe` and a newline, and put the endpoints in an untracked `*.live.local.json` file:
-
-```json
-{"azure":{"url":"https://ACCOUNT.blob.core.windows.net","account":"ACCOUNT","bucket":"CONTAINER"},"s3":{"url":"https://s3.REGION.amazonaws.com","region":"REGION","bucket":"BUCKET"}}
-```
-
-```nu
-(
-  ./target/release/object-tests live cases/live.json endpoints.live.local.json
-  --provider azure
-  -- ADAPTER
-)
-```
-
-Azure reads `AZURE_STORAGE_KEY`, or `AZURE_STORAGE_ACCESS_TOKEN` with `"auth":"bearer"`. S3 reads `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and, if set, `AWS_SESSION_TOKEN`.
+This project is heavily AI-assisted. It's mostly a generated artifact from a private repo that also contains the code for actually creating all of the cases. The individual cases and none of the code has been reviewed in depth (this differs quite a bit from the other projects under the `borink-org` umbrella). The slop level is almost certainly quite high, which should be fine as this is a verification artifact that doesn't prove the absence of bugs, it can only prove that maybe your client has some bugs. And if it has false positives, we can easily fix those. Remember: you have been warned!
