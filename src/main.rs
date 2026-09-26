@@ -1,5 +1,9 @@
 use object_tests::{
     Result,
+    expected_unsupported::{
+        find_verdict_mismatches, load_expected_unsupported_cases, record_unsupported_cases,
+        suite_name, unknown_listed_case_ids,
+    },
     model::{Case, Lane, Suite},
     runner,
 };
@@ -8,8 +12,10 @@ use std::{collections::BTreeMap, process::ExitCode};
 
 const USAGE: &str = concat!(
     "usage: object-tests validate SUITE | ",
-    "grade SUITE [--case ID] [--provider PROVIDER] -- ADAPTER [ARGS...] | ",
-    "live SUITE CONFIG [--case ID] [--provider PROVIDER] -- ADAPTER [ARGS...]",
+    "grade SUITE [OPTIONS] -- ADAPTER [ARGS...] | ",
+    "live SUITE CONFIG [OPTIONS] -- ADAPTER [ARGS...]; ",
+    "OPTIONS: --case ID, --provider PROVIDER, ",
+    "--expected-unsupported FILE or --record-unsupported FILE",
 );
 
 struct GradingOptions<'a> {
@@ -17,6 +23,12 @@ struct GradingOptions<'a> {
     live_config_path: Option<&'a str>,
     case_id: Option<&'a str>,
     provider_name: Option<&'a str>,
+
+    /// Check every verdict against this list of expected unsupported cases.
+    expected_unsupported_path: Option<&'a str>,
+
+    /// Rewrite this list with the cases graded unsupported.
+    record_unsupported_path: Option<&'a str>,
     adapter_command: &'a [String],
 }
 
@@ -56,6 +68,8 @@ fn parse_command_line_arguments(arguments: &[String]) -> Result<CommandLineInvoc
         live_config_path,
         case_id: None,
         provider_name: None,
+        expected_unsupported_path: None,
+        record_unsupported_path: None,
         adapter_command,
     };
     let mut grader_arguments = remaining_arguments[..adapter_separator_index].iter();
@@ -67,11 +81,18 @@ fn parse_command_line_arguments(arguments: &[String]) -> Result<CommandLineInvoc
         let selected_option = match option_name.as_str() {
             "--case" => &mut grading_options.case_id,
             "--provider" => &mut grading_options.provider_name,
+            "--expected-unsupported" => &mut grading_options.expected_unsupported_path,
+            "--record-unsupported" => &mut grading_options.record_unsupported_path,
             _ => return Err(format!("unknown option {option_name}").into()),
         };
         if selected_option.replace(option_value).is_some() {
             return Err(format!("duplicate option {option_name}").into());
         }
+    }
+    if grading_options.expected_unsupported_path.is_some()
+        && grading_options.record_unsupported_path.is_some()
+    {
+        return Err("--expected-unsupported and --record-unsupported exclude each other".into());
     }
     Ok(CommandLineInvocation::Run(grading_options))
 }
@@ -96,6 +117,26 @@ fn grade_selected_cases(grading_options: GradingOptions<'_>) -> Result<ExitCode>
     if cases.is_empty() {
         return Err("no cases selected".into());
     }
+
+    let suite_section_name = suite_name(grading_options.suite_path)?;
+    let expected_unsupported_cases = match grading_options.expected_unsupported_path {
+        Some(path) => {
+            let mut expected_lists = load_expected_unsupported_cases(path, true)?;
+            let listed_cases = expected_lists
+                .remove(&suite_section_name)
+                .unwrap_or_default();
+            let unknown_case_ids = unknown_listed_case_ids(&listed_cases, &suite);
+            if !unknown_case_ids.is_empty() {
+                return Err(format!(
+                    "{path} lists cases {suite_section_name} does not have: {}",
+                    unknown_case_ids.join(", ")
+                )
+                .into());
+            }
+            Some(listed_cases)
+        }
+        None => None,
+    };
     // Resolve every selected endpoint before starting any adapter.
     if let Some(config) = &config {
         for case in &cases {
@@ -112,6 +153,9 @@ fn grade_selected_cases(grading_options: GradingOptions<'_>) -> Result<ExitCode>
     }
     let mut verdict_counts = BTreeMap::<&str, BTreeMap<String, usize>>::new();
     let mut has_nonpassing_cases = false;
+    let mut has_wrong_or_failed_cases = false;
+    let mut graded_verdicts = Vec::new();
+    let mut graded_reports = Vec::new();
     for case in cases {
         let endpoint = config.as_ref().map(|config| &config[&case.profile]);
         let report = runner::grade_case(
@@ -134,20 +178,42 @@ fn grade_selected_cases(grading_options: GradingOptions<'_>) -> Result<ExitCode>
             .entry(verdict.to_owned())
             .or_default() += 1;
         has_nonpassing_cases |= verdict != "pass";
+        has_wrong_or_failed_cases |= verdict != "pass" && verdict != "unsupported";
+        graded_verdicts.push((case.id.clone(), verdict.to_owned()));
         println!("{report}");
+        graded_reports.push(report);
     }
-    println!(
-        "{}",
-        json!({
-            "summary": verdict_counts,
-            "authentication": if config.is_some() {
-                "live results above; scoped to the configured identity and operations"
-            } else {
-                "not verified live"
-            },
-        })
-    );
-    Ok(if has_nonpassing_cases {
+
+    let mut summary = json!({
+        "summary": verdict_counts,
+        "authentication": if config.is_some() {
+            "live results above; scoped to the configured identity and operations"
+        } else {
+            "not verified live"
+        },
+    });
+    let mut run_failed = has_nonpassing_cases;
+
+    if let Some(listed_cases) = &expected_unsupported_cases {
+        let mismatches = find_verdict_mismatches(listed_cases, &graded_verdicts);
+        run_failed = !mismatches.is_empty();
+        summary["expected_unsupported"] = json!({"mismatches": mismatches});
+    }
+
+    if let Some(path) = grading_options.record_unsupported_path {
+        let mut expected_lists = load_expected_unsupported_cases(path, false)?;
+        let listed_cases = expected_lists.entry(suite_section_name).or_default();
+        record_unsupported_cases(listed_cases, &graded_reports);
+        listed_cases.retain(|listed_id, _| suite.cases.iter().any(|case| &case.id == listed_id));
+        std::fs::write(
+            path,
+            format!("{}\n", serde_json::to_string_pretty(&expected_lists)?),
+        )?;
+        run_failed = has_wrong_or_failed_cases;
+    }
+
+    println!("{summary}");
+    Ok(if run_failed {
         ExitCode::FAILURE
     } else {
         ExitCode::SUCCESS
@@ -192,6 +258,7 @@ mod tests {
             "grade suite --wat value -- adapter",
             "grade suite --case a --case b -- adapter",
             "live suite -- adapter",
+            "grade suite --expected-unsupported a --record-unsupported b -- adapter",
         ] {
             let arguments: Vec<_> = arguments.split_whitespace().map(str::to_owned).collect();
             assert!(

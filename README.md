@@ -34,6 +34,20 @@ cargo build --release --manifest-path adapters/borink/Cargo.toml --config 'patch
 
 The adapter tells the crate the account kind of the profile. `--namespace unknown` grades a client that was not told.
 
+## Expected unsupported cases
+
+A client can list the cases it expects to be unsupported, with the reason for each, by suite name:
+
+```json
+{"operations":{"operations/azure/get-snapshot":"PhysicalGet selects no snapshot or version"}}
+```
+
+```sh
+./target/release/object-tests grade cases/operations.json --provider azure --expected-unsupported unsupported.json -- ADAPTER
+```
+
+The run then passes only when every listed case is unsupported and every other case passes. A regression, a wrong answer and a newly supported case each fail it, and a listed case the suite does not have is a configuration error. `--record-unsupported FILE` writes the list from a run instead, keeping the entries of cases the run did not grade.
+
 ## Adapter protocol
 
 An adapter runs once per case. It reads one JSON input on stdin and writes one JSON result on stdout, within 30 seconds and 16 MiB.
