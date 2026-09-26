@@ -1,8 +1,8 @@
 use object_tests::{
     Result,
     expected_unsupported::{
-        find_verdict_mismatches, load_expected_unsupported_cases, record_unsupported_cases,
-        suite_name, unknown_listed_case_ids,
+        entry_covers, find_verdict_mismatches, load_expected_unsupported_cases,
+        record_unsupported_cases, suite_name, unknown_listed_case_ids,
     },
     model::{Case, Lane, Suite},
     runner,
@@ -217,7 +217,9 @@ fn grade_selected_cases(grading_options: GradingOptions<'_>) -> Result<ExitCode>
         let mut expected_lists = load_expected_unsupported_cases(path, false)?;
         let listed_cases = expected_lists.entry(suite_section_name).or_default();
         record_unsupported_cases(listed_cases, &graded_reports);
-        listed_cases.retain(|listed_id, _| suite.cases.iter().any(|case| &case.id == listed_id));
+        // Keep the patterns, and drop the entries that cover no case of this suite.
+        listed_cases
+            .retain(|entry, _| suite.cases.iter().any(|case| entry_covers(entry, &case.id)));
         std::fs::write(
             path,
             format!("{}\n", serde_json::to_string_pretty(&expected_lists)?),
