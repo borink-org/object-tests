@@ -1,0 +1,572 @@
+{
+  "version": 1,
+  "profiles": {
+    "azure": {
+      "provider": "azure",
+      "endpoint": {}
+    },
+    "s3": {
+      "provider": "s3",
+      "endpoint": {}
+    }
+  },
+  "cases": [
+    {
+      "id": "azure/md5-empty",
+      "profile": "azure",
+      "lane": "vectors",
+      "purpose": "Digest original bytes, including non-UTF-8; base64 encodes digest bytes, not hexadecimal text.",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob"
+      ],
+      "call": {
+        "op": "digest",
+        "algorithm": "md5",
+        "body_base64": ""
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/digest_base64",
+          "rule": {
+            "is": "equal",
+            "value": "1B2M2Y8AsgTpgAmY7PhCfg=="
+          }
+        }
+      ]
+    },
+    {
+      "id": "azure/md5-binary",
+      "profile": "azure",
+      "lane": "vectors",
+      "purpose": "Digest original bytes, including non-UTF-8; base64 encodes digest bytes, not hexadecimal text.",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob"
+      ],
+      "call": {
+        "op": "digest",
+        "algorithm": "md5",
+        "body_base64": "AP+ADQo="
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/digest_base64",
+          "rule": {
+            "is": "equal",
+            "value": "ErIw43GbIBL4VqJ3UTqKkQ=="
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sha256-empty",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Digest original bytes, including non-UTF-8; base64 encodes digest bytes, not hexadecimal text.",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "digest",
+        "algorithm": "sha256",
+        "body_base64": ""
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/digest_base64",
+          "rule": {
+            "is": "equal",
+            "value": "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sha256-binary",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Digest original bytes, including non-UTF-8; base64 encodes digest bytes, not hexadecimal text.",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "digest",
+        "algorithm": "sha256",
+        "body_base64": "AP+ADQo="
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/digest_base64",
+          "rule": {
+            "is": "equal",
+            "value": "YXHbBqHImx/4q3fkedXfl2zNiKe2NWe0sY9BNknhL/M="
+          }
+        }
+      ]
+    },
+    {
+      "id": "azure/hmac-sha256-rfc4231",
+      "profile": "azure",
+      "lane": "vectors",
+      "purpose": "RFC 4231 test case 1.",
+      "sources": [
+        "https://www.rfc-editor.org/rfc/rfc4231#section-4.2"
+      ],
+      "call": {
+        "op": "hmac_sha256",
+        "key_base64": "CwsLCwsLCwsLCwsLCwsLCwsLCws=",
+        "body_base64": "SGkgVGhlcmU="
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/digest_base64",
+          "rule": {
+            "is": "equal",
+            "value": "sDRMYdjbOFNcqK/OrwvxK4gdwgDJgz2nJuk3bC4yz/c="
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/hmac-sha256-rfc4231",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "RFC 4231 test case 1.",
+      "sources": [
+        "https://www.rfc-editor.org/rfc/rfc4231#section-4.2"
+      ],
+      "call": {
+        "op": "hmac_sha256",
+        "key_base64": "CwsLCwsLCwsLCwsLCwsLCwsLCws=",
+        "body_base64": "SGkgVGhlcmU="
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/digest_base64",
+          "rule": {
+            "is": "equal",
+            "value": "sDRMYdjbOFNcqK/OrwvxK4gdwgDJgz2nJuk3bC4yz/c="
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sigv4-get-range",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Fixed-clock AWS GET range example; exact signature detects canonicalization and key-derivation defects. Whitespace in Authorization is normalized by the sign adapter only if its SDK returns structured fields.",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "method": "GET",
+        "url": "https://examplebucket.s3.amazonaws.com/test.txt",
+        "headers": {
+          "range": "bytes=0-9"
+        },
+        "body_base64": "",
+        "clock": "2013-05-24T00:00:00Z",
+        "credentials": {
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        },
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;range;x-amz-content-sha256;x-amz-date,Signature=f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=host;range;x-amz-content-sha256;x-amz-date, Signature=f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/canonical-get-range",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Canonical text is optional diagnostic coverage; an opaque signer can declare unsupported.",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "s3.canonical_request",
+        "method": "GET",
+        "path": "/test.txt",
+        "query": [],
+        "headers": {
+          "Host": "examplebucket.s3.amazonaws.com",
+          "Range": "bytes=0-9",
+          "x-amz-content-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "x-amz-date": "20130524T000000Z"
+        },
+        "payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/text",
+          "rule": {
+            "is": "equal",
+            "value": "GET\n/test.txt\n\nhost:examplebucket.s3.amazonaws.com\nrange:bytes=0-9\nx-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nx-amz-date:20130524T000000Z\n\nhost;range;x-amz-content-sha256;x-amz-date\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "id": "azure/shared-key-encoded-name",
+      "profile": "azure",
+      "lane": "vectors",
+      "purpose": "Document-derived Shared Key example with a public synthetic key; the canonicalized resource keeps the escaped path.",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-shared-key"
+      ],
+      "call": {
+        "op": "azure.sign",
+        "method": "GET",
+        "url": "https://fixture.blob.core.windows.net/fixture/a%20b?comp=metadata",
+        "headers": {
+          "x-ms-date": "Mon, 01 Jan 2024 00:00:00 GMT",
+          "x-ms-version": "2023-11-03"
+        },
+        "body_base64": "",
+        "clock": "2024-01-01T00:00:00Z",
+        "credentials": {
+          "account": "fixture",
+          "key_base64": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="
+        }
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "equal",
+            "value": "SharedKey fixture:klWCi6Ppc/uMEOOhAHKe9/os6gErdqBdFvMjaTd9lx4="
+          }
+        }
+      ]
+    },
+    {
+      "id": "azure/canonical-shared-key",
+      "profile": "azure",
+      "lane": "vectors",
+      "purpose": "Empty standard fields and final query line are significant; no newline is appended after the resource.",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-shared-key"
+      ],
+      "call": {
+        "op": "azure.string_to_sign",
+        "method": "GET",
+        "url": "https://fixture.blob.core.windows.net/fixture/a%20b?comp=metadata",
+        "account": "fixture",
+        "headers": {
+          "x-ms-date": "Mon, 01 Jan 2024 00:00:00 GMT",
+          "x-ms-version": "2023-11-03"
+        },
+        "body_base64": ""
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/text",
+          "rule": {
+            "is": "equal",
+            "value": "GET\n\n\n\n\n\n\n\n\n\n\n\nx-ms-date:Mon, 01 Jan 2024 00:00:00 GMT\nx-ms-version:2023-11-03\n/fixture/fixture/a%20b\ncomp:metadata"
+          }
+        }
+      ]
+    },
+    {
+      "id": "azure/crc64-empty",
+      "profile": "azure",
+      "lane": "vectors",
+      "purpose": "Azure CRC64 wire byte order; first-party SDK known-answer vector.",
+      "sources": [
+        "https://github.com/Azure/azure-sdk-for-cpp/blob/f05c3d16542673d03e29e60f74b34904b8b9093c/sdk/storage/azure-storage-common/test/ut/crypt_functions_test.cpp"
+      ],
+      "call": {
+        "op": "digest",
+        "algorithm": "azure_crc64",
+        "body_base64": ""
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/digest_base64",
+          "rule": {
+            "is": "equal",
+            "value": "AAAAAAAAAAA="
+          }
+        }
+      ]
+    },
+    {
+      "id": "azure/crc64-hello",
+      "profile": "azure",
+      "lane": "vectors",
+      "purpose": "Azure CRC64 wire byte order; first-party SDK known-answer vector.",
+      "sources": [
+        "https://github.com/Azure/azure-sdk-for-cpp/blob/f05c3d16542673d03e29e60f74b34904b8b9093c/sdk/storage/azure-storage-common/test/ut/crypt_functions_test.cpp"
+      ],
+      "call": {
+        "op": "digest",
+        "algorithm": "azure_crc64",
+        "body_base64": "SGVsbG8gQXp1cmUh"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/digest_base64",
+          "rule": {
+            "is": "equal",
+            "value": "DtjZpL9/o8c="
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3-express/sign-session-token",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Express signing binds the payload and session token using the s3express scope",
+      "sources": [
+        "aws-c-auth/source/aws_signing.c"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "signing_algorithm": "sigv4_s3express",
+        "method": "PUT",
+        "url": "https://fixture--euc1-az1--x-s3.s3express-euc1-az1.eu-central-1.amazonaws.com/object",
+        "region": "eu-central-1",
+        "service": "s3express",
+        "clock": "20240101T000000Z",
+        "body_base64": "",
+        "credentials": {
+          "access_key_id": "fixture-access-key",
+          "secret_access_key": "fixture-secret-key",
+          "session_token": "fixture-session+/token="
+        }
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "equal",
+            "value": "AWS4-HMAC-SHA256 Credential=fixture-access-key/20240101/eu-central-1/s3express/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-s3session-token, Signature=b0494f59bbd2206aead5cdf82b4ea6432600ced843cf358a117139fdded92fef"
+          }
+        },
+        {
+          "at": "/value/headers/x-amz-s3session-token",
+          "rule": {
+            "is": "equal",
+            "value": "fixture-session+/token="
+          }
+        },
+        {
+          "at": "/value/headers/x-amz-security-token",
+          "rule": {
+            "is": "absent"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3-express/sign-different-session-token",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Express signing binds the payload and session token using the s3express scope",
+      "sources": [
+        "aws-c-auth/source/aws_signing.c"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "signing_algorithm": "sigv4_s3express",
+        "method": "PUT",
+        "url": "https://fixture--euc1-az1--x-s3.s3express-euc1-az1.eu-central-1.amazonaws.com/object",
+        "region": "eu-central-1",
+        "service": "s3express",
+        "clock": "20240101T000000Z",
+        "body_base64": "",
+        "credentials": {
+          "access_key_id": "fixture-access-key",
+          "secret_access_key": "fixture-secret-key",
+          "session_token": "fixture-different+/token="
+        }
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "equal",
+            "value": "AWS4-HMAC-SHA256 Credential=fixture-access-key/20240101/eu-central-1/s3express/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-s3session-token, Signature=39e6167cd249777ceaff0b90b5396f4b248e5113fcd0d70fa7d8c7d7e21b8b2a"
+          }
+        },
+        {
+          "at": "/value/headers/x-amz-s3session-token",
+          "rule": {
+            "is": "equal",
+            "value": "fixture-different+/token="
+          }
+        },
+        {
+          "at": "/value/headers/x-amz-security-token",
+          "rule": {
+            "is": "absent"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3-express/sign-payload",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Express signing binds the payload and session token using the s3express scope",
+      "sources": [
+        "aws-c-auth/source/aws_signing.c"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "signing_algorithm": "sigv4_s3express",
+        "method": "PUT",
+        "url": "https://fixture--euc1-az1--x-s3.s3express-euc1-az1.eu-central-1.amazonaws.com/object",
+        "region": "eu-central-1",
+        "service": "s3express",
+        "clock": "20240101T000000Z",
+        "body_base64": "AP+AAQ==",
+        "credentials": {
+          "access_key_id": "fixture-access-key",
+          "secret_access_key": "fixture-secret-key",
+          "session_token": "fixture-session+/token="
+        }
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "equal",
+            "value": "AWS4-HMAC-SHA256 Credential=fixture-access-key/20240101/eu-central-1/s3express/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-s3session-token, Signature=40018b13b9132ef14e46fcff37b1d6eaa08c6ad3ac6573325dfe4b60d301e070"
+          }
+        },
+        {
+          "at": "/value/headers/x-amz-s3session-token",
+          "rule": {
+            "is": "equal",
+            "value": "fixture-session+/token="
+          }
+        },
+        {
+          "at": "/value/headers/x-amz-security-token",
+          "rule": {
+            "is": "absent"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[package]
+name = "borink-adapter"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+# Kept out of the grader's workspace: an adapter's library is separate from
+# the Rust dependency graph of the suite.
+[workspace]
+
+[dependencies]
+borink-object-storage-proto = { git = "https://github.com/borink-org/object-storage.git", branch = "master" }
+borink-crypto = { git = "https://github.com/borink-org/object-storage.git", branch = "master", features = ["md5", "crc64"] }
+# `default-features = false` drops gzip and brotli decoding, which the crate
+# forbids: it reads byte counts from the head that a decoded body contradicts.
+ureq = { version = "3.1", default-features = false }
+serde_json = "1"
+base64 = "0.22"
+
+[features]
+# HTTPS, which only the live probes need. Offline grading uses plain HTTP on loopback.
+live = ["ureq/rustls"]
