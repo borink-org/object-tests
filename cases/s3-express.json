@@ -12428,6 +12428,1236 @@
       "refusal": null
     },
     {
+      "id": "operations/s3-express/get-metadata-punctuation-name",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Report a metadata name that holds any character of an HTTP token.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/metadata/punctuation-name.txt",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/punctuation-name.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-adae183ea4af\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-1a!#$%&'*+.^_`|~b": "1"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/punctuation-name.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=0-[1-9][0-9]{2,}"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 206,
+                "headers": {
+                  "content-range": "bytes 0-0/1",
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-adae183ea4af\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-1a!#$%&'*+.^_`|~b": "1"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-adae183ea4af\""
+          }
+        },
+        {
+          "at": "/value/size",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 1
+          }
+        },
+        {
+          "at": "/value/content_type",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "binary/octet-stream"
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/body_base64",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "MQ=="
+          }
+        },
+        {
+          "at": "/value/metadata",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": {
+              "1a!#$%&'*+.^_`|~b": "1"
+            }
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/get-metadata-non-ascii-value",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "A directory bucket returns an RFC 2047 encoded word as it was stored. A client that encodes on a write decodes it to é; one that keeps metadata to ASCII returns it as stored.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/metadata/non-ascii.txt",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/non-ascii.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-adae183ea4af\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?Q?caf=C3=A9?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/non-ascii.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=0-[1-9][0-9]{2,}"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 206,
+                "headers": {
+                  "content-range": "bytes 0-0/1",
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-adae183ea4af\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?Q?caf=C3=A9?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-adae183ea4af\""
+          }
+        },
+        {
+          "at": "/value/size",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 1
+          }
+        },
+        {
+          "at": "/value/content_type",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "binary/octet-stream"
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/body_base64",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "MQ=="
+          }
+        },
+        {
+          "at": "/value/metadata",
+          "optional": false,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              {
+                "value": "café"
+              },
+              {
+                "value": "=?UTF-8?Q?caf=C3=A9?="
+              }
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/get-metadata-outside-latin-1",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "A directory bucket returns a base64 RFC 2047 encoded word as it was stored. A client that encodes on a write decodes it to 雪; one that keeps metadata to ASCII returns it as stored.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/metadata/outside-latin-1.txt",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/outside-latin-1.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-adae183ea4af\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?B?6Zuq?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/outside-latin-1.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=0-[1-9][0-9]{2,}"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 206,
+                "headers": {
+                  "content-range": "bytes 0-0/1",
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-adae183ea4af\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?B?6Zuq?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-adae183ea4af\""
+          }
+        },
+        {
+          "at": "/value/size",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 1
+          }
+        },
+        {
+          "at": "/value/content_type",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "binary/octet-stream"
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/body_base64",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "MQ=="
+          }
+        },
+        {
+          "at": "/value/metadata",
+          "optional": false,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              {
+                "value": "雪"
+              },
+              {
+                "value": "=?UTF-8?B?6Zuq?="
+              }
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/get-metadata-malformed-encoded-word",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Leave a value that only looks like an RFC 2047 encoded word as it is: =ZZ is no hexadecimal byte.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/metadata/malformed-encoded-word.txt",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/malformed-encoded-word.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-adae183ea4af\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?Q?caf=ZZ?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/malformed-encoded-word.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=0-[1-9][0-9]{2,}"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 206,
+                "headers": {
+                  "content-range": "bytes 0-0/1",
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-adae183ea4af\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?Q?caf=ZZ?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-adae183ea4af\""
+          }
+        },
+        {
+          "at": "/value/size",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 1
+          }
+        },
+        {
+          "at": "/value/content_type",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "binary/octet-stream"
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/body_base64",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "MQ=="
+          }
+        },
+        {
+          "at": "/value/metadata",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": {
+              "value": "=?UTF-8?Q?caf=ZZ?="
+            }
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3-express/get-metadata-replaced",
       "profile": "s3-express",
       "lane": "core",
@@ -35254,10 +36484,459 @@
       "refusal": null
     },
     {
+      "id": "operations/s3-express/put-metadata-names-differ-in-case",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "S3 matches a metadata name without case. A directory bucket refuses two names that differ only in case.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/names-differ-in-case.txt",
+        "metadata": {
+          "DUP": "two",
+          "dup": "one"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/names-differ-in-case.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-dup",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      [
+                        "one",
+                        "two"
+                      ],
+                      [
+                        "two",
+                        "one"
+                      ]
+                    ]
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>InvalidArgument</Code><Message>Fixture error</Message></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidArgument"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidArgument"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations/s3-express/put-metadata-punctuation-name",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "S3 stores a name that holds any character of an HTTP token, and one that starts with a digit.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/punctuation-name.txt",
+        "metadata": {
+          "1a!#$%&'*+.^_`|~b": "1"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/punctuation-name.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-1a!#$%&'*+.^_`|~0b",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-adae183ea4af\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-adae183ea4af\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3-express/put-metadata-non-ascii-value",
       "profile": "s3-express",
       "lane": "core",
-      "purpose": "put metadata non ascii value",
+      "purpose": "A directory bucket refuses a header byte outside ASCII, and stores an RFC 2047 encoded word as it came. Send é as an encoded word, or refuse the value if the client keeps metadata to ASCII.",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -35371,8 +37050,8 @@
                   "at": "/headers/x-amz-meta-value",
                   "optional": false,
                   "rule": {
-                    "is": "equal",
-                    "value": "café"
+                    "is": "matches",
+                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?caf=(?i:c3)=(?i:a9)|(?i:b)\\?Y2Fmw6k=)\\?="
                   }
                 },
                 {
@@ -35405,16 +37084,17 @@
               ],
               "allow_query": [],
               "response": {
-                "status": 400,
+                "status": 200,
                 "headers": {
-                  "content-type": "application/xml",
                   "date": {
                     "from": "now"
-                  }
+                  },
+                  "etag": "\"fixture-ee657e36119d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
                 },
                 "body": {
-                  "encoding": "utf8",
-                  "data": "<Error><Code>InvalidRequest</Code><Message>Fixture error</Message></Error>"
+                  "encoding": "base64",
+                  "data": ""
                 },
                 "framing": "chunked"
               }
@@ -35428,12 +37108,57 @@
           "optional": false,
           "rule": {
             "is": "equal",
-            "value": "error"
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-ee657e36119d\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
           }
         },
         {
           "at": "/status",
-          "optional": false,
+          "optional": true,
           "rule": {
             "is": "equal",
             "value": 400
@@ -35441,10 +37166,1491 @@
         },
         {
           "at": "/code",
-          "optional": false,
+          "optional": true,
           "rule": {
             "is": "equal",
             "value": "InvalidRequest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations/s3-express/put-metadata-value-edge-whitespace",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "HTTP drops spaces and tabs at either end of a header value, so S3 would store a. Send the value as an RFC 2047 encoded word, which a read decodes again, or refuse it.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-edge-whitespace.txt",
+        "metadata": {
+          "value": "\ta "
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/value-edge-whitespace.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?=(?i:09)a(?:_|=(?i:20))|(?i:b)\\?CWEg)\\?="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-ee657e36119d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-ee657e36119d\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations/s3-express/put-metadata-value-encoded-word-text",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "A general-purpose bucket reads each space-separated token that starts with =? and ends with ?= as an RFC 2047 encoded word: it decodes it, or answers 400 or 500 when it cannot. A directory bucket stores such a token as it is sent. A client that decodes on a read sends the value wrapped in an encoded word of its own; one that keeps metadata to ASCII sends it as it is.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-encoded-word-text.txt",
+        "metadata": {
+          "value": "=?UTF-8?Q?caf=C3=A9?="
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/value-encoded-word-text.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "=\\?UTF-8\\?Q\\?caf=C3=A9\\?=|=\\?(?i:utf-8)\\?(?:(?i:q)\\?=(?i:3d)=(?i:3f)UTF-8=(?i:3f)Q=(?i:3f)caf=(?i:3d)C3=(?i:3d)A9=(?i:3f)=(?i:3d)|(?i:b)\\?PT9VVEYtOD9RP2NhZj1DMz1BOT89)\\?="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-ee657e36119d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-ee657e36119d\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/put-metadata-value-not-an-encoded-word",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "A general-purpose bucket reads each space-separated token that starts with =? and ends with ?= as an RFC 2047 encoded word: it decodes it, or answers 400 or 500 when it cannot. Neither a=?b?=c nor x=?UTF-8?Q?caf=C3=A9?=y is such a token, so S3 stores this value as it is sent, and a read returns it. Send it as it is, or wrapped in an encoded word; do not refuse it.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-not-an-encoded-word.txt",
+        "metadata": {
+          "value": "a=?b?=c x=?UTF-8?Q?caf=C3=A9?=y"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/value-not-an-encoded-word.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "a=\\?b\\?=c x=\\?UTF-8\\?Q\\?caf=C3=A9\\?=y|=\\?(?i:utf-8)\\?(?:(?i:q)\\?a=(?i:3d)=(?i:3f)b=(?i:3f)=(?i:3d)c(?:_|=(?i:20))x=(?i:3d)=(?i:3f)UTF-8=(?i:3f)Q=(?i:3f)caf=(?i:3d)C3=(?i:3d)A9=(?i:3f)=(?i:3d)y|(?i:b)\\?YT0/Yj89YyB4PT9VVEYtOD9RP2NhZj1DMz1BOT89eQ==)\\?="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-ee657e36119d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-ee657e36119d\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/put-metadata-value-control-characters",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "A control character other than a tab is no valid HTTP field value. Send the value as an RFC 2047 encoded word, which S3 stores and a read decodes again, or refuse it.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-control-characters.txt",
+        "metadata": {
+          "value": "a\u0000bc"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/value-control-characters.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?a=(?i:00)b=(?i:7f)c|(?i:b)\\?YQBif2M=)\\?="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-ee657e36119d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-ee657e36119d\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations/s3-express/put-metadata-value-line-break",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "CR and LF are no valid HTTP field value. A directory bucket stores an RFC 2047 encoded word as sent, so send the value as one, which a read decodes again, or refuse it.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-line-break.txt",
+        "metadata": {
+          "value": "a\r\nb"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/value-line-break.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?a=(?i:0d)=(?i:0a)b|(?i:b)\\?YQ0KYg==)\\?="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-ee657e36119d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-ee657e36119d\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations/s3-express/put-metadata-value-with-tab",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "S3 stores a tab inside a value as it is sent. Send it raw, or inside an RFC 2047 encoded word.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-with-tab.txt",
+        "metadata": {
+          "value": "a\tb"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/value-with-tab.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "a\tb|=\\?(?i:utf-8)\\?(?:(?i:q)\\?a=(?i:09)b|(?i:b)\\?YQli)\\?="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-ee657e36119d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-ee657e36119d\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/put-metadata-outside-latin-1",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "A directory bucket refuses the UTF-8 bytes of 雪. Send it as an RFC 2047 encoded word, or refuse the value if the client keeps metadata to ASCII.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/outside-latin-1.txt",
+        "metadata": {
+          "value": "雪"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/metadata/outside-latin-1.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?=(?i:e9)=(?i:9b)=(?i:aa)|(?i:b)\\?6Zuq)\\?="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-ee657e36119d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-ee657e36119d\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
           }
         }
       ],
@@ -36599,6 +39805,203 @@
                   "rule": {
                     "is": "equal",
                     "value": "2"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-ec2738a0b15a\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-ec2738a0b15a\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/stage-part-10000",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Part numbers run from 1 to 10,000. Stage part 10,000; only 0 and 10,001 may be refused.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "c2Vjb25k",
+        "key": "object-tests/multipart/object.bin",
+        "op": "s3.upload_part",
+        "part_number": 10000,
+        "upload_id": "fixture-upload+/c60fb1e2e00d="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "c2Vjb25k"
+                  }
+                },
+                {
+                  "at": "/query/partNumber",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "10000"
                   }
                 },
                 {
