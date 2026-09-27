@@ -171,6 +171,10 @@ pub struct Check {
     #[serde(default)]
     pub optional: bool,
     pub rule: Rule,
+
+    /// Why the service needs this, shown with a failure of the check.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub because: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
