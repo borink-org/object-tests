@@ -12736,7 +12736,7 @@
       "id": "operations/s3-express/get-metadata-non-ascii-value",
       "profile": "s3-express",
       "lane": "core",
-      "purpose": "A directory bucket returns an RFC 2047 encoded word as it was stored. Decode it, so é written as an encoded word reads back as é.",
+      "purpose": "A directory bucket returns an RFC 2047 encoded word as it was stored. A client that encodes on a write decodes it to é; one that keeps metadata to ASCII returns it as stored.",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -13028,10 +13028,15 @@
           "at": "/value/metadata",
           "optional": false,
           "rule": {
-            "is": "equal",
-            "value": {
-              "value": "café"
-            }
+            "is": "one_of",
+            "values": [
+              {
+                "value": "café"
+              },
+              {
+                "value": "=?UTF-8?Q?caf=C3=A9?="
+              }
+            ]
           }
         }
       ],
@@ -13041,7 +13046,7 @@
       "id": "operations/s3-express/get-metadata-outside-latin-1",
       "profile": "s3-express",
       "lane": "core",
-      "purpose": "Decode a base64 RFC 2047 encoded word, which a directory bucket returns as it was stored.",
+      "purpose": "A directory bucket returns a base64 RFC 2047 encoded word as it was stored. A client that encodes on a write decodes it to 雪; one that keeps metadata to ASCII returns it as stored.",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -13333,10 +13338,15 @@
           "at": "/value/metadata",
           "optional": false,
           "rule": {
-            "is": "equal",
-            "value": {
-              "value": "雪"
-            }
+            "is": "one_of",
+            "values": [
+              {
+                "value": "雪"
+              },
+              {
+                "value": "=?UTF-8?B?6Zuq?="
+              }
+            ]
           }
         }
       ],
@@ -36926,7 +36936,7 @@
       "id": "operations/s3-express/put-metadata-non-ascii-value",
       "profile": "s3-express",
       "lane": "core",
-      "purpose": "A directory bucket refuses a header byte outside ASCII, and stores an RFC 2047 encoded word as it came. Send é as an encoded word, which a read decodes again.",
+      "purpose": "A directory bucket refuses a header byte outside ASCII, and stores an RFC 2047 encoded word as it came. Send é as an encoded word, or refuse the value if the client keeps metadata to ASCII.",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -37121,13 +37131,54 @@
           }
         }
       ],
-      "refusal": null
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidRequest"
+          }
+        }
+      ]
     },
     {
       "id": "operations/s3-express/put-metadata-outside-latin-1",
       "profile": "s3-express",
       "lane": "core",
-      "purpose": "No header byte carries 雪, so send it as an RFC 2047 encoded word. A directory bucket refuses its UTF-8 bytes.",
+      "purpose": "A directory bucket refuses the UTF-8 bytes of 雪. Send it as an RFC 2047 encoded word, or refuse the value if the client keeps metadata to ASCII.",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -37322,7 +37373,48 @@
           }
         }
       ],
-      "refusal": null
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidRequest"
+          }
+        }
+      ]
     },
     {
       "id": "operations/s3-express/put-metadata-replaced",

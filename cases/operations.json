@@ -97545,7 +97545,7 @@
       "id": "operations/s3/put-metadata-non-ascii-value",
       "profile": "s3",
       "lane": "core",
-      "purpose": "A general-purpose bucket reads header bytes as ISO-8859-1 and decodes an RFC 2047 encoded word. Send é as the byte e9 or as an encoded word; its UTF-8 bytes store cafÃ©.",
+      "purpose": "A general-purpose bucket reads header bytes as ISO-8859-1 and decodes an RFC 2047 encoded word. Send é as the byte e9 or as an encoded word, or refuse the value if the client keeps metadata to ASCII; its UTF-8 bytes store cafÃ©.",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -97646,13 +97646,38 @@
           }
         }
       ],
-      "refusal": null
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ]
     },
     {
       "id": "operations/s3/put-metadata-outside-latin-1",
       "profile": "s3",
       "lane": "core",
-      "purpose": "No header byte carries 雪, so send it as an RFC 2047 encoded word. A general-purpose bucket stores its UTF-8 bytes as three ISO-8859-1 characters.",
+      "purpose": "No header byte carries 雪, so send it as an RFC 2047 encoded word, or refuse the value if the client keeps metadata to ASCII. A general-purpose bucket stores its UTF-8 bytes as three ISO-8859-1 characters.",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -97753,7 +97778,32 @@
           }
         }
       ],
-      "refusal": null
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ]
     },
     {
       "id": "operations/azure/put-with-both-hashes",
