@@ -221,6 +221,12 @@ fn missing_result_fields_are_not_silently_forgiven() {
     );
     assert_eq!(report["verdict"], "wrong");
     assert_eq!(report["result_differences"][0]["at"], "/value/body_base64");
+    // A wrong verdict carries the case's purpose, which states the rule it grades.
+    assert!(
+        report["purpose"]
+            .as_str()
+            .is_some_and(|purpose| !purpose.is_empty())
+    );
 }
 
 #[test]

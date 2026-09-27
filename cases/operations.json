@@ -94474,6 +94474,129 @@
       "refusal": null
     },
     {
+      "id": "operations/s3/put-metadata-names-differ-in-case",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "S3 matches a metadata name without case. A general-purpose bucket merges two names that differ only in case into one pair, dup: one,two, which does not read back as sent, so refuse the call.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/names-differ-in-case.txt",
+        "metadata": {
+          "DUP": "two",
+          "dup": "one"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/names-differ-in-case.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-dup",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      [
+                        "one",
+                        "two"
+                      ],
+                      [
+                        "two",
+                        "one"
+                      ]
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ]
+    },
+    {
       "id": "operations/s3/put-metadata-punctuation-name",
       "profile": "s3",
       "lane": "core",
@@ -97862,18 +97985,18 @@
       ]
     },
     {
-      "id": "operations/s3/put-metadata-value-edge-spaces",
+      "id": "operations/s3/put-metadata-value-edge-whitespace",
       "profile": "s3",
       "lane": "core",
-      "purpose": "HTTP drops the spaces at either end of a header value, so S3 would store a. An RFC 2047 encoded word stores them, but a read returns the value unencoded and loses them again. Send an encoded word, or refuse the value.",
+      "purpose": "HTTP drops spaces and tabs at either end of a header value, so S3 would store a. An RFC 2047 encoded word stores them, but a read returns the value unencoded and loses them again. Send an encoded word, or refuse the value.",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
       "call": {
         "body_base64": "MQ==",
-        "key": "object-tests/metadata/value-edge-spaces.txt",
+        "key": "object-tests/metadata/value-edge-whitespace.txt",
         "metadata": {
-          "value": " a "
+          "value": "\ta "
         },
         "op": "put"
       },
@@ -97895,7 +98018,7 @@
                   "optional": false,
                   "rule": {
                     "is": "equal",
-                    "value": "/fixture/object-tests/metadata/value-edge-spaces.txt"
+                    "value": "/fixture/object-tests/metadata/value-edge-whitespace.txt"
                   }
                 },
                 {
@@ -97911,7 +98034,7 @@
                   "optional": false,
                   "rule": {
                     "is": "matches",
-                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?(?:_|=(?i:20))a(?:_|=(?i:20))|(?i:b)\\?IGEg)\\?="
+                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?=(?i:09)a(?:_|=(?i:20))|(?i:b)\\?CWEg)\\?="
                   }
                 }
               ],
@@ -97963,6 +98086,383 @@
               null,
               ""
             ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations/s3/put-metadata-value-encoded-word-text",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "A general-purpose bucket decodes a value that reads as an RFC 2047 encoded word, so sent as it is, =?UTF-8?Q?caf=C3=A9?= stores café. Wrapped in an encoded word of its own it stores the text, but a read returns it unencoded and decodes it again. Wrap it, or refuse it.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-encoded-word-text.txt",
+        "metadata": {
+          "value": "=?UTF-8?Q?caf=C3=A9?="
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/value-encoded-word-text.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?=(?i:3d)=(?i:3f)UTF-8=(?i:3f)Q=(?i:3f)caf=(?i:3d)C3=(?i:3d)A9=(?i:3f)=(?i:3d)|(?i:b)\\?PT9VVEYtOD9RP2NhZj1DMz1BOT89)\\?="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6c30b210f0a8\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations/s3/put-metadata-value-control-characters",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "A control character other than a tab is no valid HTTP field value. Send the value as an RFC 2047 encoded word, which S3 stores and a read decodes again, or refuse it.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-control-characters.txt",
+        "metadata": {
+          "value": "a\u0000bc"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/value-control-characters.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?a=(?i:00)b=(?i:7f)c|(?i:b)\\?YQBif2M=)\\?="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6c30b210f0a8\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations/s3/put-metadata-value-line-break",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "CR and LF are no valid HTTP field value, and a general-purpose bucket stores each as a space even inside an RFC 2047 encoded word. No request stores the value, so refuse it.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-line-break.txt",
+        "metadata": {
+          "value": "a\r\nb"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/value-line-break.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?a=(?i:0d)=(?i:0a)b|(?i:b)\\?YQ0KYg==)\\?="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
           }
         }
       ],

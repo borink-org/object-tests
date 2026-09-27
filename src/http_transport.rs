@@ -197,6 +197,21 @@ pub(crate) fn serve_connection(stream: TcpStream, state: &Mutex<Session>) {
         stream.set_read_timeout(Some(Duration::from_secs(5)))?;
         stream.set_write_timeout(Some(Duration::from_secs(5)))?;
         let mut connection = BufReader::new(stream);
+        // A client may open a connection and never use it, such as a pool connection. One that
+        // closes or times out before its first byte sent no request, so it is no failure. How
+        // many such connections a client opens depends on its timing.
+        match connection.fill_buf() {
+            Ok([]) => return Ok(()),
+            Err(error)
+                if matches!(
+                    error.kind(),
+                    std::io::ErrorKind::WouldBlock | std::io::ErrorKind::TimedOut
+                ) =>
+            {
+                return Ok(());
+            }
+            _ => {}
+        }
         let request = read_http_request(&mut connection)?;
         let now = SystemTime::now();
         let response = state.lock().unwrap().respond(&request, now);

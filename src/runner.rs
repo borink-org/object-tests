@@ -172,6 +172,7 @@ pub fn grade_case(
                 "id": case.id,
                 "lane": case.lane,
                 "verdict": "failed",
+                "purpose": case.purpose,
                 "reason": error.to_string(),
                 "request_failures": session.failures,
             })

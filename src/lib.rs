@@ -26,6 +26,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub struct Session {
     id: String,
     lane: Lane,
+    purpose: String,
     expect: Vec<Check>,
     refusal: Option<Vec<Check>>,
     decline_permitted: bool,
@@ -41,6 +42,7 @@ impl Session {
             pending: case.exchanges.into(),
             id: case.id,
             lane: case.lane,
+            purpose: case.purpose,
             expect: case.expect,
             refusal: case.refusal,
             decline_permitted: case.decline_permitted,
@@ -226,6 +228,10 @@ impl Session {
         });
         if !unsupported_fields.is_empty() {
             report["unsupported_fields"] = json!(unsupported_fields);
+        }
+        // A case's purpose states the rule it grades, so a wrong verdict says what to change.
+        if verdict == "wrong" {
+            report["purpose"] = json!(self.purpose);
         }
         report
     }
