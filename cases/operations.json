@@ -98120,7 +98120,7 @@
       "id": "operations/s3/put-metadata-value-encoded-word-text",
       "profile": "s3",
       "lane": "core",
-      "purpose": "A general-purpose bucket decodes a value that reads as an RFC 2047 encoded word, so sent as it is, =?UTF-8?Q?caf=C3=A9?= stores café. Wrapped in an encoded word of its own it stores the text, but a read returns it unencoded and decodes it again. Wrap it, or refuse it.",
+      "purpose": "A general-purpose bucket reads each space-separated token that starts with =? and ends with ?= as an RFC 2047 encoded word: it decodes it, or answers 400 or 500 when it cannot. So =?UTF-8?Q?caf=C3=A9?= sent as it is stores café. Wrapped in an encoded word of its own it stores the text, but a read returns it unencoded and decodes it again. Wrap it, or refuse it.",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -98247,6 +98247,113 @@
           }
         }
       ]
+    },
+    {
+      "id": "operations/s3/put-metadata-value-not-an-encoded-word",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "A general-purpose bucket reads each space-separated token that starts with =? and ends with ?= as an RFC 2047 encoded word: it decodes it, or answers 400 or 500 when it cannot. Neither a=?b?=c nor x=?UTF-8?Q?caf=C3=A9?=y is such a token, so S3 stores this value as it is sent, and a read returns it. Send it as it is, or wrapped in an encoded word; do not refuse it.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-not-an-encoded-word.txt",
+        "metadata": {
+          "value": "a=?b?=c x=?UTF-8?Q?caf=C3=A9?=y"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/value-not-an-encoded-word.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "a=\\?b\\?=c x=\\?UTF-8\\?Q\\?caf=C3=A9\\?=y|=\\?(?i:utf-8)\\?(?:(?i:q)\\?a=(?i:3d)=(?i:3f)b=(?i:3f)=(?i:3d)c(?:_|=(?i:20))x=(?i:3d)=(?i:3f)UTF-8=(?i:3f)Q=(?i:3f)caf=(?i:3d)C3=(?i:3d)A9=(?i:3f)=(?i:3d)y|(?i:b)\\?YT0/Yj89YyB4PT9VVEYtOD9RP2NhZj1DMz1BOT89eQ==)\\?="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6c30b210f0a8\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
     },
     {
       "id": "operations/s3/put-metadata-value-control-characters",
