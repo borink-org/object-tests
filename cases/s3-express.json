@@ -39884,6 +39884,203 @@
       "refusal": null
     },
     {
+      "id": "operations/s3-express/stage-part-10000",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Part numbers run from 1 to 10,000. Stage part 10,000; only 0 and 10,001 may be refused.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "c2Vjb25k",
+        "key": "object-tests/multipart/object.bin",
+        "op": "s3.upload_part",
+        "part_number": 10000,
+        "upload_id": "fixture-upload+/c60fb1e2e00d="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "c2Vjb25k"
+                  }
+                },
+                {
+                  "at": "/query/partNumber",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "10000"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-ec2738a0b15a\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-ec2738a0b15a\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3-express/stage-part-10001",
       "profile": "s3-express",
       "lane": "core",

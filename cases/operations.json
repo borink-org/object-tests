@@ -16946,6 +16946,198 @@
       "refusal": null
     },
     {
+      "id": "operations/azure/list-page-size-one",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "A page of zero entries is out of range, but a page of one is not. Send a page size of 1 and report the one entry and the continuation token.",
+      "sources": [
+        "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
+      ],
+      "call": {
+        "op": "list_page",
+        "page_size": 1,
+        "prefix": "object-tests/board/"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "list"
+                  }
+                },
+                {
+                  "at": "/query/prefix",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "object-tests/board/"
+                  }
+                },
+                {
+                  "at": "/query/maxresults",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<EnumerationResults ServiceEndpoint=\"fixture\" ContainerName=\"fixture\"><Prefix>object-tests/board/</Prefix><MaxResults>1</MaxResults><Blobs><Blob><Name>object-tests/board/a.txt</Name><VersionId>2024-01-01T00:00:00.9908400Z</VersionId><IsCurrentVersion>true</IsCurrentVersion><Properties><Creation-Time>Mon, 01 Jan 2024 00:00:00 GMT</Creation-Time><Last-Modified>Mon, 01 Jan 2024 00:00:00 GMT</Last-Modified><Etag>fixture-704c5ddfc8cb</Etag><Content-Length>8</Content-Length><Content-Type>application/octet-stream</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64 /><Content-MD5>JdVa0oOqQAr0ZMdtcTwHrQ==</Content-MD5><Cache-Control /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><LeaseState>available</LeaseState><ServerEncrypted>true</ServerEncrypted></Properties><OrMetadata /></Blob></Blobs><NextMarker>fixture-marker+/c42f89fa82e8=</NextMarker></EnumerationResults>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/entries/0/key",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "object-tests/board/a.txt"
+          }
+        },
+        {
+          "at": "/value/entries/0/size",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 8
+          }
+        },
+        {
+          "at": "/value/entries/0/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "fixture-704c5ddfc8cb"
+          }
+        },
+        {
+          "at": "/value/entries/0/snapshot",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/entries/0/version",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "2024-01-01T00:00:00.9908400Z"
+          }
+        },
+        {
+          "at": "/value/entries/0/is_current_version",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": true
+          }
+        },
+        {
+          "at": "/value/entries/0/content_md5_base64",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "JdVa0oOqQAr0ZMdtcTwHrQ=="
+          }
+        },
+        {
+          "at": "/value/entries",
+          "optional": false,
+          "rule": {
+            "is": "array_length",
+            "value": 1
+          }
+        },
+        {
+          "at": "/value/prefixes",
+          "optional": false,
+          "rule": {
+            "is": "array_length",
+            "value": 0
+          }
+        },
+        {
+          "at": "/value/continuation_token",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "fixture-marker+/c42f89fa82e8="
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/azure/list-operation-timed-out",
       "profile": "azure",
       "lane": "core",
@@ -29223,6 +29415,122 @@
       "refusal": null
     },
     {
+      "id": "operations/azure/put-metadata-identifier-name",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "An Azure metadata name must be a C# identifier, which may start with an underscore and hold digits. Send _a1; only a name that is no identifier may be refused.",
+      "sources": [
+        "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/identifier-name.txt",
+        "metadata": {
+          "_a1": "1"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/identifier-name.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-meta-_a1",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "content-md5": "xMpCOKC5I4INzFCab3WEmw==",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-9abbc5e374ca\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true",
+                  "x-ms-version-id": "2024-01-01T00:00:00.7035036Z"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-9abbc5e374ca\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "2024-01-01T00:00:00.7035036Z"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/azure/put-over-snapshotted",
       "profile": "azure",
       "lane": "core",
@@ -31045,6 +31353,112 @@
                   "rule": {
                     "is": "equal",
                     "value": "MDAwMDAy"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/stage-id-64-bytes",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "A block ID decodes to at most 64 bytes, and Azure stages a block whose ID decodes to exactly 64. Send it; only a longer ID may be refused.",
+      "sources": [
+        "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
+      ],
+      "call": {
+        "block_id_base64": "eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eA==",
+        "body_base64": "c2Vjb25k",
+        "key": "object-tests/multipart/staged.bin",
+        "op": "azure.stage_block"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/staged.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "c2Vjb25k"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eA=="
                   }
                 }
               ],
@@ -49064,6 +49478,204 @@
       "refusal": null
     },
     {
+      "id": "operations/azure-hns/list-page-size-one",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "A page of zero entries is out of range, but a page of one is not. Send a page size of 1 and report the one entry and the continuation token.",
+      "sources": [
+        "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
+      ],
+      "call": {
+        "op": "list_page",
+        "page_size": 1,
+        "prefix": "object-tests/board/"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "list"
+                  }
+                },
+                {
+                  "at": "/query/prefix",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "object-tests/board/"
+                  }
+                },
+                {
+                  "at": "/query/maxresults",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<EnumerationResults ServiceEndpoint=\"fixture\" ContainerName=\"fixture\"><Prefix>object-tests/board/</Prefix><MaxResults>1</MaxResults><Blobs><Blob><Name>object-tests/board/a.txt</Name><Properties><Creation-Time>Mon, 01 Jan 2024 00:00:00 GMT</Creation-Time><Last-Modified>Mon, 01 Jan 2024 00:00:00 GMT</Last-Modified><Etag>fixture-e8a4acb31ab1</Etag><ResourceType>file</ResourceType><Content-Length>8</Content-Length><Content-Type>application/octet-stream</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64 /><Content-MD5>JdVa0oOqQAr0ZMdtcTwHrQ==</Content-MD5><Cache-Control /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><LeaseState>available</LeaseState><ServerEncrypted>true</ServerEncrypted></Properties><OrMetadata /></Blob></Blobs><NextMarker>fixture-marker+/17aa95c4a402=</NextMarker></EnumerationResults>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/entries/0/key",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "object-tests/board/a.txt"
+          }
+        },
+        {
+          "at": "/value/entries/0/size",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 8
+          }
+        },
+        {
+          "at": "/value/entries/0/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "fixture-e8a4acb31ab1"
+          }
+        },
+        {
+          "at": "/value/entries/0/snapshot",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/entries/0/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/entries/0/is_current_version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              false
+            ]
+          }
+        },
+        {
+          "at": "/value/entries/0/content_md5_base64",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "JdVa0oOqQAr0ZMdtcTwHrQ=="
+          }
+        },
+        {
+          "at": "/value/entries",
+          "optional": false,
+          "rule": {
+            "is": "array_length",
+            "value": 1
+          }
+        },
+        {
+          "at": "/value/prefixes",
+          "optional": false,
+          "rule": {
+            "is": "array_length",
+            "value": 0
+          }
+        },
+        {
+          "at": "/value/continuation_token",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "fixture-marker+/17aa95c4a402="
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/azure-hns/list-key-equal-to-prefix-delimited",
       "profile": "azure-hns",
       "lane": "core",
@@ -64182,6 +64794,124 @@
       "refusal": null
     },
     {
+      "id": "operations/azure-hns/put-metadata-identifier-name",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "An Azure metadata name must be a C# identifier, which may start with an underscore and hold digits. Send _a1; only a name that is no identifier may be refused.",
+      "sources": [
+        "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/identifier-name.txt",
+        "metadata": {
+          "_a1": "1"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/identifier-name.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-meta-_a1",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "content-md5": "xMpCOKC5I4INzFCab3WEmw==",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-4d04dba3441e\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-4d04dba3441e\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/azure-hns/put-over-snapshotted",
       "profile": "azure-hns",
       "lane": "core",
@@ -66018,6 +66748,112 @@
                   "rule": {
                     "is": "equal",
                     "value": "MDAwMDAy"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure-hns/stage-id-64-bytes",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "A block ID decodes to at most 64 bytes, and Azure stages a block whose ID decodes to exactly 64. Send it; only a longer ID may be refused.",
+      "sources": [
+        "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
+      ],
+      "call": {
+        "block_id_base64": "eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eA==",
+        "body_base64": "c2Vjb25k",
+        "key": "object-tests/multipart/staged.bin",
+        "op": "azure.stage_block"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/staged.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "c2Vjb25k"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eA=="
                   }
                 }
               ],
@@ -95367,6 +96203,109 @@
                   "rule": {
                     "is": "equal",
                     "value": "2"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-32b70ae425ac\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-32b70ae425ac\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/stage-part-10000",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Part numbers run from 1 to 10,000. Stage part 10,000; only 0 and 10,001 may be refused.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "c2Vjb25k",
+        "key": "object-tests/multipart/object.bin",
+        "op": "s3.upload_part",
+        "part_number": 10000,
+        "upload_id": "fixture-upload+/276ca18046f9="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "c2Vjb25k"
+                  }
+                },
+                {
+                  "at": "/query/partNumber",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "10000"
                   }
                 },
                 {
