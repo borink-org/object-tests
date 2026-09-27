@@ -76478,6 +76478,194 @@
       "refusal": null
     },
     {
+      "id": "operations/s3/get-metadata-split-encoded-words",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "S3 returns a long value as several RFC 2047 encoded words, separated by spaces. Decode each and join them without the spaces.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/metadata/split-encoded-words.txt",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/split-encoded-words.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?B?6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq?= =?UTF-8?B?6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/split-encoded-words.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=0-[1-9][0-9]{2,}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 206,
+                "headers": {
+                  "content-range": "bytes 0-0/1",
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?B?6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq?= =?UTF-8?B?6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq6Zuq?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6c30b210f0a8\""
+          }
+        },
+        {
+          "at": "/value/size",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 1
+          }
+        },
+        {
+          "at": "/value/content_type",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "binary/octet-stream"
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/body_base64",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "MQ=="
+          }
+        },
+        {
+          "at": "/value/metadata",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": {
+              "value": "雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪雪"
+            }
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3/get-metadata-malformed-encoded-word",
       "profile": "s3",
       "lane": "core",
@@ -97672,6 +97860,245 @@
           }
         }
       ]
+    },
+    {
+      "id": "operations/s3/put-metadata-value-edge-spaces",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "HTTP drops the spaces at either end of a header value, so S3 would store a. An RFC 2047 encoded word stores them, but a read returns the value unencoded and loses them again. Send an encoded word, or refuse the value.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-edge-spaces.txt",
+        "metadata": {
+          "value": " a "
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/value-edge-spaces.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?(?:_|=(?i:20))a(?:_|=(?i:20))|(?i:b)\\?IGEg)\\?="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6c30b210f0a8\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations/s3/put-metadata-value-with-tab",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "S3 stores a tab inside a value as it is sent. Send it raw, or inside an RFC 2047 encoded word.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/value-with-tab.txt",
+        "metadata": {
+          "value": "a\tb"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/value-with-tab.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "a\tb|=\\?(?i:utf-8)\\?(?:(?i:q)\\?a=(?i:09)b|(?i:b)\\?YQli)\\?="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6c30b210f0a8\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
     },
     {
       "id": "operations/s3/put-metadata-outside-latin-1",
