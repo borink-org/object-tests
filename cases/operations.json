@@ -75914,10 +75914,198 @@
       "refusal": null
     },
     {
+      "id": "operations/s3/get-metadata-punctuation-name",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a metadata name that holds any character of an HTTP token.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/metadata/punctuation-name.txt",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/punctuation-name.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-1a!#$%&'*+.^_`|~b": "1"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/punctuation-name.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=0-[1-9][0-9]{2,}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 206,
+                "headers": {
+                  "content-range": "bytes 0-0/1",
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-1a!#$%&'*+.^_`|~b": "1"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6c30b210f0a8\""
+          }
+        },
+        {
+          "at": "/value/size",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 1
+          }
+        },
+        {
+          "at": "/value/content_type",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "binary/octet-stream"
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/body_base64",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "MQ=="
+          }
+        },
+        {
+          "at": "/value/metadata",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": {
+              "1a!#$%&'*+.^_`|~b": "1"
+            }
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3/get-metadata-non-ascii-value",
       "profile": "s3",
       "lane": "core",
-      "purpose": "get metadata non ascii value",
+      "purpose": "A general-purpose bucket returns a value outside ASCII as an RFC 2047 encoded word. Decode it, so é reads back as é.",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -76094,7 +76282,383 @@
           "rule": {
             "is": "equal",
             "value": {
-              "value": "=?UTF-8?Q?caf=C3=A9?="
+              "value": "café"
+            }
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/get-metadata-outside-latin-1",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Decode a base64 RFC 2047 encoded word, which S3 returns for text that is mostly outside ASCII.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/metadata/outside-latin-1.txt",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/outside-latin-1.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?B?6Zuq?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/outside-latin-1.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=0-[1-9][0-9]{2,}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 206,
+                "headers": {
+                  "content-range": "bytes 0-0/1",
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?B?6Zuq?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6c30b210f0a8\""
+          }
+        },
+        {
+          "at": "/value/size",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 1
+          }
+        },
+        {
+          "at": "/value/content_type",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "binary/octet-stream"
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/body_base64",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "MQ=="
+          }
+        },
+        {
+          "at": "/value/metadata",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": {
+              "value": "雪"
+            }
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/get-metadata-malformed-encoded-word",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Leave a value that only looks like an RFC 2047 encoded word as it is: =ZZ is no hexadecimal byte.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/metadata/malformed-encoded-word.txt",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/malformed-encoded-word.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?Q?caf=ZZ?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/malformed-encoded-word.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=0-[1-9][0-9]{2,}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 206,
+                "headers": {
+                  "content-range": "bytes 0-0/1",
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-amz-meta-value": "=?UTF-8?Q?caf=ZZ?="
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MQ=="
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6c30b210f0a8\""
+          }
+        },
+        {
+          "at": "/value/size",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 1
+          }
+        },
+        {
+          "at": "/value/content_type",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "binary/octet-stream"
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/body_base64",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "MQ=="
+          }
+        },
+        {
+          "at": "/value/metadata",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": {
+              "value": "=?UTF-8?Q?caf=ZZ?="
             }
           }
         }
@@ -93722,6 +94286,113 @@
       "refusal": null
     },
     {
+      "id": "operations/s3/put-metadata-punctuation-name",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "S3 stores a name that holds any character of an HTTP token, and one that starts with a digit.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/punctuation-name.txt",
+        "metadata": {
+          "1a!#$%&'*+.^_`|~b": "1"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/punctuation-name.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-1a!#$%&'*+.^_`|~0b",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6c30b210f0a8\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3/put-metadata-replaced",
       "profile": "s3",
       "lane": "core",
@@ -96607,8 +97278,11 @@
                   "at": "/headers/x-ms-meta-value",
                   "optional": false,
                   "rule": {
-                    "is": "equal",
-                    "value": "café"
+                    "is": "one_of",
+                    "values": [
+                      "café",
+                      "cafÃ©"
+                    ]
                   }
                 },
                 {
@@ -96760,8 +97434,11 @@
                   "at": "/headers/x-ms-meta-value",
                   "optional": false,
                   "rule": {
-                    "is": "equal",
-                    "value": "café"
+                    "is": "one_of",
+                    "values": [
+                      "café",
+                      "cafÃ©"
+                    ]
                   }
                 },
                 {
@@ -96868,7 +97545,7 @@
       "id": "operations/s3/put-metadata-non-ascii-value",
       "profile": "s3",
       "lane": "core",
-      "purpose": "put metadata non ascii value",
+      "purpose": "A general-purpose bucket reads header bytes as ISO-8859-1 and decodes an RFC 2047 encoded word. Send é as the byte e9 or as an encoded word; its UTF-8 bytes store cafÃ©.",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -96913,8 +97590,115 @@
                   "at": "/headers/x-amz-meta-value",
                   "optional": false,
                   "rule": {
+                    "is": "matches",
+                    "pattern": "café|=\\?(?i:utf-8)\\?(?:(?i:q)\\?caf=(?i:c3)=(?i:a9)|(?i:b)\\?Y2Fmw6k=)\\?="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6c30b210f0a8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6c30b210f0a8\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/put-metadata-outside-latin-1",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "No header byte carries 雪, so send it as an RFC 2047 encoded word. A general-purpose bucket stores its UTF-8 bytes as three ISO-8859-1 characters.",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MQ==",
+        "key": "object-tests/metadata/outside-latin-1.txt",
+        "metadata": {
+          "value": "雪"
+        },
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
                     "is": "equal",
-                    "value": "café"
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/metadata/outside-latin-1.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-value",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "=\\?(?i:utf-8)\\?(?:(?i:q)\\?=(?i:e9)=(?i:9b)=(?i:aa)|(?i:b)\\?6Zuq)\\?="
                   }
                 }
               ],

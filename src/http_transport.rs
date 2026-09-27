@@ -73,7 +73,10 @@ fn read_http_request(reader: &mut BufReader<impl Read + Write>) -> Result<Value>
     let mut chunked = false;
     let mut expect_continue = false;
     for header in request.headers.iter() {
-        let value = std::str::from_utf8(header.value)?;
+        // A header value is bytes. Each byte becomes the character of the same number, as
+        // ISO-8859-1 reads it, so a case can tell `é` sent as `e9` from `é` sent as UTF-8.
+        let value: String = header.value.iter().copied().map(char::from).collect();
+        let value = value.as_str();
         match header.name.to_ascii_lowercase().as_str() {
             "content-length" => {
                 if content_length.is_some() {
@@ -152,7 +155,11 @@ fn write_http_response(
         } else if !name.eq_ignore_ascii_case("connection")
             && let Some(value) = value
         {
-            write!(writer, "{name}: {value}\r\n")?;
+            // An echoed request header goes back as the bytes it arrived as.
+            let value: Vec<u8> = value.chars().map(|character| character as u8).collect();
+            write!(writer, "{name}: ")?;
+            writer.write_all(&value)?;
+            write!(writer, "\r\n")?;
         }
     }
     write!(writer, "Connection: close\r\n")?;
@@ -252,16 +259,21 @@ mod tests {
 
     #[test]
     fn metadata_and_absolute_targets_reach_the_grader_unchanged() {
-        let mut connection = make_test_connection(
+        let request_bytes = [
             "PUT http://fixture.invalid/a/../caf%C3%A9?name=a+b HTTP/1.1\r\n\
              Host: fixture.invalid\r\n\
              X-Amz-Meta-Value: café\r\n\
-             X-Test: first\r\nX-Test: second\r\n\
-             Content-Length: 1\r\n\r\nx"
+             X-Amz-Meta-Latin: caf"
                 .as_bytes(),
-        );
+            b"\xe9\r\n",
+            b"X-Test: first\r\nX-Test: second\r\n\
+              Content-Length: 1\r\n\r\nx",
+        ]
+        .concat();
+        let mut connection = make_test_connection(&request_bytes);
         let request = read_http_request(&mut connection).unwrap();
-        assert_eq!(request["headers"]["x-amz-meta-value"], "café");
+        assert_eq!(request["headers"]["x-amz-meta-value"], "cafÃ©");
+        assert_eq!(request["headers"]["x-amz-meta-latin"], "café");
         assert_eq!(request["headers"]["x-test"], json!(["first", "second"]));
         assert_eq!(request["path"], "/a/../café");
         assert_eq!(request["query"]["name"], "a+b");
