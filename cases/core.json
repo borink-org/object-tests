@@ -102,6 +102,14 @@
             "is": "equal",
             "value": "2006-03-01"
           }
+        },
+        {
+          "at": "/raw_query",
+          "rule": {
+            "is": "matches",
+            "pattern": "[^+]*"
+          },
+          "because": "S3 reads a + in a query as a space, so a plus in a prefix, token or upload ID must go as %2B and a space as %20"
         }
       ],
       "allow_headers": [
@@ -4642,7 +4650,7 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<Error><Code>InvalidRange</Code><Message>The requested range is not satisfiable</Message><ActualObjectSize>0</ActualObjectSize></Error>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InvalidRange</Code><Message>The requested range is not satisfiable</Message><ActualObjectSize>0</ActualObjectSize></Error>"
                 },
                 "framing": "chunked"
               },
@@ -5716,7 +5724,7 @@
                 },
                 "body": {
                   "encoding": "base64",
-                  "data": "PEVycm9yPjxDb2RlPk5vU3VjaEtleTwvQ29kZT48TWVzc2FnZT5maXh0dXJlIGVycm9yPC9NZXNzYWdlPjwvRXJyb3I+"
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPEVycm9yPjxDb2RlPk5vU3VjaEtleTwvQ29kZT48TWVzc2FnZT5maXh0dXJlIGVycm9yPC9NZXNzYWdlPjwvRXJyb3I+"
                 },
                 "framing": "chunked"
               },
@@ -5779,7 +5787,7 @@
                 },
                 "body": {
                   "encoding": "base64",
-                  "data": "PEVycm9yPjxDb2RlPk5vU3VjaEtleTwvQ29kZT48TWVzc2FnZT5maXh0dXJlIGVycm9yPC9NZXNzYWdlPjwvRXJyb3I+"
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPEVycm9yPjxDb2RlPk5vU3VjaEtleTwvQ29kZT48TWVzc2FnZT5maXh0dXJlIGVycm9yPC9NZXNzYWdlPjwvRXJyb3I+"
                 },
                 "framing": "chunked"
               },
@@ -5878,7 +5886,7 @@
                 },
                 "body": {
                   "encoding": "base64",
-                  "data": "PEVycm9yPjxDb2RlPlByZWNvbmRpdGlvbkZhaWxlZDwvQ29kZT48TWVzc2FnZT5maXh0dXJlIGVycm9yPC9NZXNzYWdlPjwvRXJyb3I+"
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPEVycm9yPjxDb2RlPlByZWNvbmRpdGlvbkZhaWxlZDwvQ29kZT48TWVzc2FnZT5maXh0dXJlIGVycm9yPC9NZXNzYWdlPjwvRXJyb3I+"
                 },
                 "framing": "chunked"
               },
@@ -5948,7 +5956,7 @@
                 },
                 "body": {
                   "encoding": "base64",
-                  "data": "PEVycm9yPjxDb2RlPlByZWNvbmRpdGlvbkZhaWxlZDwvQ29kZT48TWVzc2FnZT5maXh0dXJlIGVycm9yPC9NZXNzYWdlPjwvRXJyb3I+"
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPEVycm9yPjxDb2RlPlByZWNvbmRpdGlvbkZhaWxlZDwvQ29kZT48TWVzc2FnZT5maXh0dXJlIGVycm9yPC9NZXNzYWdlPjwvRXJyb3I+"
                 },
                 "framing": "chunked"
               },
@@ -7046,7 +7054,7 @@
       "id": "s3/list-empty",
       "profile": "s3",
       "lane": "core",
-      "purpose": "list empty",
+      "purpose": "Report an empty bucket as an empty listing",
       "sources": [
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
       ],
@@ -7121,7 +7129,86 @@
                 },
                 "body": {
                   "encoding": "base64",
-                  "data": "PExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjA8L0tleUNvdW50PjxJc1RydW5jYXRlZD5mYWxzZTwvSXNUcnVuY2F0ZWQ+PC9MaXN0QnVja2V0UmVzdWx0Pg=="
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjA8L0tleUNvdW50PjxJc1RydW5jYXRlZD5mYWxzZTwvSXNUcnVuY2F0ZWQ+PC9MaXN0QnVja2V0UmVzdWx0Pg=="
+                },
+                "framing": "chunked"
+              },
+              "allow_headers": [],
+              "allow_query": []
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/list-type",
+                  "rule": {
+                    "is": "equal",
+                    "value": "2"
+                  }
+                },
+                {
+                  "at": "/query/prefix",
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  },
+                  "optional": true
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": true,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "application/xml",
+                      "application/octet-stream",
+                      "binary/octet-stream"
+                    ]
+                  }
+                },
+                {
+                  "at": "/query/encoding-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "url"
+                  }
+                }
+              ],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "content-type": "application/xml",
+                  "x-amz-request-id": "fixture-request-id"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjA8L0tleUNvdW50PjxFbmNvZGluZ1R5cGU+dXJsPC9FbmNvZGluZ1R5cGU+PElzVHJ1bmNhdGVkPmZhbHNlPC9Jc1RydW5jYXRlZD48L0xpc3RCdWNrZXRSZXN1bHQ+"
                 },
                 "framing": "chunked"
               },
@@ -7152,7 +7239,7 @@
       "id": "s3/list-xml-escaped",
       "profile": "s3",
       "lane": "core",
-      "purpose": "list xml escaped",
+      "purpose": "Read XML character references in listed names, such as &amp; and &lt;, or ask for encoding-type=url and decode the names",
       "sources": [
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
       ],
@@ -7227,7 +7314,86 @@
                 },
                 "body": {
                   "encoding": "base64",
-                  "data": "PExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjI8L0tleUNvdW50PjxJc1RydW5jYXRlZD5mYWxzZTwvSXNUcnVuY2F0ZWQ+PENvbnRlbnRzPjxLZXk+YSZhbXA7YjwvS2V5PjxMYXN0TW9kaWZpZWQ+MjAyNC0wMS0wMVQwMDowMDowMC4wMDBaPC9MYXN0TW9kaWZpZWQ+PEVUYWc+ImZpeHR1cmUiPC9FVGFnPjxTaXplPjU8L1NpemU+PFN0b3JhZ2VDbGFzcz5TVEFOREFSRDwvU3RvcmFnZUNsYXNzPjwvQ29udGVudHM+PENvbnRlbnRzPjxLZXk+YyZsdDtkPC9LZXk+PExhc3RNb2RpZmllZD4yMDI0LTAxLTAxVDAwOjAwOjAwLjAwMFo8L0xhc3RNb2RpZmllZD48RVRhZz4iZml4dHVyZSI8L0VUYWc+PFNpemU+NTwvU2l6ZT48U3RvcmFnZUNsYXNzPlNUQU5EQVJEPC9TdG9yYWdlQ2xhc3M+PC9Db250ZW50cz48L0xpc3RCdWNrZXRSZXN1bHQ+"
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjI8L0tleUNvdW50PjxJc1RydW5jYXRlZD5mYWxzZTwvSXNUcnVuY2F0ZWQ+PENvbnRlbnRzPjxLZXk+YSZhbXA7YjwvS2V5PjxMYXN0TW9kaWZpZWQ+MjAyNC0wMS0wMVQwMDowMDowMC4wMDBaPC9MYXN0TW9kaWZpZWQ+PEVUYWc+JnF1b3Q7Zml4dHVyZSZxdW90OzwvRVRhZz48U2l6ZT41PC9TaXplPjxTdG9yYWdlQ2xhc3M+U1RBTkRBUkQ8L1N0b3JhZ2VDbGFzcz48L0NvbnRlbnRzPjxDb250ZW50cz48S2V5PmMmbHQ7ZDwvS2V5PjxMYXN0TW9kaWZpZWQ+MjAyNC0wMS0wMVQwMDowMDowMC4wMDBaPC9MYXN0TW9kaWZpZWQ+PEVUYWc+JnF1b3Q7Zml4dHVyZSZxdW90OzwvRVRhZz48U2l6ZT41PC9TaXplPjxTdG9yYWdlQ2xhc3M+U1RBTkRBUkQ8L1N0b3JhZ2VDbGFzcz48L0NvbnRlbnRzPjwvTGlzdEJ1Y2tldFJlc3VsdD4="
+                },
+                "framing": "chunked"
+              },
+              "allow_headers": [],
+              "allow_query": []
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/list-type",
+                  "rule": {
+                    "is": "equal",
+                    "value": "2"
+                  }
+                },
+                {
+                  "at": "/query/prefix",
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  },
+                  "optional": true
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": true,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "application/xml",
+                      "application/octet-stream",
+                      "binary/octet-stream"
+                    ]
+                  }
+                },
+                {
+                  "at": "/query/encoding-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "url"
+                  }
+                }
+              ],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "content-type": "application/xml",
+                  "x-amz-request-id": "fixture-request-id"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjI8L0tleUNvdW50PjxFbmNvZGluZ1R5cGU+dXJsPC9FbmNvZGluZ1R5cGU+PElzVHJ1bmNhdGVkPmZhbHNlPC9Jc1RydW5jYXRlZD48Q29udGVudHM+PEtleT5hJTI2YjwvS2V5PjxMYXN0TW9kaWZpZWQ+MjAyNC0wMS0wMVQwMDowMDowMC4wMDBaPC9MYXN0TW9kaWZpZWQ+PEVUYWc+JnF1b3Q7Zml4dHVyZSZxdW90OzwvRVRhZz48U2l6ZT41PC9TaXplPjxTdG9yYWdlQ2xhc3M+U1RBTkRBUkQ8L1N0b3JhZ2VDbGFzcz48L0NvbnRlbnRzPjxDb250ZW50cz48S2V5PmMlM0NkPC9LZXk+PExhc3RNb2RpZmllZD4yMDI0LTAxLTAxVDAwOjAwOjAwLjAwMFo8L0xhc3RNb2RpZmllZD48RVRhZz4mcXVvdDtmaXh0dXJlJnF1b3Q7PC9FVGFnPjxTaXplPjU8L1NpemU+PFN0b3JhZ2VDbGFzcz5TVEFOREFSRDwvU3RvcmFnZUNsYXNzPjwvQ29udGVudHM+PC9MaXN0QnVja2V0UmVzdWx0Pg=="
                 },
                 "framing": "chunked"
               },
@@ -7261,7 +7427,7 @@
       "id": "s3/list-order",
       "profile": "s3",
       "lane": "core",
-      "purpose": "list order",
+      "purpose": "Report the keys in the order S3 sends them, without sorting them again",
       "sources": [
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
       ],
@@ -7336,7 +7502,86 @@
                 },
                 "body": {
                   "encoding": "base64",
-                  "data": "PExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjI8L0tleUNvdW50PjxJc1RydW5jYXRlZD5mYWxzZTwvSXNUcnVuY2F0ZWQ+PENvbnRlbnRzPjxLZXk+YTwvS2V5PjxMYXN0TW9kaWZpZWQ+MjAyNC0wMS0wMVQwMDowMDowMC4wMDBaPC9MYXN0TW9kaWZpZWQ+PEVUYWc+ImZpeHR1cmUiPC9FVGFnPjxTaXplPjU8L1NpemU+PFN0b3JhZ2VDbGFzcz5TVEFOREFSRDwvU3RvcmFnZUNsYXNzPjwvQ29udGVudHM+PENvbnRlbnRzPjxLZXk+ejwvS2V5PjxMYXN0TW9kaWZpZWQ+MjAyNC0wMS0wMVQwMDowMDowMC4wMDBaPC9MYXN0TW9kaWZpZWQ+PEVUYWc+ImZpeHR1cmUiPC9FVGFnPjxTaXplPjU8L1NpemU+PFN0b3JhZ2VDbGFzcz5TVEFOREFSRDwvU3RvcmFnZUNsYXNzPjwvQ29udGVudHM+PC9MaXN0QnVja2V0UmVzdWx0Pg=="
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjI8L0tleUNvdW50PjxJc1RydW5jYXRlZD5mYWxzZTwvSXNUcnVuY2F0ZWQ+PENvbnRlbnRzPjxLZXk+YTwvS2V5PjxMYXN0TW9kaWZpZWQ+MjAyNC0wMS0wMVQwMDowMDowMC4wMDBaPC9MYXN0TW9kaWZpZWQ+PEVUYWc+JnF1b3Q7Zml4dHVyZSZxdW90OzwvRVRhZz48U2l6ZT41PC9TaXplPjxTdG9yYWdlQ2xhc3M+U1RBTkRBUkQ8L1N0b3JhZ2VDbGFzcz48L0NvbnRlbnRzPjxDb250ZW50cz48S2V5Pno8L0tleT48TGFzdE1vZGlmaWVkPjIwMjQtMDEtMDFUMDA6MDA6MDAuMDAwWjwvTGFzdE1vZGlmaWVkPjxFVGFnPiZxdW90O2ZpeHR1cmUmcXVvdDs8L0VUYWc+PFNpemU+NTwvU2l6ZT48U3RvcmFnZUNsYXNzPlNUQU5EQVJEPC9TdG9yYWdlQ2xhc3M+PC9Db250ZW50cz48L0xpc3RCdWNrZXRSZXN1bHQ+"
+                },
+                "framing": "chunked"
+              },
+              "allow_headers": [],
+              "allow_query": []
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/list-type",
+                  "rule": {
+                    "is": "equal",
+                    "value": "2"
+                  }
+                },
+                {
+                  "at": "/query/prefix",
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  },
+                  "optional": true
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": true,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "application/xml",
+                      "application/octet-stream",
+                      "binary/octet-stream"
+                    ]
+                  }
+                },
+                {
+                  "at": "/query/encoding-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "url"
+                  }
+                }
+              ],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "content-type": "application/xml",
+                  "x-amz-request-id": "fixture-request-id"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjI8L0tleUNvdW50PjxFbmNvZGluZ1R5cGU+dXJsPC9FbmNvZGluZ1R5cGU+PElzVHJ1bmNhdGVkPmZhbHNlPC9Jc1RydW5jYXRlZD48Q29udGVudHM+PEtleT5hPC9LZXk+PExhc3RNb2RpZmllZD4yMDI0LTAxLTAxVDAwOjAwOjAwLjAwMFo8L0xhc3RNb2RpZmllZD48RVRhZz4mcXVvdDtmaXh0dXJlJnF1b3Q7PC9FVGFnPjxTaXplPjU8L1NpemU+PFN0b3JhZ2VDbGFzcz5TVEFOREFSRDwvU3RvcmFnZUNsYXNzPjwvQ29udGVudHM+PENvbnRlbnRzPjxLZXk+ejwvS2V5PjxMYXN0TW9kaWZpZWQ+MjAyNC0wMS0wMVQwMDowMDowMC4wMDBaPC9MYXN0TW9kaWZpZWQ+PEVUYWc+JnF1b3Q7Zml4dHVyZSZxdW90OzwvRVRhZz48U2l6ZT41PC9TaXplPjxTdG9yYWdlQ2xhc3M+U1RBTkRBUkQ8L1N0b3JhZ2VDbGFzcz48L0NvbnRlbnRzPjwvTGlzdEJ1Y2tldFJlc3VsdD4="
                 },
                 "framing": "chunked"
               },
@@ -7370,7 +7615,7 @@
       "id": "s3/list-pagination",
       "profile": "s3",
       "lane": "core",
-      "purpose": "list pagination",
+      "purpose": "Follow NextContinuationToken until a page is not truncated, sending a + in it as %2B",
       "sources": [
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
       ],
@@ -7453,7 +7698,93 @@
                 },
                 "body": {
                   "encoding": "base64",
-                  "data": "PExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjE8L0tleUNvdW50PjxJc1RydW5jYXRlZD50cnVlPC9Jc1RydW5jYXRlZD48Q29udGVudHM+PEtleT5maXJzdDwvS2V5PjxMYXN0TW9kaWZpZWQ+MjAyNC0wMS0wMVQwMDowMDowMC4wMDBaPC9MYXN0TW9kaWZpZWQ+PEVUYWc+ImZpeHR1cmUiPC9FVGFnPjxTaXplPjU8L1NpemU+PFN0b3JhZ2VDbGFzcz5TVEFOREFSRDwvU3RvcmFnZUNsYXNzPjwvQ29udGVudHM+PE5leHRDb250aW51YXRpb25Ub2tlbj5vcGFxdWUrLz08L05leHRDb250aW51YXRpb25Ub2tlbj48L0xpc3RCdWNrZXRSZXN1bHQ+"
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjE8L0tleUNvdW50PjxJc1RydW5jYXRlZD50cnVlPC9Jc1RydW5jYXRlZD48Q29udGVudHM+PEtleT5maXJzdDwvS2V5PjxMYXN0TW9kaWZpZWQ+MjAyNC0wMS0wMVQwMDowMDowMC4wMDBaPC9MYXN0TW9kaWZpZWQ+PEVUYWc+JnF1b3Q7Zml4dHVyZSZxdW90OzwvRVRhZz48U2l6ZT41PC9TaXplPjxTdG9yYWdlQ2xhc3M+U1RBTkRBUkQ8L1N0b3JhZ2VDbGFzcz48L0NvbnRlbnRzPjxOZXh0Q29udGludWF0aW9uVG9rZW4+b3BhcXVlKy89PC9OZXh0Q29udGludWF0aW9uVG9rZW4+PC9MaXN0QnVja2V0UmVzdWx0Pg=="
+                },
+                "framing": "chunked"
+              },
+              "allow_headers": [],
+              "allow_query": []
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/list-type",
+                  "rule": {
+                    "is": "equal",
+                    "value": "2"
+                  }
+                },
+                {
+                  "at": "/query/prefix",
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  },
+                  "optional": true
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": true,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "application/xml",
+                      "application/octet-stream",
+                      "binary/octet-stream"
+                    ]
+                  }
+                },
+                {
+                  "at": "/query/max-keys",
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/query/encoding-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "url"
+                  }
+                }
+              ],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "content-type": "application/xml",
+                  "x-amz-request-id": "fixture-request-id"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjE8L0tleUNvdW50PjxFbmNvZGluZ1R5cGU+dXJsPC9FbmNvZGluZ1R5cGU+PElzVHJ1bmNhdGVkPnRydWU8L0lzVHJ1bmNhdGVkPjxDb250ZW50cz48S2V5PmZpcnN0PC9LZXk+PExhc3RNb2RpZmllZD4yMDI0LTAxLTAxVDAwOjAwOjAwLjAwMFo8L0xhc3RNb2RpZmllZD48RVRhZz4mcXVvdDtmaXh0dXJlJnF1b3Q7PC9FVGFnPjxTaXplPjU8L1NpemU+PFN0b3JhZ2VDbGFzcz5TVEFOREFSRDwvU3RvcmFnZUNsYXNzPjwvQ29udGVudHM+PE5leHRDb250aW51YXRpb25Ub2tlbj5vcGFxdWUrLz08L05leHRDb250aW51YXRpb25Ub2tlbj48L0xpc3RCdWNrZXRSZXN1bHQ+"
                 },
                 "framing": "chunked"
               },
@@ -7542,7 +7873,100 @@
                 },
                 "body": {
                   "encoding": "base64",
-                  "data": "PExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjE8L0tleUNvdW50PjxJc1RydW5jYXRlZD5mYWxzZTwvSXNUcnVuY2F0ZWQ+PENvbnRlbnRzPjxLZXk+c2Vjb25kPC9LZXk+PExhc3RNb2RpZmllZD4yMDI0LTAxLTAxVDAwOjAwOjAwLjAwMFo8L0xhc3RNb2RpZmllZD48RVRhZz4iZml4dHVyZSI8L0VUYWc+PFNpemU+NTwvU2l6ZT48U3RvcmFnZUNsYXNzPlNUQU5EQVJEPC9TdG9yYWdlQ2xhc3M+PC9Db250ZW50cz48L0xpc3RCdWNrZXRSZXN1bHQ+"
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjE8L0tleUNvdW50PjxJc1RydW5jYXRlZD5mYWxzZTwvSXNUcnVuY2F0ZWQ+PENvbnRlbnRzPjxLZXk+c2Vjb25kPC9LZXk+PExhc3RNb2RpZmllZD4yMDI0LTAxLTAxVDAwOjAwOjAwLjAwMFo8L0xhc3RNb2RpZmllZD48RVRhZz4mcXVvdDtmaXh0dXJlJnF1b3Q7PC9FVGFnPjxTaXplPjU8L1NpemU+PFN0b3JhZ2VDbGFzcz5TVEFOREFSRDwvU3RvcmFnZUNsYXNzPjwvQ29udGVudHM+PC9MaXN0QnVja2V0UmVzdWx0Pg=="
+                },
+                "framing": "chunked"
+              },
+              "allow_headers": [],
+              "allow_query": []
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/list-type",
+                  "rule": {
+                    "is": "equal",
+                    "value": "2"
+                  }
+                },
+                {
+                  "at": "/query/continuation-token",
+                  "rule": {
+                    "is": "equal",
+                    "value": "opaque+/="
+                  }
+                },
+                {
+                  "at": "/query/prefix",
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  },
+                  "optional": true
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": true,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "application/xml",
+                      "application/octet-stream",
+                      "binary/octet-stream"
+                    ]
+                  }
+                },
+                {
+                  "at": "/query/max-keys",
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/query/encoding-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "url"
+                  }
+                }
+              ],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "content-type": "application/xml",
+                  "x-amz-request-id": "fixture-request-id"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPExpc3RCdWNrZXRSZXN1bHQgeG1sbnM9Imh0dHA6Ly9zMy5hbWF6b25hd3MuY29tL2RvYy8yMDA2LTAzLTAxLyI+PE5hbWU+Zml4dHVyZTwvTmFtZT48UHJlZml4PjwvUHJlZml4PjxNYXhLZXlzPjEwMDA8L01heEtleXM+PEtleUNvdW50PjE8L0tleUNvdW50PjxFbmNvZGluZ1R5cGU+dXJsPC9FbmNvZGluZ1R5cGU+PElzVHJ1bmNhdGVkPmZhbHNlPC9Jc1RydW5jYXRlZD48Q29udGVudHM+PEtleT5zZWNvbmQ8L0tleT48TGFzdE1vZGlmaWVkPjIwMjQtMDEtMDFUMDA6MDA6MDAuMDAwWjwvTGFzdE1vZGlmaWVkPjxFVGFnPiZxdW90O2ZpeHR1cmUmcXVvdDs8L0VUYWc+PFNpemU+NTwvU2l6ZT48U3RvcmFnZUNsYXNzPlNUQU5EQVJEPC9TdG9yYWdlQ2xhc3M+PC9Db250ZW50cz48L0xpc3RCdWNrZXRSZXN1bHQ+"
                 },
                 "framing": "chunked"
               },
@@ -8219,7 +8643,7 @@
                 },
                 "body": {
                   "encoding": "base64",
-                  "data": "PEVycm9yPjxDb2RlPkludmFsaWRQYXJ0PC9Db2RlPjxNZXNzYWdlPmZpeHR1cmUgZXJyb3I8L01lc3NhZ2U+PC9FcnJvcj4="
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPEVycm9yPjxDb2RlPkludmFsaWRQYXJ0PC9Db2RlPjxNZXNzYWdlPmZpeHR1cmUgZXJyb3I8L01lc3NhZ2U+PC9FcnJvcj4="
                 },
                 "framing": "chunked"
               },
@@ -8272,7 +8696,7 @@
                 },
                 "body": {
                   "encoding": "base64",
-                  "data": "PEVycm9yPjxDb2RlPkludmFsaWRQYXJ0PC9Db2RlPjxNZXNzYWdlPmZpeHR1cmUgZXJyb3I8L01lc3NhZ2U+PC9FcnJvcj4="
+                  "data": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPEVycm9yPjxDb2RlPkludmFsaWRQYXJ0PC9Db2RlPjxNZXNzYWdlPmZpeHR1cmUgZXJyb3I8L01lc3NhZ2U+PC9FcnJvcj4="
                 },
                 "framing": "chunked"
               },
@@ -9009,7 +9433,7 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<Error><Code>BadDigest</Code><Message>MD5 mismatch</Message></Error>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>BadDigest</Code><Message>MD5 mismatch</Message></Error>"
                 },
                 "framing": "chunked"
               },

@@ -94,6 +94,7 @@ impl Session {
                             at: pointer,
                             expected: Rule::Absent,
                             got: Some(value.clone()),
+                            because: None,
                         });
                     }
                 }

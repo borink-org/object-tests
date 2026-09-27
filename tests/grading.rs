@@ -104,11 +104,30 @@ fn empty_array_assertion_requires_an_array() {
         at: "/entries".into(),
         optional: false,
         rule: Rule::ArrayLength { value: 0 },
+        because: None,
     }];
     assert!(check_assertions(&checks, &json!({"entries": []}), test_time()).is_empty());
     for result in [json!({}), json!({"entries": {}}), json!({"entries": null})] {
         assert!(!check_assertions(&checks, &result, test_time()).is_empty());
     }
+}
+
+#[test]
+fn a_raw_plus_in_the_query_fails_the_s3_profile_with_its_reason() {
+    let profile = load_core_suite().profiles["s3"].clone();
+    let request = |target: &str| {
+        normalize_http_request("GET", target, &[], b"").unwrap()
+    };
+
+    let encoded = request("/fixture?list-type=2&continuation-token=a%2Bb");
+    assert_eq!(encoded["query"]["continuation-token"], "a+b");
+    assert!(check_assertions(&profile.checks, &encoded, test_time()).is_empty());
+
+    let raw = request("/fixture?list-type=2&continuation-token=a+b");
+    assert_eq!(raw["raw_query"], "list-type=2&continuation-token=a+b");
+    let differences = check_assertions(&profile.checks, &raw, test_time());
+    assert_eq!(differences.len(), 1);
+    assert!(differences[0].because.as_deref().unwrap().contains("%2B"));
 }
 
 #[test]

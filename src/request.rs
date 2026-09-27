@@ -4,7 +4,8 @@ use serde_json::{Value, json};
 
 /// Converts an HTTP request into the fields used by JSON assertions.
 ///
-/// Decodes percent escapes once and preserves dot segments and literal query `+` signs.
+/// Decodes percent escapes once and preserves dot segments and literal query `+` signs. The
+/// query also stays as sent in `raw_query`, where a check can tell `%2B` from `+`.
 ///
 /// # Errors
 /// Returns an error for malformed request targets, percent escapes or decoded UTF-8.
@@ -84,6 +85,7 @@ pub fn normalize_http_request(
     let mut request = json!({
         "method": method,
         "raw_path": path,
+        "raw_query": query,
         "path": percent_decode_utf8(path)?,
         "query": query_fields,
         "headers": header_fields,

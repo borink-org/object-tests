@@ -129,6 +129,9 @@ pub struct Difference {
     pub at: String,
     pub expected: Rule,
     pub got: Option<Value>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub because: Option<String>,
 }
 
 pub fn check_assertions(checks: &[Check], value: &Value, now: SystemTime) -> Vec<Difference> {
@@ -143,6 +146,7 @@ pub fn check_assertions(checks: &[Check], value: &Value, now: SystemTime) -> Vec
                 at: check.at.clone(),
                 expected: check.rule.clone(),
                 got: got.cloned(),
+                because: check.because.clone(),
             });
         }
     }
