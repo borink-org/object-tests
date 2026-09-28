@@ -285,10 +285,16 @@ fn validate_checks(checks: &[Check]) -> Result<()> {
 }
 
 impl Suite {
+    /// Reads and validates a suite. An error names the file, so that a missing or
+    /// malformed suite reads as such.
     pub fn load(path: impl AsRef<std::path::Path>) -> Result<Self> {
-        let suite: Self = serde_json::from_slice(&std::fs::read(path)?)?;
-        suite.validate()?;
-        Ok(suite)
+        let path = path.as_ref();
+        let read_and_validate = || -> Result<Self> {
+            let suite: Self = serde_json::from_slice(&std::fs::read(path)?)?;
+            suite.validate()?;
+            Ok(suite)
+        };
+        read_and_validate().map_err(|error| format!("{}: {error}", path.display()).into())
     }
 
     pub fn validate(&self) -> Result<()> {

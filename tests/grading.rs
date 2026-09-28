@@ -50,6 +50,12 @@ fn corpus_is_strict_and_valid() {
 }
 
 #[test]
+fn a_suite_that_cannot_be_read_is_named_in_the_error() {
+    let error = Suite::load("cases/absent.json").unwrap_err().to_string();
+    assert!(error.starts_with("cases/absent.json: "), "{error}");
+}
+
+#[test]
 fn block_listing_assertions_check_order_sizes_and_array_types() {
     let suite = Suite::load(concat!(
         env!("CARGO_MANIFEST_DIR"),
