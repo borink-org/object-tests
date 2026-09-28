@@ -6,8 +6,9 @@ fn test_time() -> std::time::SystemTime {
     UNIX_EPOCH + Duration::from_secs(1704067200)
 }
 
-fn load_core_suite() -> Suite {
-    Suite::load(concat!(env!("CARGO_MANIFEST_DIR"), "/cases/core.json")).unwrap()
+// A few cases kept for the grader's own tests, apart from the corpus.
+fn load_test_suite() -> Suite {
+    Suite::load(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/cases.json")).unwrap()
 }
 
 fn decode_checks(value: Value) -> Vec<Check> {
@@ -15,11 +16,11 @@ fn decode_checks(value: Value) -> Vec<Check> {
 }
 
 fn create_azure_session(case: Case) -> Session {
-    Session::new(case, load_core_suite().profiles["azure"].clone())
+    Session::new(case, load_test_suite().profiles["azure"].clone())
 }
 
 fn create_get_session() -> Session {
-    create_azure_session(load_core_suite().cases.remove(0))
+    create_azure_session(load_test_suite().cases.remove(0))
 }
 
 fn create_get_request() -> Value {
@@ -35,7 +36,6 @@ fn create_get_request() -> Value {
 #[test]
 fn corpus_is_strict_and_valid() {
     for file in [
-        "core.json",
         "operations.json",
         "vectors.json",
         "live.json",
@@ -44,9 +44,15 @@ fn corpus_is_strict_and_valid() {
     ] {
         Suite::load(format!("{}/cases/{file}", env!("CARGO_MANIFEST_DIR"))).unwrap();
     }
-    let mut suite_json = serde_json::to_value(load_core_suite()).unwrap();
+    let mut suite_json = serde_json::to_value(load_test_suite()).unwrap();
     suite_json["cases"][0]["exchnages"] = json!([]);
     assert!(serde_json::from_value::<Suite>(suite_json).is_err());
+}
+
+#[test]
+fn a_suite_that_cannot_be_read_is_named_in_the_error() {
+    let error = Suite::load("cases/absent.json").unwrap_err().to_string();
+    assert!(error.starts_with("cases/absent.json: "), "{error}");
 }
 
 #[test]
@@ -114,10 +120,8 @@ fn empty_array_assertion_requires_an_array() {
 
 #[test]
 fn a_raw_plus_in_the_query_fails_the_s3_profile_with_its_reason() {
-    let profile = load_core_suite().profiles["s3"].clone();
-    let request = |target: &str| {
-        normalize_http_request("GET", target, &[], b"").unwrap()
-    };
+    let profile = load_test_suite().profiles["s3"].clone();
+    let request = |target: &str| normalize_http_request("GET", target, &[], b"").unwrap();
 
     let encoded = request("/fixture?list-type=2&continuation-token=a%2Bb");
     assert_eq!(encoded["query"]["continuation-token"], "a+b");
@@ -132,7 +136,7 @@ fn a_raw_plus_in_the_query_fails_the_s3_profile_with_its_reason() {
 
 #[test]
 fn duplicate_ids_and_empty_assertions_are_rejected() {
-    let mut suite = load_core_suite();
+    let mut suite = load_test_suite();
     suite.cases.push(suite.cases[0].clone());
     assert!(suite.validate().is_err());
     suite.cases.pop();
@@ -273,7 +277,7 @@ fn local_refusal_needs_an_explicit_case_and_reason() {
         session.finish(&refusal_result, test_time())["verdict"],
         "wrong"
     );
-    let mut case = load_core_suite().cases.remove(0);
+    let mut case = load_test_suite().cases.remove(0);
     case.refusal = Some(decode_checks(json!([
         {
             "at": "/kind",
@@ -435,7 +439,7 @@ fn account_specific_refusal_must_name_the_answer() {
 #[test]
 fn declared_unsupported_field_is_a_limitation_but_a_silent_omission_is_wrong() {
     let create_session = || {
-        let mut case = load_core_suite().cases.remove(0);
+        let mut case = load_test_suite().cases.remove(0);
         case.expect.push(decode_checks(json!([
             {"at": "/value/content_md5_base64", "rule": {"is": "equal", "value": "XUFAKrxLKna5cZ2REBfFkg=="}},
         ])).remove(0));
@@ -581,7 +585,7 @@ fn xml_comparison_ignores_prefixes_but_preserves_order_and_values() {
 
 #[test]
 fn alternatives_choose_their_own_response() {
-    let suite = load_core_suite();
+    let suite = load_test_suite();
     let case = suite
         .cases
         .iter()
@@ -639,7 +643,7 @@ fn absolute_request_targets_preserve_object_key_bytes() {
 
 #[test]
 fn selected_branch_requires_its_follow_up_before_the_common_tail() {
-    let mut case = load_core_suite().cases.remove(0);
+    let mut case = load_test_suite().cases.remove(0);
     let base = case.exchanges[0].clone();
     let mut head = base.alternatives[0].clone();
     head.request
@@ -690,7 +694,7 @@ fn selected_branch_requires_its_follow_up_before_the_common_tail() {
     assert!(direct.respond(&delete_request, test_time()).is_some());
     assert_eq!(direct.finish(&result, test_time())["verdict"], "pass");
     // Nested branches receive the same validation as top-level exchanges.
-    let mut corpus = load_core_suite();
+    let mut corpus = load_test_suite();
     corpus.cases[0].exchanges[0].alternatives[0].then = vec![Exchange {
         alternatives: vec![],
         optional: false,
@@ -700,7 +704,7 @@ fn selected_branch_requires_its_follow_up_before_the_common_tail() {
 
 #[test]
 fn a_client_may_stop_before_an_optional_trailing_exchange() {
-    let mut case = load_core_suite().cases.remove(0);
+    let mut case = load_test_suite().cases.remove(0);
     let mut resumed = case.exchanges[0].clone();
     resumed.optional = true;
     case.exchanges.push(resumed);
@@ -729,7 +733,7 @@ fn a_client_may_stop_before_an_optional_trailing_exchange() {
     );
     assert_eq!(continued.finish(&result, test_time())["verdict"], "pass");
 
-    let mut suite = load_core_suite();
+    let mut suite = load_test_suite();
     let required = case.exchanges[0].clone();
     case.exchanges.push(required);
     suite.cases[0] = case;
@@ -738,7 +742,7 @@ fn a_client_may_stop_before_an_optional_trailing_exchange() {
 
 #[test]
 fn malformed_case_boundaries_are_rejected_before_execution() {
-    let original = serde_json::to_value(load_core_suite()).unwrap();
+    let original = serde_json::to_value(load_test_suite()).unwrap();
     for (pointer, value) in [
         ("/profiles/azure/endpoint", json!(null)),
         ("/cases/0/call", json!([])),
@@ -770,7 +774,7 @@ fn malformed_case_boundaries_are_rejected_before_execution() {
 
 #[test]
 fn response_header_names_allow_http_tokens_and_reject_case_duplicates() {
-    let mut suite = load_core_suite();
+    let mut suite = load_test_suite();
     let headers = &mut suite.cases[0].exchanges[0].alternatives[0].response.headers;
     headers.insert(
         "x-test_field".into(),

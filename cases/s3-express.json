@@ -7906,6 +7906,7 @@
       "sources": [
         "https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html"
       ],
+      "origin": "transient",
       "call": {
         "key": "object-tests/remove/present.txt",
         "op": "delete"
@@ -17974,6 +17975,7 @@
         "https://www.rfc-editor.org/rfc/rfc9112#section-8",
         "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_client.cpp"
       ],
+      "origin": "transient",
       "call": {
         "key": "object-tests/read/object.txt",
         "op": "get"
@@ -18457,6 +18459,7 @@
       "sources": [
         "https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html"
       ],
+      "origin": "transient",
       "call": {
         "key": "object-tests/read/object.txt",
         "op": "get"
@@ -25954,6 +25957,7 @@
       "sources": [
         "https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html"
       ],
+      "origin": "transient",
       "call": {
         "op": "list_page",
         "page_size": 2,
@@ -35679,6 +35683,7 @@
       "sources": [
         "https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html"
       ],
+      "origin": "transient",
       "call": {
         "body_base64": "MDEyMzQ1Njc4OQ==",
         "key": "object-tests/write/object.txt",
