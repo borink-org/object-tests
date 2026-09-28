@@ -40,6 +40,30 @@ pub enum Lane {
     Live,
 }
 
+/// How we know that a service sends a case's responses. The grader grades every
+/// origin alike; the origin tells a reader how far to trust a verdict.
+#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum Origin {
+    /// The service was seen to send responses of this form.
+    #[default]
+    Observed,
+
+    /// The service sends it, but not on demand: an error under load, a redirect
+    /// while DNS spreads, or a connection that a network fault cuts.
+    Transient,
+
+    /// No service is known to send it. The case tests what a client does with a
+    /// response that the protocol allows or that a faulty service might send.
+    Constructed,
+}
+
+impl Origin {
+    fn is_observed(&self) -> bool {
+        *self == Origin::Observed
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Case {
@@ -48,6 +72,10 @@ pub struct Case {
     pub lane: Lane,
     pub purpose: String,
     pub sources: Vec<String>,
+
+    /// How we know that a service sends the responses of this case.
+    #[serde(default, skip_serializing_if = "Origin::is_observed")]
+    pub origin: Origin,
 
     /// The operation input passed unchanged to the adapter.
     pub call: Value,

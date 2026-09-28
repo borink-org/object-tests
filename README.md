@@ -8,7 +8,7 @@ There are also a few live tests that are just to see if you can actually make a 
 
 | Suite | Contents |
 |---|---|
-| `core.json`, `operations.json`, `s3-express.json` | Operations over recorded HTTP |
+| `operations.json`, `s3-express.json` | Operations over recorded HTTP |
 | `vectors.json` | Digests and signatures |
 | `live.json`, `s3-express-live.json` | Probes against a live service |
 

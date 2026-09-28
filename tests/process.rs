@@ -47,7 +47,7 @@ fn two_json_answers_are_not_accepted() {
 #[test]
 #[ignore = "requires permission to bind a loopback port"]
 fn real_http_exchange_and_head_length() {
-    let suite = Suite::load(concat!(env!("CARGO_MANIFEST_DIR"), "/cases/core.json")).unwrap();
+    let suite = Suite::load(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/cases.json")).unwrap();
     for (id, object_size) in [
         ("azure/get-key-plain", 5),
         ("azure/head-size", 123),
