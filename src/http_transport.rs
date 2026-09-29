@@ -53,6 +53,27 @@ fn read_chunked_body(reader: &mut impl BufRead) -> Result<Vec<u8>> {
     }
 }
 
+// Accepts a proxy tunnel, which ureq opens even to an http target. Every target of the grader is
+// plain HTTP, so the tunnel carries the request as it is, and the grader reads it from the same
+// connection after answering CONNECT. The request inside names its host, which the case checks.
+fn accept_proxy_tunnel(connection: &mut BufReader<impl Read + Write>) -> Result<()> {
+    if !connection.fill_buf()?.starts_with(b"CONNECT ") {
+        return Ok(());
+    }
+    let mut header_length = 0;
+    loop {
+        let line = read_http_line(connection, MAX_HEADER_BYTES - header_length)?;
+        header_length += line.len();
+        if line == b"\r\n" {
+            break;
+        }
+    }
+    let stream = connection.get_mut();
+    stream.write_all(b"HTTP/1.1 200 Connection established\r\n\r\n")?;
+    stream.flush()?;
+    Ok(())
+}
+
 fn read_http_request(reader: &mut BufReader<impl Read + Write>) -> Result<Value> {
     let mut header_bytes = Vec::new();
     loop {
@@ -212,6 +233,7 @@ pub(crate) fn serve_connection(stream: TcpStream, state: &Mutex<Session>) {
             }
             _ => {}
         }
+        accept_proxy_tunnel(&mut connection)?;
         let request = read_http_request(&mut connection)?;
         let now = SystemTime::now();
         let response = state.lock().unwrap().respond(&request, now);
@@ -293,6 +315,35 @@ mod tests {
         assert_eq!(request["path"], "/a/../café");
         assert_eq!(request["query"]["name"], "a+b");
         assert_eq!(request["body_text"], "x");
+    }
+
+    #[test]
+    fn a_request_through_a_proxy_tunnel_reaches_the_grader() {
+        let mut connection = make_test_connection(
+            b"CONNECT bucket.fixture.invalid:80 HTTP/1.1\r\nHost: bucket.fixture.invalid:80\r\n\r\n\
+              GET /key HTTP/1.1\r\nHost: bucket.fixture.invalid\r\nContent-Length: 0\r\n\r\n",
+        );
+        accept_proxy_tunnel(&mut connection).unwrap();
+        let request = read_http_request(&mut connection).unwrap();
+        assert_eq!(request["method"], "GET");
+        assert_eq!(request["path"], "/key");
+        assert_eq!(request["headers"]["host"], "bucket.fixture.invalid");
+        assert!(
+            connection
+                .get_ref()
+                .response
+                .starts_with(b"HTTP/1.1 200 Connection established\r\n\r\n")
+        );
+    }
+
+    #[test]
+    fn a_plain_request_needs_no_tunnel() {
+        let mut connection = make_test_connection(
+            b"GET /key HTTP/1.1\r\nHost: fixture\r\nContent-Length: 0\r\n\r\n",
+        );
+        accept_proxy_tunnel(&mut connection).unwrap();
+        assert!(connection.get_ref().response.is_empty());
+        assert_eq!(read_http_request(&mut connection).unwrap()["path"], "/key");
     }
 
     #[test]
