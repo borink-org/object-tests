@@ -20,6 +20,36 @@ const MAX_MESSAGE_BYTES: usize = 16 * 1024 * 1024;
 // Each case serves its loopback endpoint from this many threads.
 const HTTP_WORKERS: usize = 2;
 
+// The proxy variables that HTTP clients read, such as ureq and the AWS CRT.
+const PROXY_VARIABLES: &[&str] = &[
+    "ALL_PROXY",
+    "all_proxy",
+    "HTTPS_PROXY",
+    "https_proxy",
+    "HTTP_PROXY",
+    "http_proxy",
+    "NO_PROXY",
+    "no_proxy",
+];
+
+// An offline adapter must reach only the grader. It inherits no proxy, and where the endpoint
+// names the grader as its proxy, it gets that proxy in HTTP_PROXY too, so that a client that
+// reads its proxy from the environment needs no configuration. A live adapter keeps the
+// caller's proxy, which may be the way to the service.
+fn set_proxy_environment(adapter: &mut Command, message: &Value) {
+    if message["mode"] != "offline" {
+        return;
+    }
+    for name in PROXY_VARIABLES {
+        adapter.env_remove(name);
+    }
+    if let Some(proxy_url) = message["endpoint"]["proxy_url"].as_str() {
+        adapter
+            .env("HTTP_PROXY", proxy_url)
+            .env("http_proxy", proxy_url);
+    }
+}
+
 fn invoke_adapter_process(command: &[String], message: &Value, timeout: Duration) -> Result<Value> {
     let mut input_bytes = serde_json::to_vec(message)?;
     input_bytes.push(b'\n');
@@ -27,7 +57,9 @@ fn invoke_adapter_process(command: &[String], message: &Value, timeout: Duration
         return Err("adapter input exceeds 16 MiB".into());
     }
     let deadline = Instant::now() + timeout;
-    let mut child = Command::new(&command[0])
+    let mut adapter = Command::new(&command[0]);
+    set_proxy_environment(&mut adapter, message);
+    let mut child = adapter
         .args(&command[1..])
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -223,6 +255,43 @@ pub fn grade_cases(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn proxy_environment(message: Value) -> Vec<(String, Option<String>)> {
+        let mut adapter = Command::new("adapter");
+        set_proxy_environment(&mut adapter, &message);
+        let mut environment: Vec<_> = adapter
+            .get_envs()
+            .map(|(name, value)| {
+                let text = |text: &std::ffi::OsStr| text.to_string_lossy().into_owned();
+                (text(name), value.map(text))
+            })
+            .collect();
+        environment.sort();
+        environment
+    }
+
+    #[test]
+    fn an_offline_adapter_gets_the_grader_as_its_only_proxy() {
+        let proxied = proxy_environment(json!({
+            "mode": "offline",
+            "endpoint": {"proxy_url": "http://127.0.0.1:1234"},
+        }));
+        let proxy = Some("http://127.0.0.1:1234".to_owned());
+        assert!(proxied.contains(&("HTTP_PROXY".to_owned(), proxy.clone())));
+        assert!(proxied.contains(&("http_proxy".to_owned(), proxy)));
+        assert!(proxied.contains(&("ALL_PROXY".to_owned(), None)));
+        assert!(proxied.contains(&("NO_PROXY".to_owned(), None)));
+
+        let direct = proxy_environment(json!({"mode": "offline", "endpoint": {}}));
+        assert!(direct.iter().all(|(_, value)| value.is_none()));
+        assert_eq!(direct.len(), PROXY_VARIABLES.len());
+
+        let live = proxy_environment(json!({
+            "mode": "live",
+            "endpoint": {"proxy_url": "http://127.0.0.1:1234"},
+        }));
+        assert!(live.is_empty());
+    }
 
     #[test]
     fn deadline_includes_an_adapter_that_never_reads_stdin() {
