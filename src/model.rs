@@ -144,6 +144,24 @@ pub struct Response {
     /// The `Content-Length` still states the whole body, so the client receives a short body.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub truncate_body_after: Option<usize>,
+
+    /// A time in the body relative to when the grader sends the response, such as the
+    /// `Expiration` of an S3 Express session. A fixture cannot hold such a time, since any fixed
+    /// one lies in the past when a case runs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub body_time: Option<BodyTime>,
+}
+
+/// Text in a response body that the grader replaces with a time, written as ISO 8601 in UTC
+/// with whole seconds, as `2024-01-02T03:04:05Z`.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct BodyTime {
+    /// The text to replace, wherever it occurs in the body.
+    pub text: String,
+
+    /// Seconds after the response is sent. A negative offset names a time already past.
+    pub offset_seconds: i64,
 }
 
 /// How a response states the length of its body.
@@ -389,6 +407,14 @@ impl Response {
             return Err("invalid response status".into());
         }
         let body = self.body.bytes()?;
+        if let Some(BodyTime { text, .. }) = &self.body_time
+            && (text.is_empty()
+                || !body
+                    .windows(text.len())
+                    .any(|window| window == text.as_bytes()))
+        {
+            return Err(format!("body time {text:?} does not occur in the body").into());
+        }
         if let Some(truncated_length) = self.truncate_body_after
             && (self.framing == Framing::Chunked || truncated_length >= body.len())
         {

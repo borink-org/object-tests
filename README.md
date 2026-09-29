@@ -10,7 +10,7 @@ There are also a few live tests that are just to see if you can actually make a 
 |---|---|
 | `operations.json` | Operations over recorded HTTP |
 | `vectors.json` | Digests and signatures |
-| `live.json`, `s3-express-live.json` | Probes against a live service |
+| `live.json` | Probes against a live service |
 
 ## Example test of `borink-object-storage`
 
