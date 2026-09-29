@@ -150,13 +150,72 @@ fn read_http_request(reader: &mut BufReader<impl Read + Write>) -> Result<Value>
     )
 }
 
+/// Formats a time as ISO 8601 in UTC with whole seconds, as `2024-01-02T03:04:05Z`.
+fn iso8601(time: SystemTime) -> String {
+    let seconds = time
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .map_or(0, |duration| duration.as_secs() as i64);
+    let (days, second_of_day) = (seconds.div_euclid(86_400), seconds.rem_euclid(86_400));
+    // The civil date of a day count, after Howard Hinnant's days_from_civil inverse.
+    let shifted = days + 719_468;
+    let era = shifted.div_euclid(146_097);
+    let day_of_era = shifted - era * 146_097;
+    let year_of_era =
+        (day_of_era - day_of_era / 1460 + day_of_era / 36_524 - day_of_era / 146_096) / 365;
+    let day_of_year = day_of_era - (365 * year_of_era + year_of_era / 4 - year_of_era / 100);
+    let month_index = (5 * day_of_year + 2) / 153;
+    let day = day_of_year - (153 * month_index + 2) / 5 + 1;
+    let month = if month_index < 10 {
+        month_index + 3
+    } else {
+        month_index - 9
+    };
+    let year = year_of_era + era * 400 + i64::from(month <= 2);
+    format!(
+        "{year:04}-{month:02}-{day:02}T{:02}:{:02}:{:02}Z",
+        second_of_day / 3600,
+        second_of_day / 60 % 60,
+        second_of_day % 60
+    )
+}
+
+/// Replaces the body time's text with the time it names, counted from `now`.
+fn fill_body_time(body: Vec<u8>, time: Option<&BodyTime>, now: SystemTime) -> Vec<u8> {
+    let Some(BodyTime {
+        text,
+        offset_seconds,
+    }) = time
+    else {
+        return body;
+    };
+    let offset = Duration::from_secs(offset_seconds.unsigned_abs());
+    let moment = if *offset_seconds < 0 {
+        now - offset
+    } else {
+        now + offset
+    };
+    let replacement = iso8601(moment).into_bytes();
+    let mut filled = Vec::with_capacity(body.len());
+    let mut rest = &body[..];
+    while let Some(at) = rest
+        .windows(text.len())
+        .position(|window| window == text.as_bytes())
+    {
+        filled.extend_from_slice(&rest[..at]);
+        filled.extend_from_slice(&replacement);
+        rest = &rest[at + text.len()..];
+    }
+    filled.extend_from_slice(rest);
+    filled
+}
+
 fn write_http_response(
     writer: &mut impl Write,
     request: &Value,
     response: Response,
     now: SystemTime,
 ) -> Result<()> {
-    let body = response.body.bytes()?;
+    let body = fill_body_time(response.body.bytes()?, response.body_time.as_ref(), now);
     let is_head = request["method"] == "HEAD";
     let mut content_length = body.len();
     write!(writer, "HTTP/1.1 {} Fixture\r\n", response.status)?;
@@ -361,6 +420,32 @@ mod tests {
         );
     }
 
+    #[test]
+    fn a_body_time_is_written_relative_to_the_response() {
+        assert_eq!(iso8601(SystemTime::UNIX_EPOCH), "1970-01-01T00:00:00Z");
+        let leap_day = SystemTime::UNIX_EPOCH + Duration::from_secs(1_709_164_805);
+        assert_eq!(iso8601(leap_day), "2024-02-29T00:00:05Z");
+
+        let expiration = BodyTime {
+            text: "EXPIRATION".into(),
+            offset_seconds: 300,
+        };
+        let body = b"<Expiration>EXPIRATION</Expiration><Again>EXPIRATION</Again>".to_vec();
+        assert_eq!(
+            fill_body_time(body, Some(&expiration), leap_day),
+            b"<Expiration>2024-02-29T00:05:05Z</Expiration><Again>2024-02-29T00:05:05Z</Again>"
+        );
+        let past = BodyTime {
+            text: "T".into(),
+            offset_seconds: -5,
+        };
+        assert_eq!(
+            fill_body_time(b"T".to_vec(), Some(&past), leap_day),
+            b"2024-02-29T00:00:00Z"
+        );
+        assert_eq!(fill_body_time(b"T".to_vec(), None, leap_day), b"T");
+    }
+
     fn written_response(framing: Framing, truncate_body_after: Option<usize>) -> String {
         let response = Response {
             status: 200,
@@ -368,6 +453,7 @@ mod tests {
             body: Body::Utf8("hello".into()),
             framing,
             truncate_body_after,
+            body_time: None,
         };
         let mut written = Vec::new();
         let request = json!({"method": "GET"});

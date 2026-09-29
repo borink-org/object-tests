@@ -111459,7 +111459,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -111636,7 +111640,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -111830,7 +111838,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -112013,7 +112025,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -112292,7 +112308,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -112581,7 +112601,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -112988,7 +113012,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -113311,7 +113339,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -113590,7 +113622,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -113884,7 +113920,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -114165,7 +114205,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -114450,7 +114494,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -114732,7 +114780,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -115014,7 +115066,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -115299,7 +115355,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -115584,7 +115644,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -115869,7 +115933,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -116154,7 +116222,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -116439,7 +116511,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -116724,7 +116800,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -117009,7 +117089,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -117294,7 +117378,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -117576,7 +117664,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -117845,7 +117937,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -118013,7 +118109,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -118181,7 +118281,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -118349,7 +118453,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -118517,7 +118625,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -118685,7 +118797,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -118853,7 +118969,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -119021,7 +119141,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -119189,7 +119313,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -119453,7 +119581,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -119569,7 +119701,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -120130,7 +120266,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -120306,7 +120446,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -120475,7 +120619,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -120668,7 +120816,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -120934,7 +121086,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -121330,7 +121486,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -121710,7 +121870,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -122020,7 +122184,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -122329,7 +122497,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -122622,7 +122794,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -122915,7 +123091,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -123208,7 +123388,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -123501,7 +123685,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -123781,7 +123969,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -124061,7 +124253,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -124341,7 +124537,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -124644,7 +124844,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -124947,7 +125151,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -125252,7 +125460,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -125562,7 +125774,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -125872,7 +126088,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -126177,7 +126397,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -126482,7 +126706,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -126775,7 +127003,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -127088,7 +127320,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -127382,7 +127618,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -127646,7 +127886,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -127916,7 +128160,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -128199,7 +128447,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -128449,7 +128701,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -128724,7 +128980,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -128950,7 +129210,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -129176,7 +129440,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -129401,7 +129669,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -129690,7 +129962,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -129983,7 +130259,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -130279,7 +130559,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -130678,7 +130962,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -131074,7 +131362,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -131292,6 +131584,377 @@
       "refusal": null
     },
     {
+      "id": "operations/s3-express/get-session-expired",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Renew a session whose Expiration has passed before using it: ask CreateSession again, and sign the GET with the second session",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "origin": "constructed",
+      "call": {
+        "key": "object-tests/read/object.txt",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": -60
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token-2</SessionToken><SecretAccessKey>fixture-secret-key-2</SecretAccessKey><AccessKeyId>fixture-access-key-2</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/read/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token-2"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key-2/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-672b31e65569\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MDEyMzQ1Njc4OS1vYmplY3QtdGVzdHMtb2JqZWN0"
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/read/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=0-[1-9][0-9]{2,}"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token-2"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key-2/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 206,
+                "headers": {
+                  "content-range": "bytes 0-29/30",
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-672b31e65569\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": "MDEyMzQ1Njc4OS1vYmplY3QtdGVzdHMtb2JqZWN0"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-672b31e65569\""
+          }
+        },
+        {
+          "at": "/value/size",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 30
+          }
+        },
+        {
+          "at": "/value/content_type",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "binary/octet-stream"
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        },
+        {
+          "at": "/value/body_base64",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "MDEyMzQ1Njc4OS1vYmplY3QtdGVzdHMtb2JqZWN0"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3-express/get-xml-looking",
       "profile": "s3-express",
       "lane": "core",
@@ -131367,7 +132030,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -131648,7 +132315,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -131932,7 +132603,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -132416,7 +133091,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -133445,7 +134124,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -133725,7 +134408,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -134035,7 +134722,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -134347,7 +135038,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -134670,7 +135365,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -134876,7 +135575,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -135100,7 +135803,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -135276,7 +135983,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -135485,7 +136196,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -135719,7 +136434,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -135901,7 +136620,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -136107,7 +136830,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -136313,7 +137040,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -136519,7 +137250,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -136725,7 +137460,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -136931,7 +137670,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -137137,7 +137880,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -137343,7 +138090,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -137550,7 +138301,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -137862,7 +138617,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -138303,7 +139062,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -138606,7 +139369,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -138917,7 +139684,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -139231,7 +140002,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -140105,7 +140880,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -140540,7 +141319,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -141857,7 +142640,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -142178,7 +142965,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -142571,7 +143362,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -143297,7 +144092,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -144057,7 +144856,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -144409,7 +145212,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -144883,7 +145690,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -145220,7 +146031,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -145685,7 +146500,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -146331,7 +147150,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -147185,7 +148008,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -147562,7 +148389,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -147996,7 +148827,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -148380,7 +149215,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -149870,7 +150709,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -150255,7 +151098,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -150568,7 +151415,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -150865,7 +151716,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -151340,7 +152195,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -151530,7 +152389,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -151720,7 +152583,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -151910,7 +152777,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -152100,7 +152971,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -152290,7 +153165,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -152480,7 +153359,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -152670,7 +153553,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -152860,7 +153747,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -153050,7 +153941,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -153705,7 +154600,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -153903,7 +154802,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -154101,7 +155004,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -154318,7 +155225,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -154573,7 +155484,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -155135,7 +156050,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -155333,7 +156252,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -155556,7 +156479,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -155755,7 +156682,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -155953,7 +156884,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -156143,7 +157078,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -156371,7 +157310,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -156568,7 +157511,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -156769,7 +157716,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -156971,7 +157922,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -157218,7 +158173,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -157419,7 +158378,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -157661,7 +158624,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -157887,7 +158854,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -158088,7 +159059,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -158289,7 +159264,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -158515,7 +159494,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -158741,7 +159724,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -158942,7 +159929,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -159181,7 +160172,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -159375,7 +160370,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -159581,7 +160580,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -159772,7 +160775,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -159968,7 +160975,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -160172,7 +161183,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -160369,7 +161384,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -160566,7 +161585,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -160811,7 +161834,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -161056,7 +162083,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -161260,7 +162291,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -161457,7 +162492,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -161654,7 +162693,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -161851,7 +162894,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -162048,7 +163095,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -162245,7 +163296,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -162442,7 +163497,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -162639,7 +163698,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -162836,7 +163899,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -163031,7 +164098,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -163225,7 +164296,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -163459,7 +164534,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -163653,7 +164732,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -163886,7 +164969,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
@@ -164070,7 +165157,11 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><AccessKeyId>fixture-access-key</AccessKeyId><SecretAccessKey>fixture-secret-key</SecretAccessKey><SessionToken>fixture-session-token</SessionToken></Credentials></CreateSessionResult>"
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
                 }
               }
             }
