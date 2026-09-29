@@ -74848,6 +74848,185 @@
       "refusal": null
     },
     {
+      "id": "operations/s3/commit-conditional-conflict",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a 409 ConditionalRequestConflict to a conditional completion as an error, without sending the completion again: AWS advises a new upload with every part staged again",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "origin": "transient",
+      "call": {
+        "if_none_match": "*",
+        "key": "object-tests/multipart/guarded.bin",
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-cd3c4834c1cd\"",
+            "number": 1
+          }
+        ],
+        "upload_id": "fixture-upload+/9cd6f716dbf9="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/guarded.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-cd3c4834c1cd\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/9cd6f716dbf9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/guarded.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-cd3c4834c1cd\"</ETag><PartNumber>1</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/9cd6f716dbf9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ConditionalRequestConflict"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3/commit-nothing",
       "profile": "s3",
       "lane": "core",
@@ -75781,6 +75960,172 @@
                 "body": {
                   "encoding": "utf8",
                   "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/single.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/single.bin</Key><ETag>&quot;fixture-69ebdafc497f&quot;</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-69ebdafc497f\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/commit-one-empty-part",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Complete an upload of one empty part, which writes an empty object; a client that refuses a completion of no parts writes an empty object this way",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/multipart/empty.bin",
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-3841a4d594c0\"",
+            "number": 1
+          }
+        ],
+        "upload_id": "fixture-upload+/2b2c71a6ce04="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/empty.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-3841a4d594c0\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/2b2c71a6ce04="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/empty.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/empty.bin</Key><ETag>&quot;fixture-69ebdafc497f&quot;</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/empty.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-3841a4d594c0\"</ETag><PartNumber>1</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/2b2c71a6ce04="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/empty.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/empty.bin</Key><ETag>&quot;fixture-69ebdafc497f&quot;</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
                 },
                 "framing": "chunked"
               }
@@ -106700,6 +107045,404 @@
       "refusal": null
     },
     {
+      "id": "operations/s3/put-conditional-conflict",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a 409 ConditionalRequestConflict to a conditional put as an error, after at most 5 retries: AWS advises retrying a put",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "origin": "transient",
+      "call": {
+        "body_base64": "YW5vdGhlciBvYmplY3Q=",
+        "if_none_match": "*",
+        "key": "object-tests/write/object.txt",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ConditionalRequestConflict"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3/put-metadata-empty-value",
       "profile": "s3",
       "lane": "core",
@@ -109244,6 +109987,109 @@
                   "rule": {
                     "is": "equal",
                     "value": "cGFydA=="
+                  }
+                },
+                {
+                  "at": "/query/partNumber",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6d60d5bbaa47\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6d60d5bbaa47\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/stage-empty-part",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Stage an empty part, which S3 takes",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "",
+        "key": "object-tests/multipart/object.bin",
+        "op": "s3.upload_part",
+        "part_number": 1,
+        "upload_id": "fixture-upload+/276ca18046f9="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
                   }
                 },
                 {
@@ -114084,6 +114930,291 @@
                 "body": {
                   "encoding": "utf8",
                   "data": "<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/single.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/single.bin</Key><ETag>\"fixture-0841fa5d9c5c\"</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-0841fa5d9c5c\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/commit-one-empty-part",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Complete an upload of one empty part, which writes an empty object; a client that refuses a completion of no parts writes an empty object this way",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/multipart/empty.bin",
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-db1e44387ca0\"",
+            "number": 1
+          }
+        ],
+        "upload_id": "fixture-upload+/b39780854a14="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/empty.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-db1e44387ca0\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/b39780854a14="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/empty.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/empty.bin</Key><ETag>\"fixture-0841fa5d9c5c\"</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/empty.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-db1e44387ca0\"</ETag><PartNumber>1</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/b39780854a14="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/empty.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/empty.bin</Key><ETag>\"fixture-0841fa5d9c5c\"</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
                 },
                 "framing": "chunked"
               }
@@ -163935,6 +165066,207 @@
                   "rule": {
                     "is": "equal",
                     "value": "cGFydA=="
+                  }
+                },
+                {
+                  "at": "/query/partNumber",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-9aff617fcdf8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-9aff617fcdf8\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/stage-empty-part",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Stage an empty part, which S3 takes",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "",
+        "key": "object-tests/multipart/object.bin",
+        "op": "s3.upload_part",
+        "part_number": 1,
+        "upload_id": "fixture-upload+/c60fb1e2e00d="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
                   }
                 },
                 {
