@@ -14,7 +14,7 @@ const USAGE: &str = concat!(
     "usage: object-tests validate SUITE | ",
     "grade SUITE [OPTIONS] -- ADAPTER [ARGS...] | ",
     "live SUITE CONFIG [OPTIONS] -- ADAPTER [ARGS...]; ",
-    "OPTIONS: --case ID, --provider PROVIDER, --jobs N, ",
+    "OPTIONS: --case ID, --provider PROVIDER, --profile PROFILE, --jobs N, ",
     "--expected-unsupported FILE or --record-unsupported FILE",
 );
 
@@ -23,6 +23,10 @@ struct GradingOptions<'a> {
     live_config_path: Option<&'a str>,
     case_id: Option<&'a str>,
     provider_name: Option<&'a str>,
+
+    /// Grade only the cases of this profile, such as `s3-express`, where one provider
+    /// has several.
+    profile_name: Option<&'a str>,
 
     /// The number of cases graded at once, or one per CPU if absent.
     job_count: Option<&'a str>,
@@ -71,6 +75,7 @@ fn parse_command_line_arguments(arguments: &[String]) -> Result<CommandLineInvoc
         live_config_path,
         case_id: None,
         provider_name: None,
+        profile_name: None,
         job_count: None,
         expected_unsupported_path: None,
         record_unsupported_path: None,
@@ -85,6 +90,7 @@ fn parse_command_line_arguments(arguments: &[String]) -> Result<CommandLineInvoc
         let selected_option = match option_name.as_str() {
             "--case" => &mut grading_options.case_id,
             "--provider" => &mut grading_options.provider_name,
+            "--profile" => &mut grading_options.profile_name,
             "--jobs" => &mut grading_options.job_count,
             "--expected-unsupported" => &mut grading_options.expected_unsupported_path,
             "--record-unsupported" => &mut grading_options.record_unsupported_path,
@@ -117,6 +123,11 @@ fn grade_selected_cases(grading_options: GradingOptions<'_>) -> Result<ExitCode>
             grading_options
                 .provider_name
                 .is_none_or(|provider| provider == suite.profiles[&case.profile].provider)
+        })
+        .filter(|case| {
+            grading_options
+                .profile_name
+                .is_none_or(|profile| profile == case.profile)
         })
         .collect();
     if cases.is_empty() {
