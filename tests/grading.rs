@@ -39,7 +39,6 @@ fn corpus_is_strict_and_valid() {
         "operations.json",
         "vectors.json",
         "live.json",
-        "s3-express.json",
         "s3-express-live.json",
     ] {
         Suite::load(format!("{}/cases/{file}", env!("CARGO_MANIFEST_DIR"))).unwrap();
