@@ -33,6 +33,8 @@ Leave out a result property the client does not expose, and name it in `unsuppor
 
 Keys are unescaped, bodies base64, ranges an offset and an exclusive end. A `checksum` without `value_base64` is for the client to compute. Tags are an object, or a list of `{"key", "value"}` pairs where a key may repeat. `content_range` reports a served range as `bytes FIRST-LAST/SIZE`.
 
+An `s3.sign` header given as a list is sent once per value, in order. Its `payload_hash`, such as `UNSIGNED-PAYLOAD`, is signed in place of the body's SHA-256. A signer may report its canonical request as `canonical_request`, which a vector then checks.
+
 `source_account_url` names another Azure storage account that holds a copy source, by its blob service URL. The source is in the container of the endpoint's name, unless `source_container` names another.
 
 A `delete_many` key is a name or `{"key", "version"}`, on Azure also `{"key", "snapshot"}`. A result reports each key as the call named it. Where an S3 answer names a version or a delete marker, the key is an object with `version`, `delete_marker` and `delete_marker_version`. A version listing pages by `continuation_token` and `version_marker`, and returns `next_version_marker`. A `restore` reports `state` `started` for a 202 and `readable` for a 200, and a read reports `x-amz-restore` or `x-ms-archive-status` as `restore_status`.
