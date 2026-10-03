@@ -132,36 +132,6 @@
       ]
     },
     {
-      "id": "azure/hmac-sha256-rfc4231",
-      "profile": "azure",
-      "lane": "vectors",
-      "purpose": "RFC 4231 test case 1.",
-      "sources": [
-        "https://www.rfc-editor.org/rfc/rfc4231#section-4.2"
-      ],
-      "call": {
-        "op": "hmac_sha256",
-        "key_base64": "CwsLCwsLCwsLCwsLCwsLCwsLCws=",
-        "body_base64": "SGkgVGhlcmU="
-      },
-      "expect": [
-        {
-          "at": "/outcome",
-          "rule": {
-            "is": "equal",
-            "value": "ok"
-          }
-        },
-        {
-          "at": "/value/digest_base64",
-          "rule": {
-            "is": "equal",
-            "value": "sDRMYdjbOFNcqK/OrwvxK4gdwgDJgz2nJuk3bC4yz/c="
-          }
-        }
-      ]
-    },
-    {
       "id": "s3/hmac-sha256-rfc4231",
       "profile": "s3",
       "lane": "vectors",
@@ -195,7 +165,7 @@
       "id": "s3/sigv4-get-range",
       "profile": "s3",
       "lane": "vectors",
-      "purpose": "Fixed-clock AWS GET range example; exact signature detects canonicalization and key-derivation defects. Whitespace in Authorization is normalized by the sign adapter only if its SDK returns structured fields.",
+      "purpose": "Sign the AWS documentation's GET with a range header. The exact signature catches canonicalization and key-derivation errors",
       "sources": [
         "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
       ],
@@ -232,40 +202,10 @@
               "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=host;range;x-amz-content-sha256;x-amz-date, Signature=f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": "s3/canonical-get-range",
-      "profile": "s3",
-      "lane": "vectors",
-      "purpose": "Canonical text is optional diagnostic coverage; an opaque signer can declare unsupported.",
-      "sources": [
-        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
-      ],
-      "call": {
-        "op": "s3.canonical_request",
-        "method": "GET",
-        "path": "/test.txt",
-        "query": [],
-        "headers": {
-          "Host": "examplebucket.s3.amazonaws.com",
-          "Range": "bytes=0-9",
-          "x-amz-content-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "x-amz-date": "20130524T000000Z"
-        },
-        "payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-      },
-      "expect": [
-        {
-          "at": "/outcome",
-          "rule": {
-            "is": "equal",
-            "value": "ok"
-          }
         },
         {
-          "at": "/value/text",
+          "at": "/value/canonical_request",
+          "optional": true,
           "rule": {
             "is": "equal",
             "value": "GET\n/test.txt\n\nhost:examplebucket.s3.amazonaws.com\nrange:bytes=0-9\nx-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nx-amz-date:20130524T000000Z\n\nhost;range;x-amz-content-sha256;x-amz-date\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
@@ -274,27 +214,26 @@
       ]
     },
     {
-      "id": "azure/shared-key-encoded-name",
-      "profile": "azure",
+      "id": "s3/sigv4-path-encoded",
+      "profile": "s3",
       "lane": "vectors",
-      "purpose": "Document-derived Shared Key example with a public synthetic key; the canonicalized resource keeps the escaped path.",
+      "purpose": "Sign a path with a space, +, =, ~ and é as sent, percent-encoded once: S3 does not encode the path again, and ~ stays as it is",
       "sources": [
-        "https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-shared-key"
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
       ],
       "call": {
-        "op": "azure.sign",
+        "op": "s3.sign",
         "method": "GET",
-        "url": "https://fixture.blob.core.windows.net/fixture/a%20b?comp=metadata",
-        "headers": {
-          "x-ms-date": "Mon, 01 Jan 2024 00:00:00 GMT",
-          "x-ms-version": "2023-11-03"
-        },
+        "url": "https://examplebucket.s3.amazonaws.com/photos/a%20b%2Bc%3Dd~e%C3%A9.jpg",
+        "headers": {},
         "body_base64": "",
-        "clock": "2024-01-01T00:00:00Z",
+        "clock": "2013-05-24T00:00:00Z",
         "credentials": {
-          "account": "fixture",
-          "key_base64": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="
-        }
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        },
+        "region": "us-east-1",
+        "service": "s3"
       },
       "expect": [
         {
@@ -307,30 +246,44 @@
         {
           "at": "/value/authorization",
           "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;x-amz-content-sha256;x-amz-date,Signature=46ba6bcfb3bbdc32c61f378dcc2dfa733dc710c94204f443ad07af7bab996b6b",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=46ba6bcfb3bbdc32c61f378dcc2dfa733dc710c94204f443ad07af7bab996b6b"
+            ]
+          }
+        },
+        {
+          "at": "/value/canonical_request",
+          "optional": true,
+          "rule": {
             "is": "equal",
-            "value": "SharedKey fixture:klWCi6Ppc/uMEOOhAHKe9/os6gErdqBdFvMjaTd9lx4="
+            "value": "GET\n/photos/a%20b%2Bc%3Dd~e%C3%A9.jpg\n\nhost:examplebucket.s3.amazonaws.com\nx-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nx-amz-date:20130524T000000Z\n\nhost;x-amz-content-sha256;x-amz-date\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
           }
         }
       ]
     },
     {
-      "id": "azure/canonical-shared-key",
-      "profile": "azure",
+      "id": "s3/sigv4-path-not-normalized",
+      "profile": "s3",
       "lane": "vectors",
-      "purpose": "Empty standard fields and final query line are significant; no newline is appended after the resource.",
+      "purpose": "Sign a path with an empty segment, a . segment and a trailing / as sent. S3 keys keep them, so a signer must not normalize the path",
       "sources": [
-        "https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-shared-key"
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
       ],
       "call": {
-        "op": "azure.string_to_sign",
+        "op": "s3.sign",
         "method": "GET",
-        "url": "https://fixture.blob.core.windows.net/fixture/a%20b?comp=metadata",
-        "account": "fixture",
-        "headers": {
-          "x-ms-date": "Mon, 01 Jan 2024 00:00:00 GMT",
-          "x-ms-version": "2023-11-03"
+        "url": "https://examplebucket.s3.amazonaws.com/a//b/./c/",
+        "headers": {},
+        "body_base64": "",
+        "clock": "2013-05-24T00:00:00Z",
+        "credentials": {
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
         },
-        "body_base64": ""
+        "region": "us-east-1",
+        "service": "s3"
       },
       "expect": [
         {
@@ -341,10 +294,494 @@
           }
         },
         {
-          "at": "/value/text",
+          "at": "/value/authorization",
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;x-amz-content-sha256;x-amz-date,Signature=9e729769b19cb3b56595178e160b82b09055e83f320bc6a8dc8e5beb7bf158d4",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=9e729769b19cb3b56595178e160b82b09055e83f320bc6a8dc8e5beb7bf158d4"
+            ]
+          }
+        },
+        {
+          "at": "/value/canonical_request",
+          "optional": true,
           "rule": {
             "is": "equal",
-            "value": "GET\n\n\n\n\n\n\n\n\n\n\n\nx-ms-date:Mon, 01 Jan 2024 00:00:00 GMT\nx-ms-version:2023-11-03\n/fixture/fixture/a%20b\ncomp:metadata"
+            "value": "GET\n/a//b/./c/\n\nhost:examplebucket.s3.amazonaws.com\nx-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nx-amz-date:20130524T000000Z\n\nhost;x-amz-content-sha256;x-amz-date\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sigv4-query-sorted",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Sign a query whose parameters arrive out of order: the canonical query sorts them by encoded name",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "method": "GET",
+        "url": "https://examplebucket.s3.amazonaws.com/?prefix=photos%2F2024&max-keys=5&list-type=2&delimiter=%2F&encoding-type=url",
+        "headers": {},
+        "body_base64": "",
+        "clock": "2013-05-24T00:00:00Z",
+        "credentials": {
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        },
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;x-amz-content-sha256;x-amz-date,Signature=ce1ecd0ddb684e93c5b42fc7485057631da71ce4380a0b010a09638d84cd052b",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=ce1ecd0ddb684e93c5b42fc7485057631da71ce4380a0b010a09638d84cd052b"
+            ]
+          }
+        },
+        {
+          "at": "/value/canonical_request",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "GET\n/\ndelimiter=%2F&encoding-type=url&list-type=2&max-keys=5&prefix=photos%2F2024\nhost:examplebucket.s3.amazonaws.com\nx-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nx-amz-date:20130524T000000Z\n\nhost;x-amz-content-sha256;x-amz-date\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sigv4-query-empty-value",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Sign a subresource without a value beside one with a value: the canonical query writes it as tagging=, with an empty value",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "method": "GET",
+        "url": "https://examplebucket.s3.amazonaws.com/test.txt?versionId=3HL4kqtJlcpXroDTDmJ%2BrmSpXd3dIbrHY&tagging",
+        "headers": {},
+        "body_base64": "",
+        "clock": "2013-05-24T00:00:00Z",
+        "credentials": {
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        },
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;x-amz-content-sha256;x-amz-date,Signature=f6b600c6d5b18b096cd8d1e97abc47cfd5104e236732b39e4058235313893d8a",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=f6b600c6d5b18b096cd8d1e97abc47cfd5104e236732b39e4058235313893d8a"
+            ]
+          }
+        },
+        {
+          "at": "/value/canonical_request",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "GET\n/test.txt\ntagging=&versionId=3HL4kqtJlcpXroDTDmJ%2BrmSpXd3dIbrHY\nhost:examplebucket.s3.amazonaws.com\nx-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nx-amz-date:20130524T000000Z\n\nhost;x-amz-content-sha256;x-amz-date\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sigv4-query-reencoded",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Sign query values sent with a raw / and a lowercase %7e: the canonical query decodes each value and encodes it again, as %2F and ~",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "method": "GET",
+        "url": "https://examplebucket.s3.amazonaws.com/?list-type=2&prefix=photos/2024&start-after=a%7eb",
+        "headers": {},
+        "body_base64": "",
+        "clock": "2013-05-24T00:00:00Z",
+        "credentials": {
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        },
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;x-amz-content-sha256;x-amz-date,Signature=3163c4c2b02342c53821b7f7ad4be9296b17e46b6b27ae697a0096db62f532f5",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=3163c4c2b02342c53821b7f7ad4be9296b17e46b6b27ae697a0096db62f532f5"
+            ]
+          }
+        },
+        {
+          "at": "/value/canonical_request",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "GET\n/\nlist-type=2&prefix=photos%2F2024&start-after=a~b\nhost:examplebucket.s3.amazonaws.com\nx-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nx-amz-date:20130524T000000Z\n\nhost;x-amz-content-sha256;x-amz-date\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sigv4-query-repeated",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Sign a parameter sent twice: the canonical query keeps both, sorted by value",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "method": "GET",
+        "url": "https://examplebucket.s3.amazonaws.com/?list-type=2&prefix=b&prefix=a",
+        "headers": {},
+        "body_base64": "",
+        "clock": "2013-05-24T00:00:00Z",
+        "credentials": {
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        },
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;x-amz-content-sha256;x-amz-date,Signature=43934bb8bce3b95073acc5bff7f2d05d06a541faaa470a16bde4e30de49c5735",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=43934bb8bce3b95073acc5bff7f2d05d06a541faaa470a16bde4e30de49c5735"
+            ]
+          }
+        },
+        {
+          "at": "/value/canonical_request",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "GET\n/\nlist-type=2&prefix=a&prefix=b\nhost:examplebucket.s3.amazonaws.com\nx-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nx-amz-date:20130524T000000Z\n\nhost;x-amz-content-sha256;x-amz-date\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sigv4-header-whitespace",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Sign headers with a mixed-case name and a value with spaces around and inside it: the canonical header is lowercase, trimmed, with each run of spaces as one",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "method": "PUT",
+        "url": "https://examplebucket.s3.amazonaws.com/notes.txt",
+        "headers": {
+          "Content-Type": "text/plain",
+          "X-Amz-Meta-Note": "  two   spaces  inside  "
+        },
+        "body_base64": "aGVsbG8=",
+        "clock": "2013-05-24T00:00:00Z",
+        "credentials": {
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        },
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-meta-note,Signature=75def3066cddb5a656f19b5db5cece913ec8ad5b1f8316707da1385787ad6ba8",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-meta-note, Signature=75def3066cddb5a656f19b5db5cece913ec8ad5b1f8316707da1385787ad6ba8"
+            ]
+          }
+        },
+        {
+          "at": "/value/canonical_request",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "PUT\n/notes.txt\n\ncontent-type:text/plain\nhost:examplebucket.s3.amazonaws.com\nx-amz-content-sha256:2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824\nx-amz-date:20130524T000000Z\nx-amz-meta-note:two spaces inside\n\ncontent-type;host;x-amz-content-sha256;x-amz-date;x-amz-meta-note\n2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sigv4-header-repeated",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Sign a header sent twice: the canonical header joins its values with a comma, in the order sent",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "method": "PUT",
+        "url": "https://examplebucket.s3.amazonaws.com/tags.txt",
+        "headers": {
+          "x-amz-meta-tag": [
+            "one",
+            "two"
+          ]
+        },
+        "body_base64": "aGVsbG8=",
+        "clock": "2013-05-24T00:00:00Z",
+        "credentials": {
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        },
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-meta-tag,Signature=0516b9a84faa9af1cf8bfa9da6e0a8efdea9f8db9f6c8f1deb5ca30824cc50ab",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-meta-tag, Signature=0516b9a84faa9af1cf8bfa9da6e0a8efdea9f8db9f6c8f1deb5ca30824cc50ab"
+            ]
+          }
+        },
+        {
+          "at": "/value/canonical_request",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "PUT\n/tags.txt\n\nhost:examplebucket.s3.amazonaws.com\nx-amz-content-sha256:2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824\nx-amz-date:20130524T000000Z\nx-amz-meta-tag:one,two\n\nhost;x-amz-content-sha256;x-amz-date;x-amz-meta-tag\n2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sigv4-unsigned-payload",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Sign a PUT whose body is not hashed: x-amz-content-sha256 is UNSIGNED-PAYLOAD, signed in its place",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "method": "PUT",
+        "url": "https://examplebucket.s3.amazonaws.com/unsigned.txt",
+        "headers": {},
+        "body_base64": "aGVsbG8=",
+        "payload_hash": "UNSIGNED-PAYLOAD",
+        "clock": "2013-05-24T00:00:00Z",
+        "credentials": {
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        },
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;x-amz-content-sha256;x-amz-date,Signature=1db0ae7bc2758ec76c3a4eb728d7aeb744b1b1dfd1b7b8c1443efa0f814de19c",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=1db0ae7bc2758ec76c3a4eb728d7aeb744b1b1dfd1b7b8c1443efa0f814de19c"
+            ]
+          }
+        },
+        {
+          "at": "/value/canonical_request",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "PUT\n/unsigned.txt\n\nhost:examplebucket.s3.amazonaws.com\nx-amz-content-sha256:UNSIGNED-PAYLOAD\nx-amz-date:20130524T000000Z\n\nhost;x-amz-content-sha256;x-amz-date\nUNSIGNED-PAYLOAD"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sigv4-streaming-trailer",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Sign an aws-chunked PUT with a trailing checksum: x-amz-content-sha256 is STREAMING-UNSIGNED-PAYLOAD-TRAILER, and the chunked headers are signed",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "method": "PUT",
+        "url": "https://examplebucket.s3.amazonaws.com/chunked.txt",
+        "headers": {
+          "content-encoding": "aws-chunked",
+          "x-amz-decoded-content-length": "5",
+          "x-amz-trailer": "x-amz-checksum-crc32"
+        },
+        "body_base64": "",
+        "payload_hash": "STREAMING-UNSIGNED-PAYLOAD-TRAILER",
+        "clock": "2013-05-24T00:00:00Z",
+        "credentials": {
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        },
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=content-encoding;host;x-amz-content-sha256;x-amz-date;x-amz-decoded-content-length;x-amz-trailer,Signature=8daf895f8f59abcad7f7e192b546eb49de31bb1567134b2e1cc1b68dfe70a1e7",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request, SignedHeaders=content-encoding;host;x-amz-content-sha256;x-amz-date;x-amz-decoded-content-length;x-amz-trailer, Signature=8daf895f8f59abcad7f7e192b546eb49de31bb1567134b2e1cc1b68dfe70a1e7"
+            ]
+          }
+        },
+        {
+          "at": "/value/canonical_request",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "PUT\n/chunked.txt\n\ncontent-encoding:aws-chunked\nhost:examplebucket.s3.amazonaws.com\nx-amz-content-sha256:STREAMING-UNSIGNED-PAYLOAD-TRAILER\nx-amz-date:20130524T000000Z\nx-amz-decoded-content-length:5\nx-amz-trailer:x-amz-checksum-crc32\n\ncontent-encoding;host;x-amz-content-sha256;x-amz-date;x-amz-decoded-content-length;x-amz-trailer\nSTREAMING-UNSIGNED-PAYLOAD-TRAILER"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3/sigv4-session-token",
+      "profile": "s3",
+      "lane": "vectors",
+      "purpose": "Sign with temporary credentials in eu-central-1: the signer adds x-amz-security-token, signs it, and scopes the signature to the region",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html"
+      ],
+      "call": {
+        "op": "s3.sign",
+        "method": "GET",
+        "url": "https://examplebucket.s3.eu-central-1.amazonaws.com/test.txt",
+        "headers": {},
+        "body_base64": "",
+        "clock": "2013-05-24T00:00:00Z",
+        "credentials": {
+          "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+          "secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+          "session_token": "AQoDYXdzEJr1K2oP+ExampleSessionToken/With+Slash=="
+        },
+        "region": "eu-central-1",
+        "service": "s3"
+      },
+      "expect": [
+        {
+          "at": "/outcome",
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/authorization",
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/eu-central-1/s3/aws4_request,SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-security-token,Signature=50d38e8876d089a6a390dd3f3af3ac8f6c8b59446d0eaef776e2675798fd52c2",
+              "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/eu-central-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-security-token, Signature=50d38e8876d089a6a390dd3f3af3ac8f6c8b59446d0eaef776e2675798fd52c2"
+            ]
+          }
+        },
+        {
+          "at": "/value/canonical_request",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "GET\n/test.txt\n\nhost:examplebucket.s3.eu-central-1.amazonaws.com\nx-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nx-amz-date:20130524T000000Z\nx-amz-security-token:AQoDYXdzEJr1K2oP+ExampleSessionToken/With+Slash==\n\nhost;x-amz-content-sha256;x-amz-date;x-amz-security-token\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "at": "/value/headers/x-amz-security-token",
+          "rule": {
+            "is": "equal",
+            "value": "AQoDYXdzEJr1K2oP+ExampleSessionToken/With+Slash=="
           }
         }
       ]

@@ -27,11 +27,17 @@ Use `endpoint` with dummy credentials, and `endpoint.proxy_url` as the HTTP prox
 - `refused`: the client refused it before sending.
 - `unsupported`: the client cannot make it. Naming a `parameter` declines that parameter, which some cases permit.
 
-An error names a `kind`. `not_found` means the object is absent, `container_not_found` the bucket or container, and `missing` that the answer cannot say which. The others are `precondition`, `not_modified`, `permission_denied` and `other`.
+An error names a `kind`. `not_found` means the object is absent, `container_not_found` the bucket or container, and `missing` that the answer cannot say which. The others are `precondition`, `not_modified`, `permission_denied` and `other`. `checksum_mismatch` means the body did not match the checksum the answer named; the status is the answer's.
 
 Leave out a result property the client does not expose, and name it in `unsupported_fields`, as `[{"at":"/value/content_md5_base64","reason":"..."}]`.
 
 Keys are unescaped, bodies base64, ranges an offset and an exclusive end. A `checksum` without `value_base64` is for the client to compute. Tags are an object, or a list of `{"key", "value"}` pairs where a key may repeat. `content_range` reports a served range as `bytes FIRST-LAST/SIZE`.
+
+An `s3.sign` header given as a list is sent once per value, in order. Its `payload_hash`, such as `UNSIGNED-PAYLOAD`, is signed in place of the body's SHA-256. A signer may report its canonical request as `canonical_request`, which a vector then checks.
+
+A read asks for a checksum with `checksum_mode` on S3, or `range_checksum` on an Azure range. It reports the checksum it checked as `checksum`: `{"algorithm", "value_base64"}`, with S3's `type`, such as `full_object`.
+
+`source_account_url` names another Azure storage account that holds a copy source, by its blob service URL. The source is in the container of the endpoint's name, unless `source_container` names another.
 
 A `delete_many` key is a name or `{"key", "version"}`, on Azure also `{"key", "snapshot"}`. A result reports each key as the call named it. Where an S3 answer names a version or a delete marker, the key is an object with `version`, `delete_marker` and `delete_marker_version`. A version listing pages by `continuation_token` and `version_marker`, and returns `next_version_marker`. A `restore` reports `state` `started` for a 202 and `readable` for a 200, and a read reports `x-amz-restore` or `x-ms-archive-status` as `restore_status`.
 
