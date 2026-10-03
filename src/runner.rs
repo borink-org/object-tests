@@ -1,11 +1,15 @@
 //! Runs one adapter process per case and serves the case's loopback endpoint.
-use crate::{Result, Session, generated::GeneratedBody, model::*};
+use crate::{
+    Result, Session,
+    generated::{Fingerprint, FingerprintStream, GeneratedBody},
+    model::*,
+};
 use base64::{Engine, engine::general_purpose::STANDARD};
 use serde_json::{Value, json};
 use std::{
     collections::BTreeMap,
     io::{Read, Write},
-    net::TcpListener,
+    net::{SocketAddr, TcpListener, TcpStream},
     process::{Command, Stdio},
     sync::{
         Mutex,
@@ -29,9 +33,15 @@ const INLINE_GENERATED_BYTES: u64 = 1 << 20;
 const ADAPTER_SECONDS: u64 = 30;
 const GENERATED_BYTES_PER_SECOND: u64 = 64 << 20;
 
-/// Returns the call an adapter receives: a small generated body comes as its bytes.
-fn adapter_call(call: &Value) -> Result<Value> {
+/// Returns the call an adapter receives: a small generated body comes as its bytes, and a read
+/// with `body_result: "fingerprint"` names the `body_sink` that its body goes to.
+fn adapter_call(call: &Value, body_sink: Option<SocketAddr>) -> Result<Value> {
     let mut call = call.clone();
+    if let Some(address) = body_sink {
+        let object = call.as_object_mut().ok_or("call")?;
+        object.remove("body_result");
+        object.insert("body_sink".into(), json!(address.to_string()));
+    }
     if call["body"]["encoding"] == "repeat" {
         let generated: GeneratedBody = serde_json::from_value(call["body"]["data"].clone())?;
         if generated.length <= INLINE_GENERATED_BYTES {
@@ -67,6 +77,49 @@ fn generated_byte_count(case: &Case) -> u64 {
         }
     }
     call_bytes + exchange_bytes
+}
+
+/// Reads the bodies that an adapter writes to its body sink, one connection each, until the
+/// adapter is done. Returns each connection's peer and the fingerprint of what it sent.
+fn read_body_sink(
+    listener: &TcpListener,
+    stop: &AtomicBool,
+    timeout: Duration,
+) -> Vec<(SocketAddr, std::io::Result<Fingerprint>)> {
+    let mut bodies = Vec::new();
+    let mut buffer = vec![0; 1 << 20];
+    while let Ok((mut stream, peer)) = listener.accept() {
+        let mut fingerprint = FingerprintStream::default();
+        let read = stream.set_read_timeout(Some(timeout)).and_then(|()| {
+            loop {
+                match stream.read(&mut buffer)? {
+                    0 => return Ok(fingerprint.finish()),
+                    count => fingerprint.update(&buffer[..count]),
+                }
+            }
+        });
+        bodies.push((peer, read));
+        if stop.load(Ordering::Acquire) {
+            break;
+        }
+    }
+    bodies
+}
+
+/// Puts the fingerprint of the body that an adapter wrote to its body sink into its result's
+/// `value`. A result that is not `ok`, or a sink that got no body or more than one, gets none, so
+/// a `generated_body` check there fails.
+fn insert_body_sink_fingerprint(result: &mut Value, bodies: Vec<std::io::Result<Fingerprint>>) {
+    if result["outcome"] != "ok" {
+        return;
+    }
+    let [Ok(fingerprint)] = bodies.as_slice() else {
+        return;
+    };
+    if !result["value"].is_object() {
+        result["value"] = json!({});
+    }
+    fingerprint.insert_into(&mut result["value"]);
 }
 
 // The proxy variables that HTTP clients read, such as ureq and the AWS CRT.
@@ -199,18 +252,31 @@ pub fn grade_case(
     } else {
         None
     };
+    // A large read goes to a loopback socket, which the grader fingerprints as it arrives.
+    let body_sink = if case.call["body_result"] == "fingerprint" {
+        Some(TcpListener::bind("127.0.0.1:0")?)
+    } else {
+        None
+    };
+    let body_sink_address = body_sink
+        .as_ref()
+        .map(TcpListener::local_addr)
+        .transpose()?;
     let message = json!({
         "version": 1,
         "mode": if live_endpoint.is_some() {"live"} else {"offline"},
         "provider": profile.provider,
         "endpoint": endpoint,
-        "call": adapter_call(&case.call)?,
+        "call": adapter_call(&case.call, body_sink_address)?,
     });
     let adapter_time = Duration::from_secs(
         ADAPTER_SECONDS + generated_byte_count(case) / GENERATED_BYTES_PER_SECOND,
     );
     let stop = AtomicBool::new(false);
-    let result = thread::scope(|scope| {
+    let (result, sink_bodies) = thread::scope(|scope| {
+        let sink_reader = body_sink
+            .as_ref()
+            .map(|listener| scope.spawn(|| read_body_sink(listener, &stop, adapter_time)));
         if let Some(server) = &server {
             for _ in 0..HTTP_WORKERS {
                 scope.spawn(|| {
@@ -243,14 +309,31 @@ pub fn grade_case(
             && let Ok(address) = server.local_addr()
         {
             for _ in 0..HTTP_WORKERS {
-                let _ = std::net::TcpStream::connect(address);
+                let _ = TcpStream::connect(address);
             }
         }
-        result
+        // The sink's reader blocks in accept too. The connection that wakes it is not a body.
+        let mut sink_bodies = Vec::new();
+        if let (Some(reader), Some(address)) = (sink_reader, body_sink_address) {
+            let waker = TcpStream::connect(address)
+                .and_then(|stream| stream.local_addr())
+                .ok();
+            for (peer, body) in reader.join().unwrap() {
+                if Some(peer) != waker {
+                    sink_bodies.push(body);
+                }
+            }
+        }
+        (result, sink_bodies)
     });
     let session = session.into_inner().unwrap();
     Ok(match result {
-        Ok(result) => session.finish(&result, SystemTime::now()),
+        Ok(mut result) => {
+            if body_sink_address.is_some() {
+                insert_body_sink_fingerprint(&mut result, sink_bodies);
+            }
+            session.finish(&result, SystemTime::now())
+        }
         Err(error) => {
             json!({
                 "id": case.id,

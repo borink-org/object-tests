@@ -1,6 +1,6 @@
 //! Native process fixture for the grader tests.
 use base64::{Engine, engine::general_purpose::STANDARD};
-use object_tests::generated::{FingerprintStream, GeneratedBody};
+use object_tests::generated::GeneratedBody;
 use serde_json::{Value, json};
 use std::{
     io::{self, BufRead, BufReader, Read, Write},
@@ -34,8 +34,8 @@ fn read_response_head(reader: &mut impl BufRead) -> (u16, u64, Option<u64>) {
     }
 }
 
-/// Sends a GET and feeds the body it gets into `fingerprint`; returns the object's total size.
-fn read_into(address: &str, range: Option<(u64, u64)>, fingerprint: &mut FingerprintStream) -> u64 {
+/// Sends a GET and copies the body it gets into `sink`; returns the object's total size.
+fn read_into(address: &str, range: Option<(u64, u64)>, sink: &mut impl Write) -> u64 {
     let mut stream = TcpStream::connect(address).unwrap();
     let range_header = range.map_or(String::new(), |(start, end)| {
         format!("Range: bytes={start}-{end}\r\n")
@@ -51,7 +51,7 @@ fn read_into(address: &str, range: Option<(u64, u64)>, fingerprint: &mut Fingerp
     while remaining > 0 {
         let buffer = reader.fill_buf().unwrap();
         let take = buffer.len().min(remaining as usize);
-        fingerprint.update(&buffer[..take]);
+        sink.write_all(&buffer[..take]).unwrap();
         reader.consume(take);
         remaining -= take as u64;
     }
@@ -68,10 +68,12 @@ enum Transfer {
     Ranged,
     /// Sent `aws-chunked`, in chunks of 1 MiB with a trailing checksum.
     AwsChunked,
+    /// Read back, but not written to the body sink.
+    NoSink,
 }
 
-/// PUTs the call's body, generated or held, then GETs the object back and reports the
-/// fingerprint of what it read.
+/// PUTs the call's body, generated or held, then GETs the object back and writes what it read to
+/// the call's `body_sink`.
 fn put_and_get_generated(input: &Value, transfer: Transfer) -> Value {
     let corrupt = transfer == Transfer::Corrupt;
     let address = input["endpoint"]["url"]
@@ -143,25 +145,24 @@ fn put_and_get_generated(input: &Value, transfer: Transfer) -> Value {
         return json!({"outcome": "error", "kind": "other", "status": status});
     }
 
-    let mut fingerprint = FingerprintStream::default();
+    let mut sink: Box<dyn Write> = if transfer == Transfer::NoSink {
+        Box::new(io::sink())
+    } else {
+        Box::new(TcpStream::connect(call["body_sink"].as_str().unwrap()).unwrap())
+    };
     if transfer == Transfer::Ranged {
         let window = 7 << 20;
-        let total = read_into(&address, Some((0, window - 1)), &mut fingerprint);
+        let total = read_into(&address, Some((0, window - 1)), &mut sink);
         let mut start = window;
         while start < total {
-            read_into(
-                &address,
-                Some((start, start + window - 1)),
-                &mut fingerprint,
-            );
+            read_into(&address, Some((start, start + window - 1)), &mut sink);
             start += window;
         }
     } else {
-        read_into(&address, None, &mut fingerprint);
+        read_into(&address, None, &mut sink);
     }
-    let mut value = json!({});
-    fingerprint.finish().insert_into(&mut value);
-    json!({"outcome": "ok", "value": value})
+    drop(sink);
+    json!({"outcome": "ok", "value": {}})
 }
 
 fn perform_http_request(input: &Value) -> Value {
@@ -244,6 +245,7 @@ fn main() -> ExitCode {
         "generated" => println!("{}", put_and_get_generated(&input, Transfer::Plain)),
         "generated-corrupt" => println!("{}", put_and_get_generated(&input, Transfer::Corrupt)),
         "generated-ranged" => println!("{}", put_and_get_generated(&input, Transfer::Ranged)),
+        "generated-no-sink" => println!("{}", put_and_get_generated(&input, Transfer::NoSink)),
         "generated-aws-chunked" => {
             println!("{}", put_and_get_generated(&input, Transfer::AwsChunked))
         }

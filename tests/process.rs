@@ -92,7 +92,7 @@ fn generated_round_trip_case(length: u64) -> (Case, Profile) {
         "lane": "core",
         "purpose": "Send and read back a generated body",
         "sources": ["tests/process.rs"],
-        "call": {"op": "put", "key": "object", "body": {"encoding": "repeat", "data": generated}},
+        "call": {"op": "put", "key": "object", "body": {"encoding": "repeat", "data": generated}, "body_result": "fingerprint"},
         "exchanges": [
             {"alternatives": [{
                 "request": [
@@ -151,6 +151,15 @@ fn generated_bodies_cross_the_grader_without_being_held() {
                 .to_string()
                 .contains("not the generated"),
             "{report}"
+        );
+
+        let report =
+            runner::grade_case(&case, &profile, &adapter_command("generated-no-sink"), None)
+                .unwrap();
+        assert_eq!(
+            report["verdict"],
+            json!("wrong"),
+            "{length} bytes: {report}"
         );
     }
 }

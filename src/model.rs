@@ -289,7 +289,7 @@ pub enum Rule {
 
     /// A body generated from a pattern: the `body_length` and `body_crc64nvme_base64` at the
     /// check's pointer must be its fingerprint. At the request's root, it checks the request body;
-    /// at `/value`, the body a read reported.
+    /// at `/value`, the body a read wrote to its body sink.
     GeneratedBody {
         pattern_base64: String,
         length: u64,
