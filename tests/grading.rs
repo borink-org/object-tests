@@ -35,7 +35,12 @@ fn create_get_request() -> Value {
 
 #[test]
 fn corpus_is_strict_and_valid() {
-    for file in ["operations.json", "vectors.json", "live.json"] {
+    for file in [
+        "operations.json",
+        "management.json",
+        "vectors.json",
+        "live.json",
+    ] {
         Suite::load(format!("{}/cases/{file}", env!("CARGO_MANIFEST_DIR"))).unwrap();
     }
     let mut suite_json = serde_json::to_value(load_test_suite()).unwrap();
@@ -135,6 +140,20 @@ fn duplicate_ids_and_empty_assertions_are_rejected() {
     assert!(suite.validate().is_err());
     suite.cases.pop();
     suite.cases[0].expect.clear();
+    assert!(suite.validate().is_err());
+}
+
+#[test]
+fn an_index_must_name_every_case_with_its_purpose() {
+    let mut suite = load_test_suite();
+    suite.index = suite.case_index();
+    assert!(suite.validate().is_ok());
+
+    suite.cases[0].purpose.push_str(" again");
+    assert!(suite.validate().is_err());
+
+    suite.index = suite.case_index();
+    suite.index.remove(&suite.cases[0].id);
     assert!(suite.validate().is_err());
 }
 

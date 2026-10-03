@@ -11,6 +11,11 @@ use std::collections::{BTreeMap, BTreeSet};
 #[serde(deny_unknown_fields)]
 pub struct Suite {
     pub version: u32,
+
+    /// Each case's purpose by its ID, so that a reader can survey a suite before its rules. A
+    /// generated suite has one; when present, it must name every case with its purpose.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub index: BTreeMap<String, String>,
     pub profiles: BTreeMap<String, Profile>,
     pub cases: Vec<Case>,
 }
@@ -76,6 +81,11 @@ pub struct Case {
     /// How we know that a service sends the responses of this case.
     #[serde(default, skip_serializing_if = "Origin::is_observed")]
     pub origin: Origin,
+
+    /// For a case whose responses are not observed, the recorded case whose responses it
+    /// edits, so that a reader can tell what a service sent from what was written by hand.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub derived_from: Option<String>,
 
     /// The operation input passed unchanged to the adapter.
     pub call: Value,
@@ -248,6 +258,34 @@ pub enum Rule {
     Xml {
         value: String,
     },
+
+    /// An Azure Blob Batch request with these subrequests, checked at the request's root. See
+    /// `request_rules::check_blob_batch` for what it requires.
+    BlobBatch {
+        subrequests: Vec<BatchSubrequest>,
+    },
+
+    /// A header that holds the checksum of the request body, checked at the request's root.
+    BodyChecksum {
+        header: String,
+        algorithm: ChecksumAlgorithm,
+    },
+}
+
+/// A subrequest of an Azure Blob Batch, with its path decoded.
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
+pub struct BatchSubrequest {
+    pub method: String,
+    pub path: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ChecksumAlgorithm {
+    Crc32,
+    Crc32c,
+    Crc64nvme,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -296,6 +334,14 @@ fn validate_checks(checks: &[Check]) -> Result<()> {
                 normalize_xml(value)?;
             }
             Rule::OneOf { values } if values.is_empty() => return Err("empty one_of".into()),
+            Rule::BlobBatch { subrequests } if subrequests.is_empty() || !check.at.is_empty() => {
+                return Err("a blob batch names its subrequests, at the request's root".into());
+            }
+            Rule::BodyChecksum { header, .. }
+                if !is_valid_http_header_name(header) || !check.at.is_empty() =>
+            {
+                return Err("a body checksum names its header, at the request's root".into());
+            }
             _ => {}
         }
     }
@@ -315,6 +361,14 @@ impl Suite {
         read_and_validate().map_err(|error| format!("{}: {error}", path.display()).into())
     }
 
+    /// Returns each case's purpose by its ID, the suite's index.
+    pub fn case_index(&self) -> BTreeMap<String, String> {
+        self.cases
+            .iter()
+            .map(|case| (case.id.clone(), case.purpose.clone()))
+            .collect()
+    }
+
     pub fn validate(&self) -> Result<()> {
         if self.version != 1 || self.cases.is_empty() {
             return Err("expected version 1 and nonempty cases".into());
@@ -328,6 +382,9 @@ impl Suite {
             for pattern in profile.allow_headers.iter().chain(&profile.allow_query) {
                 compile_full_match_regex(pattern)?;
             }
+        }
+        if !self.index.is_empty() && self.index != self.case_index() {
+            return Err("the index must name every case with its purpose".into());
         }
         for case in &self.cases {
             if !case.call.is_object() {
