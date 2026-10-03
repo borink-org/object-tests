@@ -616,17 +616,18 @@ fn signature_mutation_fails_without_any_crypto_in_grader() {
     let case = suite
         .cases
         .iter()
-        .find(|case| case.id == "azure/shared-key-encoded-name")
+        .find(|case| case.id == "s3/sigv4-get-range")
         .unwrap();
-    let Rule::Equal { value } = &case.expect[1].rule else {
+    let Rule::OneOf { values } = &case.expect[1].rule else {
         panic!()
     };
+    let value = values[0].as_str().unwrap();
     let mut result = json!({
         "outcome": "ok",
         "value": {"authorization": value},
     });
     assert!(check_assertions(&case.expect, &result, test_time()).is_empty());
-    result["value"]["authorization"] = json!(format!("{}0", value.as_str().unwrap()));
+    result["value"]["authorization"] = json!(format!("{value}0"));
     assert!(!check_assertions(&case.expect, &result, test_time()).is_empty());
 }
 

@@ -5,6 +5,9 @@
     "operations/azure-hns/abort-copy-finished": "Report an abort of a copy that has finished as an error, 409 NoPendingCopyOperation",
     "operations/azure-hns/append-block": "Append a block to an append blob and report its offset",
     "operations/azure-hns/append-block-at-wrong-position": "Refuse an append whose position condition does not match the blob length",
+    "operations/azure-hns/append-block-from-url": "Append the bytes at a URL to an append blob with Append Block From URL: a PUT with comp=appendblock, x-ms-copy-source and no body. Report the offset the block starts at",
+    "operations/azure-hns/append-block-from-url-other-account": "Append a block with Append Block From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
+    "operations/azure-hns/append-block-from-url-range": "Append bytes 1 to 3 at a URL with Append Block From URL, the range named in x-ms-source-range with an inclusive end, as bytes=1-3",
     "operations/azure-hns/append-block-to-block-blob": "Refuse an append to a block blob",
     "operations/azure-hns/commit": "commit",
     "operations/azure-hns/commit-container-missing": "commit container missing. A client reports it as container_not_found: the bucket or container is absent, not the object",
@@ -35,14 +38,16 @@
     "operations/azure-hns/copy-content-properties": "Copy a blob with a content type, which Copy Blob ignores: the copy keeps the source's content properties. A client may send it, or refuse or decline the parameter",
     "operations/azure-hns/copy-if-none-match-exists": "Report a copy with If-None-Match: * onto a blob that exists as a failed condition on the destination",
     "operations/azure-hns/copy-missing-source": "Refuse a copy whose source does not exist",
+    "operations/azure-hns/copy-other-account": "Report an asynchronous Copy Blob from another storage account as an error. It reads such a source only with a SAS, so with Entra ID Azure answers 401 CannotVerifyCopySource, with a bearer token in x-ms-copy-source-authorization or without. Copy between accounts with Copy Blob From URL, Put Blob From URL or Put Block From URL",
     "operations/azure-hns/copy-pending": "Report a copy that Azure answers as pending with its copy ID, so that a caller can follow it with a HEAD or abort it",
     "operations/azure-hns/copy-replace-metadata": "Copy a blob with new metadata, which replaces all of the source's. A copy that names no metadata keeps the source's",
     "operations/azure-hns/copy-source-if-match": "Copy a blob only if the source still has this ETag, named in x-ms-source-if-match",
     "operations/azure-hns/copy-source-if-match-failed": "Report a copy whose source does not have the ETag in x-ms-source-if-match as a failed condition, 412 SourceConditionNotMet",
     "operations/azure-hns/copy-source-if-unmodified-since-failed": "Report a copy whose source changed after the time in x-ms-source-if-unmodified-since as a failed condition, 412 SourceConditionNotMet",
     "operations/azure-hns/copy-source-key-encoded": "Copy from a key with a space, +, %, é, ? and #. The x-ms-copy-source URL percent-encodes every byte of the key outside letters, digits, -._~ and /",
-    "operations/azure-hns/copy-sync": "Copy a blob with Copy Blob From URL, x-ms-requires-sync: true, which answers once the copy is done. The source must be readable by URL: by a SAS, or by a bearer token in x-ms-copy-source-authorization",
+    "operations/azure-hns/copy-sync": "Copy a blob with Copy Blob From URL, x-ms-requires-sync: true, which answers once the copy is done. Azure reads the source by URL as the caller, or with the bearer token in x-ms-copy-source-authorization",
     "operations/azure-hns/copy-sync-missing-source": "Report a Copy Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
+    "operations/azure-hns/copy-sync-other-account": "Copy a blob with Copy Blob From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
     "operations/azure-hns/copy-tier": "Copy a blob into another access tier, named in x-ms-access-tier",
     "operations/azure-hns/create-append": "Create an empty append blob",
     "operations/azure-hns/create-page": "Create a page blob of 1,024 bytes, which an HNS account does not support",
@@ -228,6 +233,7 @@
     "operations/azure-hns/put-from-url": "Write a block blob from the bytes at a URL with Put Blob From URL: a PUT with x-ms-blob-type: BlockBlob, x-ms-copy-source and no body, which answers once it is written",
     "operations/azure-hns/put-from-url-content-properties": "Write a block blob from a URL with content properties of its own, sent as x-ms-blob-content-type and x-ms-blob-cache-control. Put Blob From URL stores them in place of the source's",
     "operations/azure-hns/put-from-url-missing-source": "Report a Put Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
+    "operations/azure-hns/put-from-url-other-account": "Write a block blob with Put Blob From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
     "operations/azure-hns/put-if-match-current": "put if match current",
     "operations/azure-hns/put-if-none-match-missing": "put if none match missing",
     "operations/azure-hns/put-if-unmodified-since-past": "Refuse a write with 412 when the object changed after If-Unmodified-Since",
@@ -267,6 +273,7 @@
     "operations/azure-hns/stage-empty": "stage empty",
     "operations/azure-hns/stage-escaped-id": "stage escaped id",
     "operations/azure-hns/stage-from-url": "Stage a block from bytes 0 to 2 at a URL with Put Block From URL, the range named in x-ms-source-range with an inclusive end, as bytes=0-2",
+    "operations/azure-hns/stage-from-url-other-account": "Stage a block with Put Block From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
     "operations/azure-hns/stage-id-64-bytes": "A block ID decodes to at most 64 bytes, and Azure stages a block whose ID decodes to exactly 64. Send it; only a longer ID may be refused.",
     "operations/azure-hns/stage-id-too-long": "stage id too long",
     "operations/azure-hns/stage-key-double-slash": "stage, with the key \"double//slash.txt\"",
@@ -297,6 +304,9 @@
     "operations/azure/abort-copy-finished": "Report an abort of a copy that has finished as an error, 409 NoPendingCopyOperation",
     "operations/azure/append-block": "Append a block to an append blob and report its offset",
     "operations/azure/append-block-at-wrong-position": "Refuse an append whose position condition does not match the blob length",
+    "operations/azure/append-block-from-url": "Append the bytes at a URL to an append blob with Append Block From URL: a PUT with comp=appendblock, x-ms-copy-source and no body. Report the offset the block starts at",
+    "operations/azure/append-block-from-url-other-account": "Append a block with Append Block From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
+    "operations/azure/append-block-from-url-range": "Append bytes 1 to 3 at a URL with Append Block From URL, the range named in x-ms-source-range with an inclusive end, as bytes=1-3",
     "operations/azure/append-block-to-block-blob": "Refuse an append to a block blob",
     "operations/azure/commit": "commit",
     "operations/azure/commit-container-missing": "commit container missing. A client reports it as container_not_found: the bucket or container is absent, not the object",
@@ -328,6 +338,7 @@
     "operations/azure/copy-content-properties": "Copy a blob with a content type, which Copy Blob ignores: the copy keeps the source's content properties. A client may send it, or refuse or decline the parameter",
     "operations/azure/copy-if-none-match-exists": "Report a copy with If-None-Match: * onto a blob that exists as a failed condition on the destination",
     "operations/azure/copy-missing-source": "Refuse a copy whose source does not exist",
+    "operations/azure/copy-other-account": "Report an asynchronous Copy Blob from another storage account as an error. It reads such a source only with a SAS, so with Entra ID Azure answers 401 CannotVerifyCopySource, with a bearer token in x-ms-copy-source-authorization or without. Copy between accounts with Copy Blob From URL, Put Blob From URL or Put Block From URL",
     "operations/azure/copy-pending": "Report a copy that Azure answers as pending with its copy ID, so that a caller can follow it with a HEAD or abort it",
     "operations/azure/copy-replace-metadata": "Copy a blob with new metadata, which replaces all of the source's. A copy that names no metadata keeps the source's",
     "operations/azure/copy-source-if-match": "Copy a blob only if the source still has this ETag, named in x-ms-source-if-match",
@@ -335,8 +346,9 @@
     "operations/azure/copy-source-if-unmodified-since-failed": "Report a copy whose source changed after the time in x-ms-source-if-unmodified-since as a failed condition, 412 SourceConditionNotMet",
     "operations/azure/copy-source-key-encoded": "Copy from a key with a space, +, %, é, ? and #. The x-ms-copy-source URL percent-encodes every byte of the key outside letters, digits, -._~ and /",
     "operations/azure/copy-source-version": "Copy an earlier version of a blob, named by versionid in the x-ms-copy-source URL",
-    "operations/azure/copy-sync": "Copy a blob with Copy Blob From URL, x-ms-requires-sync: true, which answers once the copy is done. The source must be readable by URL: by a SAS, or by a bearer token in x-ms-copy-source-authorization",
+    "operations/azure/copy-sync": "Copy a blob with Copy Blob From URL, x-ms-requires-sync: true, which answers once the copy is done. Azure reads the source by URL as the caller, or with the bearer token in x-ms-copy-source-authorization",
     "operations/azure/copy-sync-missing-source": "Report a Copy Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
+    "operations/azure/copy-sync-other-account": "Copy a blob with Copy Blob From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
     "operations/azure/copy-tier": "Copy a blob into another access tier, named in x-ms-access-tier",
     "operations/azure/create-append": "Create an empty append blob",
     "operations/azure/create-page": "Create a page blob of 1,024 bytes",
@@ -529,6 +541,7 @@
     "operations/azure/put-from-url": "Write a block blob from the bytes at a URL with Put Blob From URL: a PUT with x-ms-blob-type: BlockBlob, x-ms-copy-source and no body, which answers once it is written",
     "operations/azure/put-from-url-content-properties": "Write a block blob from a URL with content properties of its own, sent as x-ms-blob-content-type and x-ms-blob-cache-control. Put Blob From URL stores them in place of the source's",
     "operations/azure/put-from-url-missing-source": "Report a Put Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
+    "operations/azure/put-from-url-other-account": "Write a block blob with Put Blob From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
     "operations/azure/put-if-match-current": "put if match current",
     "operations/azure/put-if-none-match-missing": "put if none match missing",
     "operations/azure/put-if-unmodified-since-past": "Refuse a write with 412 when the object changed after If-Unmodified-Since",
@@ -585,6 +598,7 @@
     "operations/azure/stage-empty": "stage empty",
     "operations/azure/stage-escaped-id": "stage escaped id",
     "operations/azure/stage-from-url": "Stage a block from bytes 0 to 2 at a URL with Put Block From URL, the range named in x-ms-source-range with an inclusive end, as bytes=0-2",
+    "operations/azure/stage-from-url-other-account": "Stage a block with Put Block From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
     "operations/azure/stage-id-64-bytes": "A block ID decodes to at most 64 bytes, and Azure stages a block whose ID decodes to exactly 64. Send it; only a longer ID may be refused.",
     "operations/azure/stage-id-too-long": "stage id too long",
     "operations/azure/stage-key-double-slash": "stage, with the key \"double//slash.txt\"",
@@ -610,6 +624,8 @@
     "operations/azure/staged-uncommitted": "staged uncommitted",
     "operations/azure/staged-uncommitted-only": "staged uncommitted only",
     "operations/azure/upload-pages": "Write the first page of a page blob",
+    "operations/azure/upload-pages-from-url": "Write the first page of a page blob from the bytes at a URL with Put Page From URL: a PUT with comp=page, x-ms-copy-source and no body. Both x-ms-range and x-ms-source-range are required, each 512-byte aligned with an inclusive end",
+    "operations/azure/upload-pages-from-url-other-account": "Write a page with Put Page From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
     "operations/azure/upload-pages-unaligned": "Refuse a page write that does not start on a 512-byte boundary",
     "operations/s3-express/abort": "abort",
     "operations/s3-express/abort-after-commit": "abort after commit",
@@ -35679,7 +35695,7 @@
       "id": "operations/azure/copy-sync",
       "profile": "azure",
       "lane": "core",
-      "purpose": "Copy a blob with Copy Blob From URL, x-ms-requires-sync: true, which answers once the copy is done. The source must be readable by URL: by a SAS, or by a bearer token in x-ms-copy-source-authorization",
+      "purpose": "Copy a blob with Copy Blob From URL, x-ms-requires-sync: true, which answers once the copy is done. Azure reads the source by URL as the caller, or with the bearer token in x-ms-copy-source-authorization",
       "sources": [
         "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url"
       ],
@@ -35733,11 +35749,17 @@
                     "is": "equal",
                     "value": "true"
                   }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
                 }
               ],
-              "allow_headers": [
-                "x-ms-copy-source-authorization"
-              ],
+              "allow_headers": [],
               "allow_query": [],
               "response": {
                 "status": 202,
@@ -35836,11 +35858,17 @@
                     "is": "equal",
                     "value": "true"
                   }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
                 }
               ],
-              "allow_headers": [
-                "x-ms-copy-source-authorization"
-              ],
+              "allow_headers": [],
               "allow_query": [],
               "response": {
                 "status": 404,
@@ -35883,6 +35911,116 @@
           "rule": {
             "is": "equal",
             "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/copy-sync-other-account",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Copy a blob with Copy Blob From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "copy",
+        "source_account_url": "https://fixtureother.blob.core.windows.net",
+        "source_key": "object-tests/copy/source.txt",
+        "sync": true
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https://fixtureother\\.blob\\.core\\.windows\\.net/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-requires-sync",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "true"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 202,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-copy-id": "fixture-copy-id",
+                  "x-ms-copy-status": "success"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/copy_status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "success"
           }
         }
       ],
@@ -36118,6 +36256,114 @@
       "decline_permitted": true
     },
     {
+      "id": "operations/azure/copy-other-account",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report an asynchronous Copy Blob from another storage account as an error. It reads such a source only with a SAS, so with Entra ID Azure answers 401 CannotVerifyCopySource, with a bearer token in x-ms-copy-source-authorization or without. Copy between accounts with Copy Blob From URL, Put Blob From URL or Put Block From URL",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "copy",
+        "source_account_url": "https://fixtureother.blob.core.windows.net",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https://fixtureother\\.blob\\.core\\.windows\\.net/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 401,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>CannotVerifyCopySource</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 401
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/azure/put-from-url",
       "profile": "azure",
       "lane": "core",
@@ -36174,10 +36420,17 @@
                     "is": "equal",
                     "value": "BlockBlob"
                   }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
                 }
               ],
               "allow_headers": [
-                "x-ms-copy-source-authorization",
                 "x-ms-copy-source-blob-properties"
               ],
               "allow_query": [],
@@ -36280,6 +36533,14 @@
                   }
                 },
                 {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                },
+                {
                   "at": "/headers/x-ms-blob-content-type",
                   "optional": false,
                   "rule": {
@@ -36297,7 +36558,6 @@
                 }
               ],
               "allow_headers": [
-                "x-ms-copy-source-authorization",
                 "x-ms-copy-source-blob-properties"
               ],
               "allow_query": [],
@@ -36396,10 +36656,17 @@
                     "is": "equal",
                     "value": "BlockBlob"
                   }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
                 }
               ],
               "allow_headers": [
-                "x-ms-copy-source-authorization",
                 "x-ms-copy-source-blob-properties"
               ],
               "allow_query": [],
@@ -36444,6 +36711,116 @@
           "rule": {
             "is": "equal",
             "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/put-from-url-other-account",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Write a block blob with Put Blob From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "azure.put_from_url",
+        "source_account_url": "https://fixtureother.blob.core.windows.net",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https://fixtureother\\.blob\\.core\\.windows\\.net/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-blob-properties"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-etag\""
           }
         }
       ],
@@ -36978,6 +37355,265 @@
       "refusal": null
     },
     {
+      "id": "operations/azure/upload-pages-from-url",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Write the first page of a page blob from the bytes at a URL with Put Page From URL: a PUT with comp=page, x-ms-copy-source and no body. Both x-ms-range and x-ms-source-range are required, each 512-byte aligned with an inclusive end",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-page-from-url"
+      ],
+      "call": {
+        "key": "object-tests/pages/object.vhd",
+        "offset": 0,
+        "op": "azure.upload_pages_from_url",
+        "source_key": "object-tests/pages/source.bin",
+        "source_range": {
+          "end": 512,
+          "start": 0
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/pages/object.vhd"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "page"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-page-write",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "update"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-511"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/pages/source\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-511"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-sequence-number": "0",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/upload-pages-from-url-other-account",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Write a page with Put Page From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-page-from-url"
+      ],
+      "call": {
+        "key": "object-tests/pages/object.vhd",
+        "offset": 0,
+        "op": "azure.upload_pages_from_url",
+        "source_account_url": "https://fixtureother.blob.core.windows.net",
+        "source_key": "object-tests/pages/source.bin",
+        "source_range": {
+          "end": 512,
+          "start": 0
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/pages/object.vhd"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "page"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-page-write",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "update"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-511"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https://fixtureother\\.blob\\.core\\.windows\\.net/fixture/object-tests/pages/source\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-511"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-sequence-number": "0",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/azure/create-page",
       "profile": "azure",
       "lane": "core",
@@ -37323,6 +37959,370 @@
                   "rule": {
                     "is": "equal",
                     "value": "appendblock"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-append-offset": "5",
+                  "x-ms-blob-committed-block-count": "2",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/append_offset",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 5
+          }
+        },
+        {
+          "at": "/value/committed_block_count",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 2
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/append-block-from-url",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Append the bytes at a URL to an append blob with Append Block From URL: a PUT with comp=appendblock, x-ms-copy-source and no body. Report the offset the block starts at",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/append-block-from-url"
+      ],
+      "call": {
+        "key": "object-tests/append/object.log",
+        "op": "azure.append_block_from_url",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/append/object.log"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "appendblock"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-append-offset": "5",
+                  "x-ms-blob-committed-block-count": "2",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/append_offset",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 5
+          }
+        },
+        {
+          "at": "/value/committed_block_count",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 2
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/append-block-from-url-range",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Append bytes 1 to 3 at a URL with Append Block From URL, the range named in x-ms-source-range with an inclusive end, as bytes=1-3",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/append-block-from-url"
+      ],
+      "call": {
+        "key": "object-tests/append/object.log",
+        "op": "azure.append_block_from_url",
+        "source_key": "object-tests/copy/source.txt",
+        "source_range": {
+          "end": 4,
+          "start": 1
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/append/object.log"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "appendblock"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=1-3"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-append-offset": "5",
+                  "x-ms-blob-committed-block-count": "2",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/append_offset",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 5
+          }
+        },
+        {
+          "at": "/value/committed_block_count",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 2
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/append-block-from-url-other-account",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Append a block with Append Block From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/append-block-from-url"
+      ],
+      "call": {
+        "key": "object-tests/append/object.log",
+        "op": "azure.append_block_from_url",
+        "source_account_url": "https://fixtureother.blob.core.windows.net",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/append/object.log"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "appendblock"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https://fixtureother\\.blob\\.core\\.windows\\.net/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
                   }
                 }
               ],
@@ -46586,11 +47586,153 @@
                     "is": "equal",
                     "value": "bytes=0-2"
                   }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
                 }
               ],
               "allow_headers": [
-                "content-type",
-                "x-ms-copy-source-authorization"
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/stage-from-url-other-account",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Stage a block with Put Block From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block-from-url"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "key": "object-tests/multipart/staged.bin",
+        "op": "azure.stage_block_from_url",
+        "source_account_url": "https://fixtureother.blob.core.windows.net",
+        "source_key": "object-tests/copy/source.txt",
+        "source_range": {
+          "end": 3,
+          "start": 0
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/staged.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https://fixtureother\\.blob\\.core\\.windows\\.net/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-2"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
               ],
               "allow_query": [],
               "response": {
@@ -84691,7 +85833,7 @@
       "id": "operations/azure-hns/copy-sync",
       "profile": "azure-hns",
       "lane": "core",
-      "purpose": "Copy a blob with Copy Blob From URL, x-ms-requires-sync: true, which answers once the copy is done. The source must be readable by URL: by a SAS, or by a bearer token in x-ms-copy-source-authorization",
+      "purpose": "Copy a blob with Copy Blob From URL, x-ms-requires-sync: true, which answers once the copy is done. Azure reads the source by URL as the caller, or with the bearer token in x-ms-copy-source-authorization",
       "sources": [
         "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url"
       ],
@@ -84745,11 +85887,17 @@
                     "is": "equal",
                     "value": "true"
                   }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
                 }
               ],
-              "allow_headers": [
-                "x-ms-copy-source-authorization"
-              ],
+              "allow_headers": [],
               "allow_query": [],
               "response": {
                 "status": 202,
@@ -84848,11 +85996,17 @@
                     "is": "equal",
                     "value": "true"
                   }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
                 }
               ],
-              "allow_headers": [
-                "x-ms-copy-source-authorization"
-              ],
+              "allow_headers": [],
               "allow_query": [],
               "response": {
                 "status": 404,
@@ -84895,6 +86049,116 @@
           "rule": {
             "is": "equal",
             "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure-hns/copy-sync-other-account",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Copy a blob with Copy Blob From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "copy",
+        "source_account_url": "https://fixtureother.blob.core.windows.net",
+        "source_key": "object-tests/copy/source.txt",
+        "sync": true
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https://fixtureother\\.blob\\.core\\.windows\\.net/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-requires-sync",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "true"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 202,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-copy-id": "fixture-copy-id",
+                  "x-ms-copy-status": "success"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/copy_status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "success"
           }
         }
       ],
@@ -85130,6 +86394,114 @@
       "decline_permitted": true
     },
     {
+      "id": "operations/azure-hns/copy-other-account",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report an asynchronous Copy Blob from another storage account as an error. It reads such a source only with a SAS, so with Entra ID Azure answers 401 CannotVerifyCopySource, with a bearer token in x-ms-copy-source-authorization or without. Copy between accounts with Copy Blob From URL, Put Blob From URL or Put Block From URL",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "copy",
+        "source_account_url": "https://fixtureother.blob.core.windows.net",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https://fixtureother\\.blob\\.core\\.windows\\.net/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 401,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>CannotVerifyCopySource</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 401
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/azure-hns/put-from-url",
       "profile": "azure-hns",
       "lane": "core",
@@ -85186,10 +86558,17 @@
                     "is": "equal",
                     "value": "BlockBlob"
                   }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
                 }
               ],
               "allow_headers": [
-                "x-ms-copy-source-authorization",
                 "x-ms-copy-source-blob-properties"
               ],
               "allow_query": [],
@@ -85292,6 +86671,14 @@
                   }
                 },
                 {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                },
+                {
                   "at": "/headers/x-ms-blob-content-type",
                   "optional": false,
                   "rule": {
@@ -85309,7 +86696,6 @@
                 }
               ],
               "allow_headers": [
-                "x-ms-copy-source-authorization",
                 "x-ms-copy-source-blob-properties"
               ],
               "allow_query": [],
@@ -85408,10 +86794,17 @@
                     "is": "equal",
                     "value": "BlockBlob"
                   }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
                 }
               ],
               "allow_headers": [
-                "x-ms-copy-source-authorization",
                 "x-ms-copy-source-blob-properties"
               ],
               "allow_query": [],
@@ -85456,6 +86849,116 @@
           "rule": {
             "is": "equal",
             "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure-hns/put-from-url-other-account",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Write a block blob with Put Blob From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "azure.put_from_url",
+        "source_account_url": "https://fixtureother.blob.core.windows.net",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https://fixtureother\\.blob\\.core\\.windows\\.net/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-blob-properties"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-etag\""
           }
         }
       ],
@@ -86366,6 +87869,370 @@
                   "rule": {
                     "is": "equal",
                     "value": "appendblock"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-append-offset": "5",
+                  "x-ms-blob-committed-block-count": "2",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/append_offset",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 5
+          }
+        },
+        {
+          "at": "/value/committed_block_count",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 2
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure-hns/append-block-from-url",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Append the bytes at a URL to an append blob with Append Block From URL: a PUT with comp=appendblock, x-ms-copy-source and no body. Report the offset the block starts at",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/append-block-from-url"
+      ],
+      "call": {
+        "key": "object-tests/append/object.log",
+        "op": "azure.append_block_from_url",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/append/object.log"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "appendblock"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-append-offset": "5",
+                  "x-ms-blob-committed-block-count": "2",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/append_offset",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 5
+          }
+        },
+        {
+          "at": "/value/committed_block_count",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 2
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure-hns/append-block-from-url-range",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Append bytes 1 to 3 at a URL with Append Block From URL, the range named in x-ms-source-range with an inclusive end, as bytes=1-3",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/append-block-from-url"
+      ],
+      "call": {
+        "key": "object-tests/append/object.log",
+        "op": "azure.append_block_from_url",
+        "source_key": "object-tests/copy/source.txt",
+        "source_range": {
+          "end": 4,
+          "start": 1
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/append/object.log"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "appendblock"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=1-3"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-append-offset": "5",
+                  "x-ms-blob-committed-block-count": "2",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/append_offset",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 5
+          }
+        },
+        {
+          "at": "/value/committed_block_count",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 2
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure-hns/append-block-from-url-other-account",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Append a block with Append Block From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/append-block-from-url"
+      ],
+      "call": {
+        "key": "object-tests/append/object.log",
+        "op": "azure.append_block_from_url",
+        "source_account_url": "https://fixtureother.blob.core.windows.net",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/append/object.log"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "appendblock"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https://fixtureother\\.blob\\.core\\.windows\\.net/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
                   }
                 }
               ],
@@ -93925,11 +95792,153 @@
                     "is": "equal",
                     "value": "bytes=0-2"
                   }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
                 }
               ],
               "allow_headers": [
-                "content-type",
-                "x-ms-copy-source-authorization"
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure-hns/stage-from-url-other-account",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Stage a block with Put Block From URL from another storage account, which x-ms-copy-source names by that account's URL. Within one tenant, Azure reads the source as the caller, so a bearer token in x-ms-copy-source-authorization is optional",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block-from-url"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "key": "object-tests/multipart/staged.bin",
+        "op": "azure.stage_block_from_url",
+        "source_account_url": "https://fixtureother.blob.core.windows.net",
+        "source_key": "object-tests/copy/source.txt",
+        "source_range": {
+          "end": 3,
+          "start": 0
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/staged.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https://fixtureother\\.blob\\.core\\.windows\\.net/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-2"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
               ],
               "allow_query": [],
               "response": {

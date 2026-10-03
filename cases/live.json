@@ -21,7 +21,7 @@
       "lane": "live",
       "purpose": "Service acceptance of a fresh signed request using credentials supplied by the caller.",
       "sources": [
-        "https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-shared-key"
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-azure-active-directory"
       ],
       "call": {
         "op": "get",
@@ -51,7 +51,7 @@
       "lane": "live",
       "purpose": "Read a pre-provisioned private object; invalid-credential control must be denied.",
       "sources": [
-        "https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-shared-key"
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-azure-active-directory"
       ],
       "call": {
         "op": "get",

@@ -132,36 +132,6 @@
       ]
     },
     {
-      "id": "azure/hmac-sha256-rfc4231",
-      "profile": "azure",
-      "lane": "vectors",
-      "purpose": "RFC 4231 test case 1.",
-      "sources": [
-        "https://www.rfc-editor.org/rfc/rfc4231#section-4.2"
-      ],
-      "call": {
-        "op": "hmac_sha256",
-        "key_base64": "CwsLCwsLCwsLCwsLCwsLCwsLCws=",
-        "body_base64": "SGkgVGhlcmU="
-      },
-      "expect": [
-        {
-          "at": "/outcome",
-          "rule": {
-            "is": "equal",
-            "value": "ok"
-          }
-        },
-        {
-          "at": "/value/digest_base64",
-          "rule": {
-            "is": "equal",
-            "value": "sDRMYdjbOFNcqK/OrwvxK4gdwgDJgz2nJuk3bC4yz/c="
-          }
-        }
-      ]
-    },
-    {
       "id": "s3/hmac-sha256-rfc4231",
       "profile": "s3",
       "lane": "vectors",
@@ -269,82 +239,6 @@
           "rule": {
             "is": "equal",
             "value": "GET\n/test.txt\n\nhost:examplebucket.s3.amazonaws.com\nrange:bytes=0-9\nx-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nx-amz-date:20130524T000000Z\n\nhost;range;x-amz-content-sha256;x-amz-date\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-          }
-        }
-      ]
-    },
-    {
-      "id": "azure/shared-key-encoded-name",
-      "profile": "azure",
-      "lane": "vectors",
-      "purpose": "Document-derived Shared Key example with a public synthetic key; the canonicalized resource keeps the escaped path.",
-      "sources": [
-        "https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-shared-key"
-      ],
-      "call": {
-        "op": "azure.sign",
-        "method": "GET",
-        "url": "https://fixture.blob.core.windows.net/fixture/a%20b?comp=metadata",
-        "headers": {
-          "x-ms-date": "Mon, 01 Jan 2024 00:00:00 GMT",
-          "x-ms-version": "2023-11-03"
-        },
-        "body_base64": "",
-        "clock": "2024-01-01T00:00:00Z",
-        "credentials": {
-          "account": "fixture",
-          "key_base64": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="
-        }
-      },
-      "expect": [
-        {
-          "at": "/outcome",
-          "rule": {
-            "is": "equal",
-            "value": "ok"
-          }
-        },
-        {
-          "at": "/value/authorization",
-          "rule": {
-            "is": "equal",
-            "value": "SharedKey fixture:klWCi6Ppc/uMEOOhAHKe9/os6gErdqBdFvMjaTd9lx4="
-          }
-        }
-      ]
-    },
-    {
-      "id": "azure/canonical-shared-key",
-      "profile": "azure",
-      "lane": "vectors",
-      "purpose": "Empty standard fields and final query line are significant; no newline is appended after the resource.",
-      "sources": [
-        "https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-shared-key"
-      ],
-      "call": {
-        "op": "azure.string_to_sign",
-        "method": "GET",
-        "url": "https://fixture.blob.core.windows.net/fixture/a%20b?comp=metadata",
-        "account": "fixture",
-        "headers": {
-          "x-ms-date": "Mon, 01 Jan 2024 00:00:00 GMT",
-          "x-ms-version": "2023-11-03"
-        },
-        "body_base64": ""
-      },
-      "expect": [
-        {
-          "at": "/outcome",
-          "rule": {
-            "is": "equal",
-            "value": "ok"
-          }
-        },
-        {
-          "at": "/value/text",
-          "rule": {
-            "is": "equal",
-            "value": "GET\n\n\n\n\n\n\n\n\n\n\n\nx-ms-date:Mon, 01 Jan 2024 00:00:00 GMT\nx-ms-version:2023-11-03\n/fixture/fixture/a%20b\ncomp:metadata"
           }
         }
       ]

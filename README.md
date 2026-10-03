@@ -15,6 +15,8 @@ There are also a few live tests that are just to see if you can actually make a 
 | `vectors.json` | Digests and signatures |
 | `live.json` | Probes against a live service |
 
+The Azure cases authorize with Microsoft Entra ID only. The suite does not aim to test shared access signatures (SAS) or Shared Key, and has no cases or vectors for them.
+
 [REFERENCE.md](REFERENCE.md) describes the adapter protocol.
 
 ## Example test of `borink-object-storage`
