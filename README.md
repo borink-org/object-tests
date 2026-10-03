@@ -13,7 +13,7 @@ There are also a few live tests that are just to see if you can actually make a 
 | `vectors.json` | Digests and signatures |
 | `live.json` | Probes against a live service |
 
-[REFERENCE.md](REFERENCE.md) describes the grader, the adapter protocol and its vocabulary, such as the error kinds and result fields, and the case format.
+[REFERENCE.md](REFERENCE.md) describes the adapter protocol.
 
 ## Example test of `borink-object-storage`
 
