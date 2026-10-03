@@ -107,6 +107,10 @@ fn rule_matches_value(rule: &Rule, got: Option<&Value>, now: SystemTime) -> bool
                 _ => false,
             }
         }
+        // These hold the request as a whole, and report why they fail through check_assertions.
+        Rule::BlobBatch { .. } | Rule::BodyChecksum { .. } => {
+            got.is_some_and(|request| request_rule_failure(rule, request).is_none())
+        }
         Rule::Fresh {
             format,
             max_past_seconds,
@@ -134,6 +138,19 @@ pub struct Difference {
     pub because: Option<String>,
 }
 
+/// Returns why a request fails a rule over the whole request, or nothing if it passes.
+fn request_rule_failure(rule: &Rule, request: &Value) -> Option<String> {
+    match rule {
+        Rule::BlobBatch { subrequests } => {
+            crate::request_rules::check_blob_batch(request, subrequests).err()
+        }
+        Rule::BodyChecksum { header, algorithm } => {
+            crate::request_rules::check_body_checksum(request, header, algorithm).err()
+        }
+        _ => None,
+    }
+}
+
 pub fn check_assertions(checks: &[Check], value: &Value, now: SystemTime) -> Vec<Difference> {
     let mut differences = Vec::new();
     for check in checks {
@@ -142,11 +159,18 @@ pub fn check_assertions(checks: &[Check], value: &Value, now: SystemTime) -> Vec
             continue;
         }
         if !rule_matches_value(&check.rule, got, now) {
+            // A rule over the whole request reports the request's own failure, not the request.
+            let request_failure =
+                got.and_then(|request| request_rule_failure(&check.rule, request));
             differences.push(Difference {
                 at: check.at.clone(),
                 expected: check.rule.clone(),
-                got: got.cloned(),
-                because: check.because.clone(),
+                got: if request_failure.is_some() {
+                    None
+                } else {
+                    got.cloned()
+                },
+                because: request_failure.or_else(|| check.because.clone()),
             });
         }
     }

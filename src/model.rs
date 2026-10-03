@@ -253,6 +253,34 @@ pub enum Rule {
     Xml {
         value: String,
     },
+
+    /// An Azure Blob Batch request with these subrequests, checked at the request's root. See
+    /// `request_rules::check_blob_batch` for what it requires.
+    BlobBatch {
+        subrequests: Vec<BatchSubrequest>,
+    },
+
+    /// A header that holds the checksum of the request body, checked at the request's root.
+    BodyChecksum {
+        header: String,
+        algorithm: ChecksumAlgorithm,
+    },
+}
+
+/// A subrequest of an Azure Blob Batch, with its path decoded.
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
+pub struct BatchSubrequest {
+    pub method: String,
+    pub path: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ChecksumAlgorithm {
+    Crc32,
+    Crc32c,
+    Crc64nvme,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -301,6 +329,14 @@ fn validate_checks(checks: &[Check]) -> Result<()> {
                 normalize_xml(value)?;
             }
             Rule::OneOf { values } if values.is_empty() => return Err("empty one_of".into()),
+            Rule::BlobBatch { subrequests } if subrequests.is_empty() || !check.at.is_empty() => {
+                return Err("a blob batch names its subrequests, at the request's root".into());
+            }
+            Rule::BodyChecksum { header, .. }
+                if !is_valid_http_header_name(header) || !check.at.is_empty() =>
+            {
+                return Err("a body checksum names its header, at the request's root".into());
+            }
             _ => {}
         }
     }

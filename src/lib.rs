@@ -2,6 +2,7 @@
 mod checks;
 mod http_transport;
 mod request;
+mod request_rules;
 
 pub mod expected_unsupported;
 pub mod model;
