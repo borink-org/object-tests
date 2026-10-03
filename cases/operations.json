@@ -74848,6 +74848,185 @@
       "refusal": null
     },
     {
+      "id": "operations/s3/commit-conditional-conflict",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a 409 ConditionalRequestConflict to a conditional completion as an error, without sending the completion again: AWS advises a new upload with every part staged again",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "origin": "transient",
+      "call": {
+        "if_none_match": "*",
+        "key": "object-tests/multipart/guarded.bin",
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-cd3c4834c1cd\"",
+            "number": 1
+          }
+        ],
+        "upload_id": "fixture-upload+/9cd6f716dbf9="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/guarded.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-cd3c4834c1cd\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/9cd6f716dbf9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/guarded.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-cd3c4834c1cd\"</ETag><PartNumber>1</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/9cd6f716dbf9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ConditionalRequestConflict"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3/commit-nothing",
       "profile": "s3",
       "lane": "core",
@@ -75820,6 +75999,533 @@
       "refusal": null
     },
     {
+      "id": "operations/s3/commit-object-size-mismatch",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report S3's refusal of a completion whose parts do not add up to the object size stated in x-amz-mp-object-size",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/multipart/commit-object-size-mismatch.bin",
+        "object_size": 4,
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-3841a4d594c0\"",
+            "number": 1
+          }
+        ],
+        "upload_id": "fixture-upload+/2b2c71a6ce04="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/commit-object-size-mismatch.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-3841a4d594c0\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/2b2c71a6ce04="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-mp-object-size",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "4"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InvalidRequest</Code><Message>The provided x-amz-mp-object-size header value 4 does not match what was computed: 3</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/commit-object-size-mismatch.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-3841a4d594c0\"</ETag><PartNumber>1</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/2b2c71a6ce04="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-mp-object-size",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "4"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InvalidRequest</Code><Message>The provided x-amz-mp-object-size header value 4 does not match what was computed: 3</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidRequest"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/commit-object-size",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Send the object size the caller expects in x-amz-mp-object-size; a completion whose parts add up to it succeeds",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/multipart/commit-object-size.bin",
+        "object_size": 3,
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-3841a4d594c0\"",
+            "number": 1
+          }
+        ],
+        "upload_id": "fixture-upload+/2b2c71a6ce04="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/commit-object-size.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-3841a4d594c0\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/2b2c71a6ce04="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-mp-object-size",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "3"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/commit-object-size.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/commit-object-size.bin</Key><ETag>&quot;fixture-69ebdafc497f&quot;</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/commit-object-size.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-3841a4d594c0\"</ETag><PartNumber>1</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/2b2c71a6ce04="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-mp-object-size",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "3"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/commit-object-size.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/commit-object-size.bin</Key><ETag>&quot;fixture-69ebdafc497f&quot;</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-69ebdafc497f\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/commit-one-empty-part",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Complete an upload of one empty part, which writes an empty object; a client that refuses a completion of no parts writes an empty object this way",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/multipart/empty.bin",
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-3841a4d594c0\"",
+            "number": 1
+          }
+        ],
+        "upload_id": "fixture-upload+/2b2c71a6ce04="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/empty.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-3841a4d594c0\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/2b2c71a6ce04="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/empty.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/empty.bin</Key><ETag>&quot;fixture-69ebdafc497f&quot;</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/empty.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-3841a4d594c0\"</ETag><PartNumber>1</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/2b2c71a6ce04="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/empty.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/empty.bin</Key><ETag>&quot;fixture-69ebdafc497f&quot;</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-69ebdafc497f\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3/commit-subset",
       "profile": "s3",
       "lane": "core",
@@ -76480,6 +77186,731 @@
               null,
               ""
             ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/commit-200-internal-error",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a completion answered 200 with an InternalError in the body as an error, never as a success. A client may retry up to 5 times first, and need not retry",
+      "sources": [
+        "https://repost.aws/knowledge-center/s3-resolve-200-internalerror",
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html"
+      ],
+      "origin": "transient",
+      "call": {
+        "key": "object-tests/multipart/object.bin",
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-6d60d5bbaa47\"",
+            "number": 1
+          },
+          {
+            "etag": "\"fixture-32b70ae425ac\"",
+            "number": 2
+          }
+        ],
+        "upload_id": "fixture-upload+/276ca18046f9="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-6d60d5bbaa47\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-32b70ae425ac\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-6d60d5bbaa47\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-32b70ae425ac\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-6d60d5bbaa47\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-32b70ae425ac\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-6d60d5bbaa47\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-32b70ae425ac\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-6d60d5bbaa47\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-32b70ae425ac\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-6d60d5bbaa47\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-32b70ae425ac\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-6d60d5bbaa47\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-32b70ae425ac\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-6d60d5bbaa47\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-32b70ae425ac\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-6d60d5bbaa47\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-32b70ae425ac\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-6d60d5bbaa47\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-32b70ae425ac\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-6d60d5bbaa47\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-32b70ae425ac\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-6d60d5bbaa47\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-32b70ae425ac\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InternalError"
           }
         }
       ],
@@ -104633,6 +106064,503 @@
       "refusal": null
     },
     {
+      "id": "operations/s3/copy-200-internal-error",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a copy answered 200 with an InternalError in the body as an error, never as a success. A client may retry up to 5 times first, and need not retry",
+      "sources": [
+        "https://repost.aws/knowledge-center/s3-resolve-200-internalerror",
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html"
+      ],
+      "origin": "transient",
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "copy",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "HEAD"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/source.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "then": [
+                {
+                  "alternatives": [
+                    {
+                      "request": [
+                        {
+                          "at": "/method",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "PUT"
+                          }
+                        },
+                        {
+                          "at": "/path",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "/fixture/object-tests/copy/target.txt"
+                          }
+                        },
+                        {
+                          "at": "/body_base64",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": ""
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-copy-source",
+                          "optional": false,
+                          "rule": {
+                            "is": "matches",
+                            "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                          }
+                        }
+                      ],
+                      "allow_headers": [
+                        "content-type"
+                      ],
+                      "allow_query": [],
+                      "response": {
+                        "status": 200,
+                        "headers": {
+                          "content-type": "application/xml",
+                          "date": {
+                            "from": "now"
+                          }
+                        },
+                        "body": {
+                          "encoding": "utf8",
+                          "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                        },
+                        "framing": "chunked"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-length": "5",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InternalError"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3/put-with-unknown-storage-class",
       "profile": "s3",
       "lane": "core",
@@ -106694,6 +108622,404 @@
           "rule": {
             "is": "equal",
             "value": "PreconditionFailed"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/put-conditional-conflict",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a 409 ConditionalRequestConflict to a conditional put as an error. AWS advises retrying a put, so a client may retry up to 5 times first, and need not retry",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "origin": "transient",
+      "call": {
+        "body_base64": "YW5vdGhlciBvYmplY3Q=",
+        "if_none_match": "*",
+        "key": "object-tests/write/object.txt",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "YW5vdGhlciBvYmplY3Q="
+                  }
+                },
+                {
+                  "at": "/headers/if-none-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "*"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>ConditionalRequestConflict</Code><Message>A conflicting operation occurred. If using PutObject you can retry the request. If using multipart upload you should initiate another CreateMultipartUpload request and re-upload each part.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ConditionalRequestConflict"
           }
         }
       ],
@@ -109244,6 +111570,109 @@
                   "rule": {
                     "is": "equal",
                     "value": "cGFydA=="
+                  }
+                },
+                {
+                  "at": "/query/partNumber",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-6d60d5bbaa47\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-6d60d5bbaa47\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/stage-empty-part",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Stage an empty part, which S3 takes",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "",
+        "key": "object-tests/multipart/object.bin",
+        "op": "s3.upload_part",
+        "part_number": 1,
+        "upload_id": "fixture-upload+/276ca18046f9="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
                   }
                 },
                 {
@@ -114123,6 +116552,892 @@
       "refusal": null
     },
     {
+      "id": "operations/s3-express/commit-object-size-mismatch",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Report S3's refusal of a completion whose parts do not add up to the object size stated in x-amz-mp-object-size",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/multipart/commit-object-size-mismatch.bin",
+        "object_size": 4,
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-db1e44387ca0\"",
+            "number": 1
+          }
+        ],
+        "upload_id": "fixture-upload+/b39780854a14="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/commit-object-size-mismatch.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-db1e44387ca0\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/b39780854a14="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-mp-object-size",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "4"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InvalidRequest</Code><Message>The provided x-amz-mp-object-size header value 4 does not match what was computed: 3</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/commit-object-size-mismatch.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-db1e44387ca0\"</ETag><PartNumber>1</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/b39780854a14="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-mp-object-size",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "4"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InvalidRequest</Code><Message>The provided x-amz-mp-object-size header value 4 does not match what was computed: 3</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 200
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidRequest"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/commit-object-size",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Send the object size the caller expects in x-amz-mp-object-size; a completion whose parts add up to it succeeds",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/multipart/commit-object-size.bin",
+        "object_size": 3,
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-db1e44387ca0\"",
+            "number": 1
+          }
+        ],
+        "upload_id": "fixture-upload+/b39780854a14="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/commit-object-size.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-db1e44387ca0\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/b39780854a14="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-mp-object-size",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "3"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/commit-object-size.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/commit-object-size.bin</Key><ETag>\"fixture-0841fa5d9c5c\"</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/commit-object-size.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-db1e44387ca0\"</ETag><PartNumber>1</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/b39780854a14="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-mp-object-size",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "3"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/commit-object-size.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/commit-object-size.bin</Key><ETag>\"fixture-0841fa5d9c5c\"</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-0841fa5d9c5c\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/commit-one-empty-part",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Complete an upload of one empty part, which writes an empty object; a client that refuses a completion of no parts writes an empty object this way",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "key": "object-tests/multipart/empty.bin",
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-db1e44387ca0\"",
+            "number": 1
+          }
+        ],
+        "upload_id": "fixture-upload+/b39780854a14="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/empty.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-db1e44387ca0\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/b39780854a14="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/empty.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/empty.bin</Key><ETag>\"fixture-0841fa5d9c5c\"</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/empty.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-db1e44387ca0\"</ETag><PartNumber>1</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/b39780854a14="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>https://fixture.invalid/fixture/object-tests/multipart/empty.bin</Location><Bucket>fixture</Bucket><Key>object-tests/multipart/empty.bin</Key><ETag>\"fixture-0841fa5d9c5c\"</ETag><ChecksumCRC64NVME>rzsmsrcRLcM=</ChecksumCRC64NVME><ChecksumType>FULL_OBJECT</ChecksumType></CompleteMultipartUploadResult>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-0841fa5d9c5c\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3-express/commit-subset",
       "profile": "s3-express",
       "lane": "core",
@@ -117575,6 +120890,1092 @@
               null,
               ""
             ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/commit-200-internal-error",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Report a completion answered 200 with an InternalError in the body as an error, never as a success. A client may retry up to 5 times first, and need not retry",
+      "sources": [
+        "https://repost.aws/knowledge-center/s3-resolve-200-internalerror",
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html"
+      ],
+      "origin": "transient",
+      "call": {
+        "key": "object-tests/multipart/object.bin",
+        "op": "s3.complete_multipart",
+        "parts": [
+          {
+            "etag": "\"fixture-9aff617fcdf8\"",
+            "number": 1
+          },
+          {
+            "etag": "\"fixture-ec2738a0b15a\"",
+            "number": 2
+          }
+        ],
+        "upload_id": "fixture-upload+/c60fb1e2e00d="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-9aff617fcdf8\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-ec2738a0b15a\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-9aff617fcdf8\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-ec2738a0b15a\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-9aff617fcdf8\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-ec2738a0b15a\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-9aff617fcdf8\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-ec2738a0b15a\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-9aff617fcdf8\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-ec2738a0b15a\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-9aff617fcdf8\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-ec2738a0b15a\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-9aff617fcdf8\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-ec2738a0b15a\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-9aff617fcdf8\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-ec2738a0b15a\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-9aff617fcdf8\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-ec2738a0b15a\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-9aff617fcdf8\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-ec2738a0b15a\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><PartNumber>1</PartNumber><ETag>\"fixture-9aff617fcdf8\"</ETag></Part><Part><PartNumber>2</PartNumber><ETag>\"fixture-ec2738a0b15a\"</ETag></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Part><ETag>\"fixture-9aff617fcdf8\"</ETag><PartNumber>1</PartNumber></Part><Part><ETag>\"fixture-ec2738a0b15a\"</ETag><PartNumber>2</PartNumber></Part></CompleteMultipartUpload>"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InternalError"
           }
         }
       ],
@@ -154520,6 +158921,687 @@
       "refusal": null
     },
     {
+      "id": "operations/s3-express/copy-200-internal-error",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Report a copy answered 200 with an InternalError in the body as an error, never as a success. A client may retry up to 5 times first, and need not retry",
+      "sources": [
+        "https://repost.aws/knowledge-center/s3-resolve-200-internalerror",
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html"
+      ],
+      "origin": "transient",
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "copy",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "HEAD"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/source.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "then": [
+                {
+                  "alternatives": [
+                    {
+                      "request": [
+                        {
+                          "at": "/method",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "PUT"
+                          }
+                        },
+                        {
+                          "at": "/path",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "/object-tests/copy/target.txt"
+                          }
+                        },
+                        {
+                          "at": "/body_base64",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": ""
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-copy-source",
+                          "optional": false,
+                          "rule": {
+                            "is": "matches",
+                            "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                          }
+                        },
+                        {
+                          "at": "/headers/host",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                          }
+                        },
+                        {
+                          "at": "/headers/authorization",
+                          "optional": false,
+                          "rule": {
+                            "is": "matches",
+                            "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-s3session-token",
+                          "optional": false,
+                          "rule": {
+                            "is": "absent"
+                          }
+                        }
+                      ],
+                      "allow_headers": [
+                        "content-type"
+                      ],
+                      "allow_query": [],
+                      "response": {
+                        "status": 200,
+                        "headers": {
+                          "content-type": "application/xml",
+                          "date": {
+                            "from": "now"
+                          }
+                        },
+                        "body": {
+                          "encoding": "utf8",
+                          "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                        },
+                        "framing": "chunked"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-length": "5",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message><RequestId>fixture</RequestId><HostId>fixture</HostId></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ],
+          "optional": true
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InternalError"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/s3-express/put-with-md5",
       "profile": "s3-express",
       "lane": "core",
@@ -163935,6 +169017,207 @@
                   "rule": {
                     "is": "equal",
                     "value": "cGFydA=="
+                  }
+                },
+                {
+                  "at": "/query/partNumber",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-9aff617fcdf8\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-9aff617fcdf8\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/stage-empty-part",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Stage an empty part, which S3 takes",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "",
+        "key": "object-tests/multipart/object.bin",
+        "op": "s3.upload_part",
+        "part_number": 1,
+        "upload_id": "fixture-upload+/c60fb1e2e00d="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
                   }
                 },
                 {
