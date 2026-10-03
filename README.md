@@ -8,7 +8,8 @@ There are also a few live tests that are just to see if you can actually make a 
 
 | Suite | Contents |
 |---|---|
-| `operations.json` | Operations over recorded HTTP |
+| `operations.json` | Object operations over recorded HTTP |
+| `management.json` | Bucket and container operations over recorded HTTP |
 | `vectors.json` | Digests and signatures |
 | `live.json` | Probes against a live service |
 

@@ -35,7 +35,12 @@ fn create_get_request() -> Value {
 
 #[test]
 fn corpus_is_strict_and_valid() {
-    for file in ["operations.json", "vectors.json", "live.json"] {
+    for file in [
+        "operations.json",
+        "management.json",
+        "vectors.json",
+        "live.json",
+    ] {
         Suite::load(format!("{}/cases/{file}", env!("CARGO_MANIFEST_DIR"))).unwrap();
     }
     let mut suite_json = serde_json::to_value(load_test_suite()).unwrap();

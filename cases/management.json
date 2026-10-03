@@ -1,0 +1,2640 @@
+{
+  "version": 1,
+  "index": {
+    "management/azure-hns/container-properties": "Read the properties of a container",
+    "management/azure-hns/container-properties-absent": "Report a missing container when reading its properties",
+    "management/azure-hns/create-container": "Create a container",
+    "management/azure-hns/create-container-exists": "Refuse to create a container that exists",
+    "management/azure-hns/create-container-invalid-name": "Refuse a container name with capitals and an underscore",
+    "management/azure-hns/delete-container": "Delete a container",
+    "management/azure-hns/delete-container-absent": "Report a missing container on delete",
+    "management/azure-hns/list-containers": "List the containers whose names start with a prefix",
+    "management/azure/container-properties": "Read the properties of a container",
+    "management/azure/container-properties-absent": "Report a missing container when reading its properties",
+    "management/azure/create-container": "Create a container",
+    "management/azure/create-container-exists": "Refuse to create a container that exists",
+    "management/azure/create-container-invalid-name": "Refuse a container name with capitals and an underscore",
+    "management/azure/delete-container": "Delete a container",
+    "management/azure/delete-container-absent": "Report a missing container on delete",
+    "management/azure/list-containers": "List the containers whose names start with a prefix",
+    "management/s3-express/create-bucket": "Create a directory bucket in an availability zone. The request goes to the regional control endpoint, s3express-control, by path, signed with the account credentials and no session",
+    "management/s3/create-bucket": "Create a bucket in the region of the endpoint",
+    "management/s3/create-bucket-owned": "Refuse to create a bucket that the account already owns",
+    "management/s3/delete-bucket": "Delete an empty bucket",
+    "management/s3/get-bucket-versioning": "Report a bucket's versioning status, Enabled once versioning was turned on",
+    "management/s3/get-bucket-versioning-never-enabled": "Report no versioning status for a bucket that never had versioning turned on. S3 answers a VersioningConfiguration without a Status",
+    "management/s3/head-bucket": "Confirm that a bucket exists",
+    "management/s3/head-bucket-missing": "Report a bucket that does not exist",
+    "management/s3/list-buckets": "List the buckets whose names start with a prefix",
+    "management/s3/put-bucket-versioning": "Turn on versioning in a bucket, with a VersioningConfiguration whose Status is Enabled. The data-plane runs keep earlier versions in such a bucket"
+  },
+  "profiles": {
+    "azure": {
+      "provider": "azure",
+      "endpoint": {
+        "account": "fixture",
+        "bucket": "fixture",
+        "region": "us-east-1"
+      },
+      "checks": [
+        {
+          "at": "/headers/x-ms-date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "http",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "http",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/x-ms-client-request-id",
+          "optional": true,
+          "rule": {
+            "is": "matches",
+            "pattern": ".{0,1024}"
+          }
+        },
+        {
+          "at": "/headers/x-ms-version",
+          "optional": false,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "2018-11-09",
+              "2019-12-12",
+              "2020-10-02",
+              "2021-12-02",
+              "2023-11-03",
+              "2024-11-04",
+              "2025-01-05",
+              "2025-11-05",
+              "2026-02-06",
+              "2026-04-06"
+            ]
+          }
+        }
+      ],
+      "allow_headers": [
+        "host",
+        "content-length",
+        "transfer-encoding",
+        "connection",
+        "expect",
+        "user-agent",
+        "accept",
+        "accept-encoding",
+        "authorization"
+      ],
+      "allow_query": []
+    },
+    "azure-hns": {
+      "provider": "azure",
+      "endpoint": {
+        "account": "fixture",
+        "bucket": "fixture",
+        "hierarchical_namespace": true,
+        "region": "us-east-1"
+      },
+      "checks": [
+        {
+          "at": "/headers/x-ms-date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "http",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "http",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/x-ms-client-request-id",
+          "optional": true,
+          "rule": {
+            "is": "matches",
+            "pattern": ".{0,1024}"
+          }
+        },
+        {
+          "at": "/headers/x-ms-version",
+          "optional": false,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "2018-11-09",
+              "2019-12-12",
+              "2020-10-02",
+              "2021-12-02",
+              "2023-11-03",
+              "2024-11-04",
+              "2025-01-05",
+              "2025-11-05",
+              "2026-02-06",
+              "2026-04-06"
+            ]
+          }
+        }
+      ],
+      "allow_headers": [
+        "host",
+        "content-length",
+        "transfer-encoding",
+        "connection",
+        "expect",
+        "user-agent",
+        "accept",
+        "accept-encoding",
+        "authorization"
+      ],
+      "allow_query": []
+    },
+    "s3": {
+      "provider": "s3",
+      "endpoint": {
+        "account": "fixture",
+        "bucket": "fixture",
+        "region": "us-east-1"
+      },
+      "checks": [
+        {
+          "at": "/headers/x-amz-date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "amz",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/x-amz-content-sha256",
+          "optional": true,
+          "rule": {
+            "is": "matches",
+            "pattern": "[0-9a-f]{64}|UNSIGNED-PAYLOAD"
+          }
+        },
+        {
+          "at": "/headers/x-amz-api-version",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "2006-03-01"
+          }
+        },
+        {
+          "at": "/raw_query",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": "[^+]*"
+          },
+          "because": "S3 reads a + in a query as a space, so a plus in a prefix, token or upload ID must go as %2B and a space as %20"
+        }
+      ],
+      "allow_headers": [
+        "host",
+        "content-length",
+        "transfer-encoding",
+        "connection",
+        "expect",
+        "user-agent",
+        "accept",
+        "accept-encoding",
+        "authorization",
+        "amz-sdk-invocation-id",
+        "amz-sdk-request",
+        "x-amz-user-agent"
+      ],
+      "allow_query": []
+    },
+    "s3-express": {
+      "provider": "s3",
+      "endpoint": {
+        "bucket": "fixture--euc1-az1--x-s3",
+        "control_url": "http://s3express-control.eu-central-1.fixture.invalid",
+        "directory_bucket": true,
+        "region": "eu-central-1",
+        "url": "http://s3express-euc1-az1.fixture.invalid"
+      },
+      "checks": [
+        {
+          "at": "/headers/x-amz-date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "amz",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/x-amz-content-sha256",
+          "optional": true,
+          "rule": {
+            "is": "matches",
+            "pattern": "[0-9a-f]{64}|UNSIGNED-PAYLOAD"
+          }
+        },
+        {
+          "at": "/headers/x-amz-api-version",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "2006-03-01"
+          }
+        },
+        {
+          "at": "/raw_query",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": "[^+]*"
+          },
+          "because": "S3 reads a + in a query as a space, so a plus in a prefix, token or upload ID must go as %2B and a space as %20"
+        }
+      ],
+      "allow_headers": [
+        "host",
+        "content-length",
+        "transfer-encoding",
+        "connection",
+        "expect",
+        "user-agent",
+        "accept",
+        "accept-encoding",
+        "authorization",
+        "amz-sdk-invocation-id",
+        "amz-sdk-request",
+        "x-amz-user-agent",
+        "proxy-connection"
+      ],
+      "allow_query": []
+    }
+  },
+  "cases": [
+    {
+      "id": "management/azure/list-containers",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "List the containers whose names start with a prefix",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/list-containers2"
+      ],
+      "call": {
+        "op": "azure.list_containers",
+        "prefix": "otc-listed-"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "list"
+                  }
+                },
+                {
+                  "at": "/query/prefix",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "otc-listed-"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults ServiceEndpoint=\"https://fixture.blob.core.windows.net/\"><Prefix>otc-listed-</Prefix><Containers><Container><Name>otc-listed-a</Name><Properties><Last-Modified>Mon, 01 Jan 2024 00:00:00 GMT</Last-Modified><Etag>\"fixture-etag\"</Etag><LeaseStatus>unlocked</LeaseStatus><LeaseState>available</LeaseState><HasImmutabilityPolicy>false</HasImmutabilityPolicy><HasLegalHold>false</HasLegalHold></Properties></Container><Container><Name>otc-listed-b</Name><Properties><Last-Modified>Mon, 01 Jan 2024 00:00:00 GMT</Last-Modified><Etag>\"fixture-etag\"</Etag><LeaseStatus>unlocked</LeaseStatus><LeaseState>available</LeaseState><HasImmutabilityPolicy>false</HasImmutabilityPolicy><HasLegalHold>false</HasLegalHold></Properties></Container></Containers><NextMarker /></EnumerationResults>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/containers",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": [
+              "otc-listed-a",
+              "otc-listed-b"
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure/container-properties-absent",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a missing container when reading its properties",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/get-container-properties"
+      ],
+      "call": {
+        "container": "otc-absent",
+        "op": "azure.container_properties"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-absent"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 404,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "ContainerNotFound"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>ContainerNotFound</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 404
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ContainerNotFound"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure/container-properties",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Read the properties of a container",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/get-container-properties"
+      ],
+      "call": {
+        "container": "otc-read",
+        "op": "azure.container_properties"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-read"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-has-immutability-policy": "false",
+                  "x-ms-has-legal-hold": "false",
+                  "x-ms-lease-state": "available",
+                  "x-ms-lease-status": "unlocked"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure/delete-container-absent",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a missing container on delete",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/delete-container"
+      ],
+      "call": {
+        "container": "otc-absent",
+        "op": "azure.delete_container"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "DELETE"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-absent"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 404,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "ContainerNotFound"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>ContainerNotFound</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 404
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ContainerNotFound"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure/delete-container",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Delete a container",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/delete-container"
+      ],
+      "call": {
+        "container": "otc-deleted",
+        "op": "azure.delete_container"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "DELETE"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-deleted"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 202,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure/create-container-invalid-name",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Refuse a container name with capitals and an underscore",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata"
+      ],
+      "call": {
+        "container": "Otc_Invalid",
+        "op": "azure.create_container"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/Otc_Invalid"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "InvalidResourceName"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>InvalidResourceName</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidResourceName"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure/create-container-exists",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Refuse to create a container that exists",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/create-container"
+      ],
+      "call": {
+        "container": "otc-existing",
+        "op": "azure.create_container"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-existing"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "ContainerAlreadyExists"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>ContainerAlreadyExists</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ContainerAlreadyExists"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure/create-container",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Create a container",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/create-container"
+      ],
+      "call": {
+        "container": "otc-created",
+        "op": "azure.create_container"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-created"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure-hns/list-containers",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "List the containers whose names start with a prefix",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/list-containers2"
+      ],
+      "call": {
+        "op": "azure.list_containers",
+        "prefix": "otc-listed-"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "list"
+                  }
+                },
+                {
+                  "at": "/query/prefix",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "otc-listed-"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults ServiceEndpoint=\"https://fixture.blob.core.windows.net/\"><Prefix>otc-listed-</Prefix><Containers><Container><Name>otc-listed-a</Name><Properties><Last-Modified>Mon, 01 Jan 2024 00:00:00 GMT</Last-Modified><Etag>\"fixture-etag\"</Etag><LeaseStatus>unlocked</LeaseStatus><LeaseState>available</LeaseState><HasImmutabilityPolicy>false</HasImmutabilityPolicy><HasLegalHold>false</HasLegalHold></Properties></Container><Container><Name>otc-listed-b</Name><Properties><Last-Modified>Mon, 01 Jan 2024 00:00:00 GMT</Last-Modified><Etag>\"fixture-etag\"</Etag><LeaseStatus>unlocked</LeaseStatus><LeaseState>available</LeaseState><HasImmutabilityPolicy>false</HasImmutabilityPolicy><HasLegalHold>false</HasLegalHold></Properties></Container></Containers><NextMarker /></EnumerationResults>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/containers",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": [
+              "otc-listed-a",
+              "otc-listed-b"
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure-hns/container-properties-absent",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report a missing container when reading its properties",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/get-container-properties"
+      ],
+      "call": {
+        "container": "otc-absent",
+        "op": "azure.container_properties"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-absent"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 404,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "ContainerNotFound"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>ContainerNotFound</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 404
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ContainerNotFound"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure-hns/container-properties",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Read the properties of a container",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/get-container-properties"
+      ],
+      "call": {
+        "container": "otc-read",
+        "op": "azure.container_properties"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-read"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-has-immutability-policy": "false",
+                  "x-ms-has-legal-hold": "false",
+                  "x-ms-lease-state": "available",
+                  "x-ms-lease-status": "unlocked"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure-hns/delete-container-absent",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report a missing container on delete",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/delete-container"
+      ],
+      "call": {
+        "container": "otc-absent",
+        "op": "azure.delete_container"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "DELETE"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-absent"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 404,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "ContainerNotFound"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>ContainerNotFound</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 404
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ContainerNotFound"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure-hns/delete-container",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Delete a container",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/delete-container"
+      ],
+      "call": {
+        "container": "otc-deleted",
+        "op": "azure.delete_container"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "DELETE"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-deleted"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 202,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure-hns/create-container-invalid-name",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Refuse a container name with capitals and an underscore",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata"
+      ],
+      "call": {
+        "container": "Otc_Invalid",
+        "op": "azure.create_container"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/Otc_Invalid"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "InvalidResourceName"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>InvalidResourceName</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidResourceName"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure-hns/create-container-exists",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Refuse to create a container that exists",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/create-container"
+      ],
+      "call": {
+        "container": "otc-existing",
+        "op": "azure.create_container"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-existing"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "ContainerAlreadyExists"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>ContainerAlreadyExists</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ContainerAlreadyExists"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/azure-hns/create-container",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Create a container",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/create-container"
+      ],
+      "call": {
+        "container": "otc-created",
+        "op": "azure.create_container"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/otc-created"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3/delete-bucket",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Delete an empty bucket",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucket.html"
+      ],
+      "call": {
+        "bucket": "object-tests-deleted",
+        "op": "s3.delete_bucket"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "DELETE"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests-deleted"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 204,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3/head-bucket",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Confirm that a bucket exists",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html"
+      ],
+      "call": {
+        "bucket": "fixture",
+        "op": "s3.head_bucket"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "HEAD"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-amz-bucket-region": "eu-central-1"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3/head-bucket-missing",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a bucket that does not exist",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html"
+      ],
+      "call": {
+        "bucket": "object-tests-absent",
+        "op": "s3.head_bucket"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "HEAD"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests-absent"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 404,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 404
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3/list-buckets",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "List the buckets whose names start with a prefix",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html"
+      ],
+      "call": {
+        "op": "s3.list_buckets",
+        "prefix": "object-tests-listed-"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/prefix",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "object-tests-listed-"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>fixture-owner</ID></Owner><Buckets><Bucket><Name>object-tests-listed-a</Name><CreationDate>2024-01-01T00:00:00.000Z</CreationDate><BucketRegion>eu-central-1</BucketRegion></Bucket><Bucket><Name>object-tests-listed-b</Name><CreationDate>2024-01-01T00:00:00.000Z</CreationDate><BucketRegion>eu-central-1</BucketRegion></Bucket></Buckets><Prefix>object-tests-listed-</Prefix></ListAllMyBucketsResult>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/buckets",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": [
+              "object-tests-listed-a",
+              "object-tests-listed-b"
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3/create-bucket-owned",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Refuse to create a bucket that the account already owns",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucket.html"
+      ],
+      "call": {
+        "bucket": "fixture",
+        "location": "eu-central-1",
+        "op": "s3.create_bucket"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CreateBucketConfiguration xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><LocationConstraint>eu-central-1</LocationConstraint></CreateBucketConfiguration>"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>BucketAlreadyOwnedByYou</Code><Message>Fixture error</Message></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "BucketAlreadyOwnedByYou"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3/create-bucket",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Create a bucket in the region of the endpoint",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucket.html"
+      ],
+      "call": {
+        "bucket": "object-tests-created",
+        "location": "eu-central-1",
+        "op": "s3.create_bucket"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests-created"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CreateBucketConfiguration xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><LocationConstraint>eu-central-1</LocationConstraint></CreateBucketConfiguration>"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "location": "/object-tests-created"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3/put-bucket-versioning",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Turn on versioning in a bucket, with a VersioningConfiguration whose Status is Enabled. The data-plane runs keep earlier versions in such a bucket",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketVersioning.html"
+      ],
+      "call": {
+        "bucket": "object-tests-versioned",
+        "op": "s3.put_bucket_versioning",
+        "status": "Enabled"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests-versioned"
+                  }
+                },
+                {
+                  "at": "/query/versioning",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<VersioningConfiguration xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Status>Enabled</Status></VersioningConfiguration>"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-checksum-crc64nvme",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "[A-Za-z0-9+/]{11}="
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type",
+                "x-amz-sdk-checksum-algorithm"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3/get-bucket-versioning",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a bucket's versioning status, Enabled once versioning was turned on",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketVersioning.html"
+      ],
+      "call": {
+        "bucket": "object-tests-versioned",
+        "op": "s3.get_bucket_versioning"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests-versioned"
+                  }
+                },
+                {
+                  "at": "/query/versioning",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type",
+                "x-amz-sdk-checksum-algorithm"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<VersioningConfiguration xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Status>Enabled</Status></VersioningConfiguration>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "Enabled"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3/get-bucket-versioning-never-enabled",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report no versioning status for a bucket that never had versioning turned on. S3 answers a VersioningConfiguration without a Status",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketVersioning.html"
+      ],
+      "call": {
+        "bucket": "object-tests-versioned",
+        "op": "s3.get_bucket_versioning"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests-versioned"
+                  }
+                },
+                {
+                  "at": "/query/versioning",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type",
+                "x-amz-sdk-checksum-algorithm"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<VersioningConfiguration xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"/>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": ""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3-express/create-bucket",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Create a directory bucket in an availability zone. The request goes to the regional control endpoint, s3express-control, by path, signed with the account credentials and no session",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucket.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-Regions-and-Zones.html"
+      ],
+      "call": {
+        "availability_zone": "euc1-az1",
+        "bucket": "object-tests-created--euc1-az1--x-s3",
+        "op": "s3.create_bucket"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests-created--euc1-az1--x-s3"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<CreateBucketConfiguration xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location><Name>euc1-az1</Name><Type>AvailabilityZone</Type></Location><Bucket><DataRedundancy>SingleAvailabilityZone</DataRedundancy><Type>Directory</Type></Bucket></CreateBucketConfiguration>"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "s3express-control.eu-central-1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "location": "/object-tests-created--euc1-az1--x-s3"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    }
+  ]
+}
