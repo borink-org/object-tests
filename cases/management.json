@@ -18,6 +18,8 @@
     "management/azure/delete-container-absent": "Report a missing container on delete",
     "management/azure/list-containers": "List the containers whose names start with a prefix",
     "management/s3-express/create-bucket": "Create a directory bucket in an availability zone. The request goes to the regional control endpoint, s3express-control, by path, signed with the account credentials and no session",
+    "management/s3-express/list-directory-buckets": "List the account's directory buckets with ListDirectoryBuckets: a GET of / on the regional control endpoint, signed with the account's credentials and no session. It takes no prefix, so every directory bucket of the region is listed",
+    "management/s3-express/list-directory-buckets-page": "List one directory bucket a page with max-directory-buckets=1. A page with more to come ends in a ContinuationToken, which a client reports to ask for the next page",
     "management/s3/create-bucket": "Create a bucket in the region of the endpoint",
     "management/s3/create-bucket-owned": "Refuse to create a bucket that the account already owns",
     "management/s3/delete-bucket": "Delete an empty bucket",
@@ -2631,6 +2633,238 @@
           "rule": {
             "is": "equal",
             "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3-express/list-directory-buckets",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "List the account's directory buckets with ListDirectoryBuckets: a GET of / on the regional control endpoint, signed with the account's credentials and no session. It takes no prefix, so every directory bucket of the region is listed",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListDirectoryBuckets.html"
+      ],
+      "call": {
+        "op": "s3.list_directory_buckets"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "s3express-control.eu-central-1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<ListAllMyDirectoryBucketsResult>\n  <Buckets>\n    <Bucket>\n      <BucketArn>arn:aws:s3express:eu-central-1:000000000000:bucket/fixture--euc1-az1--x-s3</BucketArn>\n      <Name>fixture--euc1-az1--x-s3</Name>\n      <CreationDate>2024-01-01T00:00:00.000Z</CreationDate>\n    </Bucket>\n    <Bucket>\n      <BucketArn>arn:aws:s3express:eu-central-1:000000000000:bucket/fixture-other--euc1-az1--x-s3</BucketArn>\n      <Name>fixture-other--euc1-az1--x-s3</Name>\n      <CreationDate>2024-01-01T00:00:00.000Z</CreationDate>\n    </Bucket>\n  </Buckets>\n</ListAllMyDirectoryBucketsResult>\n"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/buckets",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": [
+              "fixture--euc1-az1--x-s3",
+              "fixture-other--euc1-az1--x-s3"
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "management/s3-express/list-directory-buckets-page",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "List one directory bucket a page with max-directory-buckets=1. A page with more to come ends in a ContinuationToken, which a client reports to ask for the next page",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListDirectoryBuckets.html"
+      ],
+      "call": {
+        "op": "s3.list_directory_buckets",
+        "page_size": 1
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/max-directory-buckets",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "s3express-control.eu-central-1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<ListAllMyDirectoryBucketsResult>\n  <Buckets>\n    <Bucket>\n      <BucketArn>arn:aws:s3express:eu-central-1:000000000000:bucket/fixture--euc1-az1--x-s3</BucketArn>\n      <Name>fixture--euc1-az1--x-s3</Name>\n      <CreationDate>2024-01-01T00:00:00.000Z</CreationDate>\n    </Bucket>\n  </Buckets>\n  <ContinuationToken>fixture-directory-token</ContinuationToken>\n</ListAllMyDirectoryBucketsResult>\n"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/buckets",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": [
+              "fixture--euc1-az1--x-s3"
+            ]
+          }
+        },
+        {
+          "at": "/value/continuation_token",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "fixture-directory-token"
           }
         }
       ],
