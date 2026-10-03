@@ -272,12 +272,14 @@ pub enum Rule {
     },
 }
 
-/// A subrequest of an Azure Blob Batch, with its path decoded.
+/// A subrequest of an Azure Blob Batch, with its path and query decoded. No query means none.
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
 pub struct BatchSubrequest {
     pub method: String,
     pub path: String,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub query: BTreeMap<String, String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
