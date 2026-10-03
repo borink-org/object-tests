@@ -5,7 +5,7 @@
 use crate::model::{BatchSubrequest, ChecksumAlgorithm};
 use base64::{Engine, engine::general_purpose::STANDARD};
 use serde_json::Value;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 fn request_header<'a>(request: &'a Value, name: &str) -> Option<&'a str> {
     request["headers"][name].as_str()
@@ -142,18 +142,35 @@ pub(crate) fn check_blob_batch(
             .or_else(|| target.strip_prefix("http://"))
             .map(|rest| rest.find('/').map_or("/", |start| &rest[start..]))
             .unwrap_or(target);
-        let path = path.split('?').next().unwrap_or(path);
-        let decoded = percent_encoding::percent_decode_str(path)
-            .decode_utf8()
-            .map_err(|_| format!("the path of part {index} does not decode to UTF-8"))?;
-        sent.push((method.to_owned(), decoded.into_owned()));
+        let (path, query) = path.split_once('?').unwrap_or((path, ""));
+        let decode = |text: &str| {
+            percent_encoding::percent_decode_str(text)
+                .decode_utf8()
+                .map(|decoded| decoded.into_owned())
+                .map_err(|_| format!("part {index} does not decode to UTF-8"))
+        };
+        let mut parameters = BTreeMap::new();
+        for pair in query.split('&').filter(|pair| !pair.is_empty()) {
+            let (name, value) = pair.split_once('=').unwrap_or((pair, ""));
+            parameters.insert(decode(name)?, decode(value)?);
+        }
+        sent.push((method.to_owned(), decode(path)?, parameters));
     }
 
     for subrequest in expected {
         let position = sent
             .iter()
-            .position(|(method, path)| *method == subrequest.method && *path == subrequest.path)
-            .ok_or_else(|| format!("no subrequest {} {}", subrequest.method, subrequest.path))?;
+            .position(|(method, path, query)| {
+                *method == subrequest.method
+                    && *path == subrequest.path
+                    && *query == subrequest.query
+            })
+            .ok_or_else(|| {
+                format!(
+                    "no subrequest {} {} with the query {:?}",
+                    subrequest.method, subrequest.path, subrequest.query
+                )
+            })?;
         sent.remove(position);
     }
     Ok(())
@@ -240,15 +257,43 @@ mod tests {
     }
 
     #[test]
+    fn a_blob_batch_subrequest_matches_its_decoded_query() {
+        let expected = [BatchSubrequest {
+            method: "DELETE".into(),
+            path: "/c/b".into(),
+            query: BTreeMap::from([("versionid".into(), "2024-01-01T00:00:00.0000000Z".into())]),
+        }];
+        let versioned = format!(
+            "{}--batch_x--",
+            deletion(0, "/c/b?versionid=2024-01-01T00%3A00%3A00.0000000Z")
+        );
+        assert_eq!(
+            check_blob_batch(&batch_request(&versioned), &expected),
+            Ok(())
+        );
+
+        // Without the version the current blob would go, and with a snapshot another one.
+        for wrong in ["/c/b", "/c/b?snapshot=2024-01-01T00:00:00.0000000Z"] {
+            let body = format!("{}--batch_x--", deletion(0, wrong));
+            assert!(
+                check_blob_batch(&batch_request(&body), &expected).is_err(),
+                "{wrong}"
+            );
+        }
+    }
+
+    #[test]
     fn a_blob_batch_needs_every_subrequest_in_a_well_formed_part() {
         let expected = [
             BatchSubrequest {
                 method: "DELETE".into(),
                 path: "/c/a b".into(),
+                query: BTreeMap::new(),
             },
             BatchSubrequest {
                 method: "DELETE".into(),
                 path: "/c/b".into(),
+                query: BTreeMap::new(),
             },
         ];
         let body = format!(

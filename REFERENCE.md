@@ -33,6 +33,8 @@ Leave out a result property the client does not expose, and name it in `unsuppor
 
 Keys are unescaped, bodies base64, ranges an offset and an exclusive end. A `checksum` without `value_base64` is for the client to compute. Tags are an object, or a list of `{"key", "value"}` pairs where a key may repeat. `content_range` reports a served range as `bytes FIRST-LAST/SIZE`.
 
+A `delete_many` key is a name or `{"key", "version"}`, on Azure also `{"key", "snapshot"}`. A result reports each key as the call named it. Where an S3 answer names a version or a delete marker, the key is an object with `version`, `delete_marker` and `delete_marker_version`. A version listing pages by `continuation_token` and `version_marker`, and returns `next_version_marker`. A `restore` reports `state` `started` for a 202 and `readable` for a 200, and a read reports `x-amz-restore` or `x-ms-archive-status` as `restore_status`.
+
 ## Cases
 
 [model.rs](src/model.rs) defines the format.
