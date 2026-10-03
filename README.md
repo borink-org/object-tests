@@ -1,5 +1,7 @@
 # object-tests
 
+**Warning: currently this is still unstable and experimental and the Git history is also unstable, expect it to be rewritten and commits to no longer resolve!**
+
 If you write an object storage client, you want to be sure it works with the real Azure Blob Storage and AWS S3. However, exactly matching their behaviors and knowing for sure you support all the features you want isn't easy! This project tries (but does not yet fully succeed) to make it easier. It records a large number of "cases", which are generated once against live Azure Blob and S3, which are used by a local HTTP server that you can then run your client against as if it's an object storage provider. This way we don't need to _reimplement_ S3/Azure Blob but can instead just copy their behavior on a predefined set of tests.
 
 The published code here is only the actual cases (in JSON format) and the grader, as well as an example adapter (because each JSON case has to be then actually turned into the right operations on your client, which of course cannot be done fully mechanically, although your clanker should be able to mostly do the work for you, at least that's the theory) for the client that this suite was designed for, [borink-object-storage](https://github.com/borink-org/object-storage).
