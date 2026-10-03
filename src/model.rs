@@ -11,6 +11,11 @@ use std::collections::{BTreeMap, BTreeSet};
 #[serde(deny_unknown_fields)]
 pub struct Suite {
     pub version: u32,
+
+    /// Each case's purpose by its ID, so that a reader can survey a suite before its rules. A
+    /// generated suite has one; when present, it must name every case with its purpose.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub index: BTreeMap<String, String>,
     pub profiles: BTreeMap<String, Profile>,
     pub cases: Vec<Case>,
 }
@@ -315,6 +320,14 @@ impl Suite {
         read_and_validate().map_err(|error| format!("{}: {error}", path.display()).into())
     }
 
+    /// Returns each case's purpose by its ID, the suite's index.
+    pub fn case_index(&self) -> BTreeMap<String, String> {
+        self.cases
+            .iter()
+            .map(|case| (case.id.clone(), case.purpose.clone()))
+            .collect()
+    }
+
     pub fn validate(&self) -> Result<()> {
         if self.version != 1 || self.cases.is_empty() {
             return Err("expected version 1 and nonempty cases".into());
@@ -328,6 +341,9 @@ impl Suite {
             for pattern in profile.allow_headers.iter().chain(&profile.allow_query) {
                 compile_full_match_regex(pattern)?;
             }
+        }
+        if !self.index.is_empty() && self.index != self.case_index() {
+            return Err("the index must name every case with its purpose".into());
         }
         for case in &self.cases {
             if !case.call.is_object() {

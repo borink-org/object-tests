@@ -139,6 +139,20 @@ fn duplicate_ids_and_empty_assertions_are_rejected() {
 }
 
 #[test]
+fn an_index_must_name_every_case_with_its_purpose() {
+    let mut suite = load_test_suite();
+    suite.index = suite.case_index();
+    assert!(suite.validate().is_ok());
+
+    suite.cases[0].purpose.push_str(" again");
+    assert!(suite.validate().is_err());
+
+    suite.index = suite.case_index();
+    suite.index.remove(&suite.cases[0].id);
+    assert!(suite.validate().is_err());
+}
+
+#[test]
 fn no_request_cannot_pass() {
     let session = create_get_session();
     assert_eq!(
