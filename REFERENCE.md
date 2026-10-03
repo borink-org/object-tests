@@ -1,7 +1,7 @@
 # Grader reference
 
 ```nu
-./target/debug/object-tests grade cases/operations.json --profile s3 -- ADAPTER
+./target/release/object-tests grade cases/operations.json --profile s3 -- ADAPTER
 ```
 
 `--case`, `--provider` and `--profile` select cases. `--expected-unsupported FILE` lists cases, patterns with `*`, or `field:/value/...` result fields that may be unsupported; `--record-unsupported FILE` writes that list. Exit code `0` means every case passed.
