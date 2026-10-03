@@ -35,7 +35,7 @@ jobs:
         run: |
           # The grader's exit status, not tail's, decides the step.
           set -o pipefail
-          for suite in operations vectors; do
+          for suite in operations management vectors; do
             ./target/release/object-tests grade "cases/$suite.json" \
               --record-unsupported "$RUNNER_TEMP/unsupported.json" \
               -- adapters/borink/target/release/borink-adapter | tail -n 1
