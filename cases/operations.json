@@ -205,11 +205,11 @@
     "operations/azure-hns/list-written-with-hashes": "list written with hashes",
     "operations/azure-hns/list-xml-escaped": "list xml escaped",
     "operations/azure-hns/put-container-missing": "put container missing. A client reports it as container_not_found: the bucket or container is absent, not the object",
-    "operations/azure-hns/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
+    "operations/azure-hns/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename*, which any reader decodes, or refuse the value",
     "operations/azure-hns/put-content-encoding-gzip": "Store Content-Encoding: gzip with a write, and the gzip bytes unchanged",
     "operations/azure-hns/put-content-properties": "Store Content-Type, Content-Language, Content-Disposition and Cache-Control with a write",
     "operations/azure-hns/put-content-type-edge-spaces": "Write a content type with spaces at either end, which HTTP drops, so the service stores it trimmed. A client may refuse it",
-    "operations/azure-hns/put-content-type-non-ascii": "Write a Content-Type with a parameter outside ASCII. An HNS account returns é as the byte e9, so the UTF-8 bytes do not read back; send an RFC 2047 encoded word, or refuse the value",
+    "operations/azure-hns/put-content-type-non-ascii": "Write a Content-Type with a parameter outside ASCII, or refuse it. An HNS account takes the UTF-8 bytes but returns é as the byte e9, so they do not read back, and no encoding of a Content-Type parameter is one every reader decodes",
     "operations/azure-hns/put-crc64-mismatch": "put crc64 mismatch",
     "operations/azure-hns/put-created": "put created",
     "operations/azure-hns/put-created-empty": "put created empty",
@@ -494,11 +494,11 @@
     "operations/azure/list-written-with-hashes": "list written with hashes",
     "operations/azure/list-xml-escaped": "list xml escaped",
     "operations/azure/put-container-missing": "put container missing. A client reports it as container_not_found: the bucket or container is absent, not the object",
-    "operations/azure/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
+    "operations/azure/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename*, which any reader decodes, or refuse the value",
     "operations/azure/put-content-encoding-gzip": "Store Content-Encoding: gzip with a write, and the gzip bytes unchanged",
     "operations/azure/put-content-properties": "Store Content-Type, Content-Language, Content-Disposition and Cache-Control with a write",
     "operations/azure/put-content-type-edge-spaces": "Write a content type with spaces at either end, which HTTP drops, so the service stores it trimmed. A client may refuse it",
-    "operations/azure/put-content-type-non-ascii": "Write a Content-Type with a parameter outside ASCII. A flat account returns the UTF-8 bytes as it got them, so they read back; an RFC 2047 encoded word is stored as written",
+    "operations/azure/put-content-type-non-ascii": "Write a Content-Type with a parameter outside ASCII as its UTF-8 bytes. A flat account returns them as it got them, so they read back",
     "operations/azure/put-crc64-mismatch": "put crc64 mismatch",
     "operations/azure/put-created": "put created",
     "operations/azure/put-created-empty": "put created empty",
@@ -739,11 +739,11 @@
     "operations/s3-express/put-computing-crc64nvme": "Compute the CRC64NVME checksum of the body and send it, base64 of its big-endian bytes, in x-amz-checksum-crc64nvme or in a trailer of an aws-chunked body",
     "operations/s3-express/put-computing-sha1": "Compute the SHA1 checksum of the body and send it, base64 of its big-endian bytes, in x-amz-checksum-sha1 or in a trailer of an aws-chunked body",
     "operations/s3-express/put-computing-sha256": "Compute the SHA256 checksum of the body and send it, base64 of its big-endian bytes, in x-amz-checksum-sha256 or in a trailer of an aws-chunked body",
-    "operations/s3-express/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
+    "operations/s3-express/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, so send an RFC 6266 filename*, which any reader decodes, or refuse the value",
     "operations/s3-express/put-content-encoding-gzip": "Report the refusal of Content-Encoding: gzip by a directory bucket",
     "operations/s3-express/put-content-properties": "Store Content-Type, Content-Language, Content-Disposition and Cache-Control with a write",
     "operations/s3-express/put-content-type-edge-spaces": "Write a content type with spaces at either end, which HTTP drops, so the service stores it trimmed. A client may refuse it",
-    "operations/s3-express/put-content-type-non-ascii": "Write a Content-Type with a parameter outside ASCII. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, so send an RFC 2047 encoded word, or refuse the value",
+    "operations/s3-express/put-content-type-non-ascii": "Report a Content-Type with a parameter outside ASCII as an error, or refuse it. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, and no encoding of a Content-Type parameter is one every reader decodes",
     "operations/s3-express/put-created": "put created",
     "operations/s3-express/put-created-empty": "put created empty",
     "operations/s3-express/put-created-key-double-slash": "put created, with the key \"double//slash.txt\"",
@@ -985,11 +985,11 @@
     "operations/s3/put-computing-sha1": "Compute the SHA1 checksum of the body and send it, base64 of its big-endian bytes, in x-amz-checksum-sha1 or in a trailer of an aws-chunked body",
     "operations/s3/put-computing-sha256": "Compute the SHA256 checksum of the body and send it, base64 of its big-endian bytes, in x-amz-checksum-sha256 or in a trailer of an aws-chunked body",
     "operations/s3/put-conditional-conflict": "Report a 409 ConditionalRequestConflict to a conditional put as an error. AWS advises retrying a put, so a client may retry up to 5 times first, and need not retry",
-    "operations/s3/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. A general-purpose bucket returns header bytes as it got them, so the UTF-8 bytes read back; an RFC 6266 filename* or an RFC 2047 encoded word is stored as written",
+    "operations/s3/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. A general-purpose bucket returns header bytes as it got them, so the UTF-8 bytes read back; an RFC 6266 filename* is stored as written, and any reader decodes it",
     "operations/s3/put-content-encoding-gzip": "Store Content-Encoding: gzip with a write, and the gzip bytes unchanged",
     "operations/s3/put-content-properties": "Store Content-Type, Content-Language, Content-Disposition and Cache-Control with a write",
     "operations/s3/put-content-type-edge-spaces": "Write a content type with spaces at either end, which HTTP drops, so the service stores it trimmed. A client may refuse it",
-    "operations/s3/put-content-type-non-ascii": "Write a Content-Type with a parameter outside ASCII. A general-purpose bucket returns header bytes as it got them, so the UTF-8 bytes read back; an RFC 2047 encoded word is stored as written",
+    "operations/s3/put-content-type-non-ascii": "Write a Content-Type with a parameter outside ASCII as its UTF-8 bytes. A general-purpose bucket returns header bytes as it got them, so they read back",
     "operations/s3/put-created": "put created",
     "operations/s3/put-created-empty": "put created empty",
     "operations/s3/put-created-key-double-slash": "put created, with the key \"double//slash.txt\"",
@@ -39707,7 +39707,7 @@
       "id": "operations/azure/put-content-type-non-ascii",
       "profile": "azure",
       "lane": "core",
-      "purpose": "Write a Content-Type with a parameter outside ASCII. A flat account returns the UTF-8 bytes as it got them, so they read back; an RFC 2047 encoded word is stored as written",
+      "purpose": "Write a Content-Type with a parameter outside ASCII as its UTF-8 bytes. A flat account returns them as it got them, so they read back",
       "sources": [
         "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
       ],
@@ -39758,11 +39758,8 @@
                   "at": "/headers/x-ms-blob-content-type",
                   "optional": false,
                   "rule": {
-                    "is": "one_of",
-                    "values": [
-                      "text/plain; name=\"Ã©tÃ©.txt\"",
-                      "text/plain; name=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\""
-                    ]
+                    "is": "equal",
+                    "value": "text/plain; name=\"Ã©tÃ©.txt\""
                   }
                 }
               ],
@@ -39824,7 +39821,7 @@
       "id": "operations/azure/put-content-disposition-non-ascii",
       "profile": "azure",
       "lane": "core",
-      "purpose": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
+      "purpose": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename*, which any reader decodes, or refuse the value",
       "sources": [
         "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
       ],
@@ -39875,11 +39872,8 @@
                   "at": "/headers/x-ms-blob-content-disposition",
                   "optional": false,
                   "rule": {
-                    "is": "one_of",
-                    "values": [
-                      "attachment; filename=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\"",
-                      "attachment; filename*=UTF-8''%C3%A9t%C3%A9.txt"
-                    ]
+                    "is": "equal",
+                    "value": "attachment; filename*=UTF-8''%C3%A9t%C3%A9.txt"
                   }
                 }
               ],
@@ -86332,7 +86326,7 @@
       "id": "operations/azure-hns/put-content-type-non-ascii",
       "profile": "azure-hns",
       "lane": "core",
-      "purpose": "Write a Content-Type with a parameter outside ASCII. An HNS account returns é as the byte e9, so the UTF-8 bytes do not read back; send an RFC 2047 encoded word, or refuse the value",
+      "purpose": "Write a Content-Type with a parameter outside ASCII, or refuse it. An HNS account takes the UTF-8 bytes but returns é as the byte e9, so they do not read back, and no encoding of a Content-Type parameter is one every reader decodes",
       "sources": [
         "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
       ],
@@ -86384,7 +86378,7 @@
                   "optional": false,
                   "rule": {
                     "is": "equal",
-                    "value": "text/plain; name=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\""
+                    "value": "text/plain; name=\"Ã©tÃ©.txt\""
                   }
                 }
               ],
@@ -86473,7 +86467,7 @@
       "id": "operations/azure-hns/put-content-disposition-non-ascii",
       "profile": "azure-hns",
       "lane": "core",
-      "purpose": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
+      "purpose": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename*, which any reader decodes, or refuse the value",
       "sources": [
         "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
       ],
@@ -86524,11 +86518,8 @@
                   "at": "/headers/x-ms-blob-content-disposition",
                   "optional": false,
                   "rule": {
-                    "is": "one_of",
-                    "values": [
-                      "attachment; filename=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\"",
-                      "attachment; filename*=UTF-8''%C3%A9t%C3%A9.txt"
-                    ]
+                    "is": "equal",
+                    "value": "attachment; filename*=UTF-8''%C3%A9t%C3%A9.txt"
                   }
                 }
               ],
@@ -136072,7 +136063,7 @@
       "id": "operations/s3/put-content-type-non-ascii",
       "profile": "s3",
       "lane": "core",
-      "purpose": "Write a Content-Type with a parameter outside ASCII. A general-purpose bucket returns header bytes as it got them, so the UTF-8 bytes read back; an RFC 2047 encoded word is stored as written",
+      "purpose": "Write a Content-Type with a parameter outside ASCII as its UTF-8 bytes. A general-purpose bucket returns header bytes as it got them, so they read back",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -136115,11 +136106,8 @@
                   "at": "/headers/content-type",
                   "optional": false,
                   "rule": {
-                    "is": "one_of",
-                    "values": [
-                      "text/plain; name=\"Ã©tÃ©.txt\"",
-                      "text/plain; name=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\""
-                    ]
+                    "is": "equal",
+                    "value": "text/plain; name=\"Ã©tÃ©.txt\""
                   }
                 }
               ],
@@ -136180,7 +136168,7 @@
       "id": "operations/s3/put-content-disposition-non-ascii",
       "profile": "s3",
       "lane": "core",
-      "purpose": "Write a Content-Disposition whose filename is outside ASCII. A general-purpose bucket returns header bytes as it got them, so the UTF-8 bytes read back; an RFC 6266 filename* or an RFC 2047 encoded word is stored as written",
+      "purpose": "Write a Content-Disposition whose filename is outside ASCII. A general-purpose bucket returns header bytes as it got them, so the UTF-8 bytes read back; an RFC 6266 filename* is stored as written, and any reader decodes it",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -136226,7 +136214,6 @@
                     "is": "one_of",
                     "values": [
                       "attachment; filename=\"Ã©tÃ©.txt\"",
-                      "attachment; filename=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\"",
                       "attachment; filename*=UTF-8''%C3%A9t%C3%A9.txt"
                     ]
                   }
@@ -201026,7 +201013,7 @@
       "id": "operations/s3-express/put-content-type-non-ascii",
       "profile": "s3-express",
       "lane": "core",
-      "purpose": "Write a Content-Type with a parameter outside ASCII. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, so send an RFC 2047 encoded word, or refuse the value",
+      "purpose": "Report a Content-Type with a parameter outside ASCII as an error, or refuse it. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, and no encoding of a Content-Type parameter is one every reader decodes",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -201167,7 +201154,7 @@
                   "optional": false,
                   "rule": {
                     "is": "equal",
-                    "value": "text/plain; name=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\""
+                    "value": "text/plain; name=\"Ã©tÃ©.txt\""
                   }
                 }
               ],
@@ -201176,17 +201163,16 @@
               ],
               "allow_query": [],
               "response": {
-                "status": 200,
+                "status": 400,
                 "headers": {
+                  "content-type": "application/xml",
                   "date": {
                     "from": "now"
-                  },
-                  "etag": "\"fixture-68e2c5df0cb2\"",
-                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                  }
                 },
                 "body": {
-                  "encoding": "base64",
-                  "data": ""
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InvalidRequest</Code><Message>Fixture error</Message></Error>"
                 },
                 "framing": "chunked"
               }
@@ -201200,26 +201186,23 @@
           "optional": false,
           "rule": {
             "is": "equal",
-            "value": "ok"
+            "value": "error"
           }
         },
         {
-          "at": "/value/etag",
+          "at": "/status",
           "optional": false,
           "rule": {
             "is": "equal",
-            "value": "\"fixture-68e2c5df0cb2\""
+            "value": 400
           }
         },
         {
-          "at": "/value/version",
-          "optional": true,
+          "at": "/code",
+          "optional": false,
           "rule": {
-            "is": "one_of",
-            "values": [
-              null,
-              ""
-            ]
+            "is": "equal",
+            "value": "InvalidRequest"
           }
         }
       ],
@@ -201270,7 +201253,7 @@
       "id": "operations/s3-express/put-content-disposition-non-ascii",
       "profile": "s3-express",
       "lane": "core",
-      "purpose": "Write a Content-Disposition whose filename is outside ASCII. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
+      "purpose": "Write a Content-Disposition whose filename is outside ASCII. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, so send an RFC 6266 filename*, which any reader decodes, or refuse the value",
       "sources": [
         "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
       ],
@@ -201410,11 +201393,8 @@
                   "at": "/headers/content-disposition",
                   "optional": false,
                   "rule": {
-                    "is": "one_of",
-                    "values": [
-                      "attachment; filename=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\"",
-                      "attachment; filename*=UTF-8''%C3%A9t%C3%A9.txt"
-                    ]
+                    "is": "equal",
+                    "value": "attachment; filename*=UTF-8''%C3%A9t%C3%A9.txt"
                   }
                 }
               ],
