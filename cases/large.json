@@ -1,0 +1,5075 @@
+{
+  "version": 1,
+  "index": {
+    "large/azure-hns/copy-sync-largest": "Copy a source of exactly 256 MiB with Copy Blob From URL, the largest it copies",
+    "large/azure-hns/copy-sync-too-large": "Report a Copy Blob From URL of a source of 256 MiB and one byte as an error. A client cannot know the source's size from the call, so it sends the request; a larger source takes Put Blob From URL or blocks",
+    "large/azure-hns/get-large": "Read an object of 4 GiB and 17 bytes, past every 32-bit length, in one GET or in ranges, and report its body by its fingerprint: body_length and body_crc64nvme_base64. A client streams such a body rather than holding it",
+    "large/azure-hns/put-from-url-largest": "Write a block blob from a source of exactly 5,000 MiB with Put Blob From URL, the largest it copies",
+    "large/azure-hns/put-from-url-too-large": "Report a Put Blob From URL of a source of 5,000 MiB and one byte as an error. A client cannot know the source's size from the call, so it sends the request; a larger source takes blocks",
+    "large/azure-hns/put-largest": "Write a block blob of exactly 5,000 MiB with one Put Blob, the largest Azure takes in a single request. A client sends it",
+    "large/azure-hns/put-too-large": "Report a Put Blob of 5,000 MiB and one byte as an error: Azure answers 413 RequestBodyTooLarge from the Content-Length. A client may refuse it before sending; a larger blob takes blocks",
+    "large/azure-hns/stage-from-url-largest": "Stage a block of exactly 4,000 MiB with Put Block From URL, the largest block Azure takes. A client sends it",
+    "large/azure-hns/stage-from-url-over-100-mib": "Stage a block of 100 MiB and one byte with Put Block From URL. The reference's remarks give 100 MiB as the largest such block, but its table, and Azure, take up to 4,000 MiB",
+    "large/azure-hns/stage-from-url-too-large": "Report a Put Block From URL of 4,000 MiB and one byte as an error: Azure answers 409 CannotVerifyCopySource, not the 413 of a Put Block that size. A client may refuse it before sending",
+    "large/azure-hns/stage-largest": "Stage a block of exactly 4,000 MiB with Put Block, the largest block Azure takes. A client sends it",
+    "large/azure-hns/stage-too-large": "Report a Put Block of 4,000 MiB and one byte as an error: Azure answers 413 RequestBodyTooLarge from the Content-Length. A client may refuse it before sending",
+    "large/azure/copy-sync-largest": "Copy a source of exactly 256 MiB with Copy Blob From URL, the largest it copies",
+    "large/azure/copy-sync-too-large": "Report a Copy Blob From URL of a source of 256 MiB and one byte as an error. A client cannot know the source's size from the call, so it sends the request; a larger source takes Put Blob From URL or blocks",
+    "large/azure/get-large": "Read an object of 4 GiB and 17 bytes, past every 32-bit length, in one GET or in ranges, and report its body by its fingerprint: body_length and body_crc64nvme_base64. A client streams such a body rather than holding it",
+    "large/azure/put-from-url-largest": "Write a block blob from a source of exactly 5,000 MiB with Put Blob From URL, the largest it copies",
+    "large/azure/put-from-url-too-large": "Report a Put Blob From URL of a source of 5,000 MiB and one byte as an error. A client cannot know the source's size from the call, so it sends the request; a larger source takes blocks",
+    "large/azure/put-largest": "Write a block blob of exactly 5,000 MiB with one Put Blob, the largest Azure takes in a single request. A client sends it",
+    "large/azure/put-too-large": "Report a Put Blob of 5,000 MiB and one byte as an error: Azure answers 413 RequestBodyTooLarge from the Content-Length. A client may refuse it before sending; a larger blob takes blocks",
+    "large/azure/stage-from-url-largest": "Stage a block of exactly 4,000 MiB with Put Block From URL, the largest block Azure takes. A client sends it",
+    "large/azure/stage-from-url-over-100-mib": "Stage a block of 100 MiB and one byte with Put Block From URL. The reference's remarks give 100 MiB as the largest such block, but its table, and Azure, take up to 4,000 MiB",
+    "large/azure/stage-from-url-too-large": "Report a Put Block From URL of 4,000 MiB and one byte as an error: Azure answers 409 CannotVerifyCopySource, not the 413 of a Put Block that size. A client may refuse it before sending",
+    "large/azure/stage-largest": "Stage a block of exactly 4,000 MiB with Put Block, the largest block Azure takes. A client sends it",
+    "large/azure/stage-too-large": "Report a Put Block of 4,000 MiB and one byte as an error: Azure answers 413 RequestBodyTooLarge from the Content-Length. A client may refuse it before sending",
+    "large/s3-express/get-large": "Read an object of 4 GiB and 17 bytes, past every 32-bit length, in one GET or in ranges, and report its body by its fingerprint: body_length and body_crc64nvme_base64. A client streams such a body rather than holding it",
+    "large/s3-express/put-largest": "Write an object of exactly 5 GiB with one PutObject, the largest S3 takes in a single request. A client sends it",
+    "large/s3-express/put-too-large": "Report a PutObject of 5 GiB and one byte as an error: S3 answers 400 EntityTooLarge from the Content-Length. A client may refuse it before sending; a larger object takes a multipart upload",
+    "large/s3/get-large": "Read an object of 4 GiB and 17 bytes, past every 32-bit length, in one GET or in ranges, and report its body by its fingerprint: body_length and body_crc64nvme_base64. A client streams such a body rather than holding it",
+    "large/s3/put-largest": "Write an object of exactly 5 GiB with one PutObject, the largest S3 takes in a single request. A client sends it",
+    "large/s3/put-too-large": "Report a PutObject of 5 GiB and one byte as an error: S3 answers 400 EntityTooLarge from the Content-Length. A client may refuse it before sending; a larger object takes a multipart upload"
+  },
+  "profiles": {
+    "azure": {
+      "provider": "azure",
+      "endpoint": {
+        "account": "fixture",
+        "bucket": "fixture",
+        "region": "us-east-1"
+      },
+      "checks": [
+        {
+          "at": "/headers/x-ms-date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "http",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "http",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/x-ms-client-request-id",
+          "optional": true,
+          "rule": {
+            "is": "matches",
+            "pattern": ".{0,1024}"
+          }
+        },
+        {
+          "at": "/headers/x-ms-version",
+          "optional": false,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "2018-11-09",
+              "2019-12-12",
+              "2020-10-02",
+              "2021-12-02",
+              "2023-11-03",
+              "2024-11-04",
+              "2025-01-05",
+              "2025-11-05",
+              "2026-02-06",
+              "2026-04-06"
+            ]
+          }
+        }
+      ],
+      "allow_headers": [
+        "host",
+        "content-length",
+        "transfer-encoding",
+        "connection",
+        "expect",
+        "user-agent",
+        "accept",
+        "accept-encoding",
+        "authorization"
+      ],
+      "allow_query": []
+    },
+    "azure-hns": {
+      "provider": "azure",
+      "endpoint": {
+        "account": "fixture",
+        "bucket": "fixture",
+        "hierarchical_namespace": true,
+        "region": "us-east-1"
+      },
+      "checks": [
+        {
+          "at": "/headers/x-ms-date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "http",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "http",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/x-ms-client-request-id",
+          "optional": true,
+          "rule": {
+            "is": "matches",
+            "pattern": ".{0,1024}"
+          }
+        },
+        {
+          "at": "/headers/x-ms-version",
+          "optional": false,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "2018-11-09",
+              "2019-12-12",
+              "2020-10-02",
+              "2021-12-02",
+              "2023-11-03",
+              "2024-11-04",
+              "2025-01-05",
+              "2025-11-05",
+              "2026-02-06",
+              "2026-04-06"
+            ]
+          }
+        }
+      ],
+      "allow_headers": [
+        "host",
+        "content-length",
+        "transfer-encoding",
+        "connection",
+        "expect",
+        "user-agent",
+        "accept",
+        "accept-encoding",
+        "authorization"
+      ],
+      "allow_query": []
+    },
+    "s3": {
+      "provider": "s3",
+      "endpoint": {
+        "account": "fixture",
+        "bucket": "fixture",
+        "region": "us-east-1"
+      },
+      "checks": [
+        {
+          "at": "/headers/x-amz-date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "amz",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/x-amz-content-sha256",
+          "optional": true,
+          "rule": {
+            "is": "matches",
+            "pattern": "[0-9a-f]{64}|UNSIGNED-PAYLOAD|STREAMING-UNSIGNED-PAYLOAD-TRAILER"
+          }
+        },
+        {
+          "at": "/headers/x-amz-api-version",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "2006-03-01"
+          }
+        },
+        {
+          "at": "/raw_query",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": "[^+]*"
+          },
+          "because": "S3 reads a + in a query as a space, so a plus in a prefix, token or upload ID must go as %2B and a space as %20"
+        }
+      ],
+      "allow_headers": [
+        "host",
+        "content-length",
+        "transfer-encoding",
+        "connection",
+        "expect",
+        "user-agent",
+        "accept",
+        "accept-encoding",
+        "authorization",
+        "amz-sdk-invocation-id",
+        "amz-sdk-request",
+        "x-amz-user-agent"
+      ],
+      "allow_query": []
+    },
+    "s3-express": {
+      "provider": "s3",
+      "endpoint": {
+        "bucket": "fixture--euc1-az1--x-s3",
+        "directory_bucket": true,
+        "region": "eu-central-1",
+        "url": "http://s3express-euc1-az1.fixture.invalid"
+      },
+      "checks": [
+        {
+          "at": "/headers/x-amz-date",
+          "optional": true,
+          "rule": {
+            "is": "fresh",
+            "format": "amz",
+            "max_past_seconds": 900,
+            "max_future_seconds": 60
+          }
+        },
+        {
+          "at": "/headers/x-amz-content-sha256",
+          "optional": true,
+          "rule": {
+            "is": "matches",
+            "pattern": "[0-9a-f]{64}|UNSIGNED-PAYLOAD|STREAMING-UNSIGNED-PAYLOAD-TRAILER"
+          }
+        },
+        {
+          "at": "/headers/x-amz-api-version",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "2006-03-01"
+          }
+        },
+        {
+          "at": "/raw_query",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": "[^+]*"
+          },
+          "because": "S3 reads a + in a query as a space, so a plus in a prefix, token or upload ID must go as %2B and a space as %20"
+        }
+      ],
+      "allow_headers": [
+        "host",
+        "content-length",
+        "transfer-encoding",
+        "connection",
+        "expect",
+        "user-agent",
+        "accept",
+        "accept-encoding",
+        "authorization",
+        "amz-sdk-invocation-id",
+        "amz-sdk-request",
+        "x-amz-user-agent",
+        "proxy-connection"
+      ],
+      "allow_query": []
+    }
+  },
+  "cases": [
+    {
+      "id": "large/s3/put-largest",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Write an object of exactly 5 GiB with one PutObject, the largest S3 takes in a single request. A client sends it",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html"
+      ],
+      "call": {
+        "body": {
+          "data": {
+            "length": 5368709120,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5368709120
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-fbe0ab688a03\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5368709120
+                  }
+                },
+                {
+                  "at": "/headers/content-encoding",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "aws-chunked"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-decoded-content-length",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "5368709120"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-content-sha256",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "STREAMING-UNSIGNED-PAYLOAD-TRAILER",
+                      "STREAMING-AWS4-HMAC-SHA256-PAYLOAD",
+                      "STREAMING-AWS4-HMAC-SHA256-PAYLOAD-TRAILER"
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type",
+                "x-amz-trailer",
+                "x-amz-sdk-checksum-algorithm"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-fbe0ab688a03\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-fbe0ab688a03\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/s3/put-too-large",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a PutObject of 5 GiB and one byte as an error: S3 answers 400 EntityTooLarge from the Content-Length. A client may refuse it before sending; a larger object takes a multipart upload",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html"
+      ],
+      "call": {
+        "body": {
+          "data": {
+            "length": 5368709121,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5368709121
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>EntityTooLarge</Code><Message>Your proposed upload exceeds the maximum allowed size</Message></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5368709121
+                  }
+                },
+                {
+                  "at": "/headers/content-encoding",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "aws-chunked"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-decoded-content-length",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "5368709121"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-content-sha256",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "STREAMING-UNSIGNED-PAYLOAD-TRAILER",
+                      "STREAMING-AWS4-HMAC-SHA256-PAYLOAD",
+                      "STREAMING-AWS4-HMAC-SHA256-PAYLOAD-TRAILER"
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type",
+                "x-amz-trailer",
+                "x-amz-sdk-checksum-algorithm"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>EntityTooLarge</Code><Message>Your proposed upload exceeds the maximum allowed size</Message></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "EntityTooLarge"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "body"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "EntityTooLarge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "large/s3/get-large",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Read an object of 4 GiB and 17 bytes, past every 32-bit length, in one GET or in ranges, and report its body by its fingerprint: body_length and body_crc64nvme_base64. A client streams such a body rather than holding it",
+      "sources": [
+        "private/docs/large-bodies.md"
+      ],
+      "call": {
+        "body_result": "fingerprint",
+        "key": "object-tests/large/object.bin",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-ad03f2ab332a\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "repeat",
+                  "data": {
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4294967313
+                  }
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=[0-9]+-[0-9]*"
+                  }
+                },
+                {
+                  "at": "/headers/if-match",
+                  "optional": true,
+                  "rule": {
+                    "is": "equal",
+                    "value": "\"fixture-ad03f2ab332a\""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-ad03f2ab332a\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "repeat",
+                  "data": {
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4294967313
+                  }
+                },
+                "serves_ranges": true
+              }
+            }
+          ],
+          "repeats": true
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value",
+          "optional": false,
+          "rule": {
+            "is": "generated_body",
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+            "length": 4294967313
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/s3-express/put-largest",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Write an object of exactly 5 GiB with one PutObject, the largest S3 takes in a single request. A client sends it",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html"
+      ],
+      "call": {
+        "body": {
+          "data": {
+            "length": 5368709120,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5368709120
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-68e2c5df0cb2\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5368709120
+                  }
+                },
+                {
+                  "at": "/headers/content-encoding",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "aws-chunked"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-decoded-content-length",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "5368709120"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-content-sha256",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "STREAMING-UNSIGNED-PAYLOAD-TRAILER",
+                      "STREAMING-AWS4-HMAC-SHA256-PAYLOAD",
+                      "STREAMING-AWS4-HMAC-SHA256-PAYLOAD-TRAILER"
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type",
+                "x-amz-trailer",
+                "x-amz-sdk-checksum-algorithm"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-68e2c5df0cb2\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-68e2c5df0cb2\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/s3-express/put-too-large",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Report a PutObject of 5 GiB and one byte as an error: S3 answers 400 EntityTooLarge from the Content-Length. A client may refuse it before sending; a larger object takes a multipart upload",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html"
+      ],
+      "call": {
+        "body": {
+          "data": {
+            "length": 5368709121,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5368709121
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>EntityTooLarge</Code><Message>Your proposed upload exceeds the maximum allowed size</Message></Error>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5368709121
+                  }
+                },
+                {
+                  "at": "/headers/content-encoding",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "aws-chunked"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-decoded-content-length",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "5368709121"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-content-sha256",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "STREAMING-UNSIGNED-PAYLOAD-TRAILER",
+                      "STREAMING-AWS4-HMAC-SHA256-PAYLOAD",
+                      "STREAMING-AWS4-HMAC-SHA256-PAYLOAD-TRAILER"
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type",
+                "x-amz-trailer",
+                "x-amz-sdk-checksum-algorithm"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>EntityTooLarge</Code><Message>Your proposed upload exceeds the maximum allowed size</Message></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "EntityTooLarge"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "body"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "EntityTooLarge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "large/s3-express/get-large",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Read an object of 4 GiB and 17 bytes, past every 32-bit length, in one GET or in ranges, and report its body by its fingerprint: body_length and body_crc64nvme_base64. A client streams such a body rather than holding it",
+      "sources": [
+        "private/docs/large-bodies.md"
+      ],
+      "call": {
+        "body_result": "fingerprint",
+        "key": "object-tests/large/object.bin",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-672b31e65569\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "repeat",
+                  "data": {
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4294967313
+                  }
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=[0-9]+-[0-9]*"
+                  }
+                },
+                {
+                  "at": "/headers/if-match",
+                  "optional": true,
+                  "rule": {
+                    "is": "equal",
+                    "value": "\"fixture-672b31e65569\""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "binary/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-672b31e65569\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "repeat",
+                  "data": {
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4294967313
+                  }
+                },
+                "serves_ranges": true
+              }
+            }
+          ],
+          "repeats": true
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value",
+          "optional": false,
+          "rule": {
+            "is": "generated_body",
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+            "length": 4294967313
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure/put-largest",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Write a block blob of exactly 5,000 MiB with one Put Blob, the largest Azure takes in a single request. A client sends it",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob"
+      ],
+      "call": {
+        "body": {
+          "data": {
+            "length": 5242880000,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5242880000
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "content-md5": "eB5eJF1ptWaXm4bijSPyxw==",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-b9991ef94e3d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true",
+                  "x-ms-version-id": "2024-01-01T00:00:00.2084665Z"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-b9991ef94e3d\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure/put-too-large",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a Put Blob of 5,000 MiB and one byte as an error: Azure answers 413 RequestBodyTooLarge from the Content-Length. A client may refuse it before sending; a larger blob takes blocks",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob"
+      ],
+      "call": {
+        "body": {
+          "data": {
+            "length": 5242880001,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5242880001
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 413,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "RequestBodyTooLarge"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>RequestBodyTooLarge</Code><Message>The request body is too large and exceeds the maximum permissible limit.</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 413
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "RequestBodyTooLarge"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "body"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 413
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "RequestBodyTooLarge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "large/azure/stage-largest",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Stage a block of exactly 4,000 MiB with Put Block, the largest block Azure takes. A client sends it",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "body": {
+          "data": {
+            "length": 4194304000,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "azure.stage_block"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4194304000
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure/stage-too-large",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a Put Block of 4,000 MiB and one byte as an error: Azure answers 413 RequestBodyTooLarge from the Content-Length. A client may refuse it before sending",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "body": {
+          "data": {
+            "length": 4194304001,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "azure.stage_block"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4194304001
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 413,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "RequestBodyTooLarge"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>RequestBodyTooLarge</Code><Message>The request body is too large and exceeds the maximum permissible limit.</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 413
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "RequestBodyTooLarge"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "body"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 413
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "RequestBodyTooLarge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "large/azure/get-large",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Read an object of 4 GiB and 17 bytes, past every 32-bit length, in one GET or in ranges, and report its body by its fingerprint: body_length and body_crc64nvme_base64. A client streams such a body rather than holding it",
+      "sources": [
+        "private/docs/large-bodies.md"
+      ],
+      "call": {
+        "body_result": "fingerprint",
+        "key": "object-tests/large/object.bin",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-md5": "H1VC0PNTmj+yaCRN4U931g==",
+                  "content-type": "application/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-16c44f0af72d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-type": "BlockBlob",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-lease-state": "available",
+                  "x-ms-lease-status": "unlocked",
+                  "x-ms-server-encrypted": "true",
+                  "x-ms-version-id": "2024-01-01T00:00:00.7556278Z"
+                },
+                "body": {
+                  "encoding": "repeat",
+                  "data": {
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4294967313
+                  }
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=[0-9]+-[0-9]*"
+                  }
+                },
+                {
+                  "at": "/headers/if-match",
+                  "optional": true,
+                  "rule": {
+                    "is": "equal",
+                    "value": "\"fixture-16c44f0af72d\""
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-md5": "H1VC0PNTmj+yaCRN4U931g==",
+                  "content-type": "application/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-16c44f0af72d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-type": "BlockBlob",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-lease-state": "available",
+                  "x-ms-lease-status": "unlocked",
+                  "x-ms-server-encrypted": "true",
+                  "x-ms-version-id": "2024-01-01T00:00:00.7556278Z"
+                },
+                "body": {
+                  "encoding": "repeat",
+                  "data": {
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4294967313
+                  }
+                },
+                "serves_ranges": true
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=[0-9]+-[0-9]*"
+                  }
+                },
+                {
+                  "at": "/headers/if-match",
+                  "optional": true,
+                  "rule": {
+                    "is": "equal",
+                    "value": "\"fixture-16c44f0af72d\""
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-md5": "H1VC0PNTmj+yaCRN4U931g==",
+                  "content-type": "application/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-16c44f0af72d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-type": "BlockBlob",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-lease-state": "available",
+                  "x-ms-lease-status": "unlocked",
+                  "x-ms-server-encrypted": "true",
+                  "x-ms-version-id": "2024-01-01T00:00:00.7556278Z"
+                },
+                "body": {
+                  "encoding": "repeat",
+                  "data": {
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4294967313
+                  }
+                },
+                "serves_ranges": true
+              }
+            }
+          ],
+          "repeats": true
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value",
+          "optional": false,
+          "rule": {
+            "is": "generated_body",
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+            "length": 4294967313
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure-hns/put-largest",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Write a block blob of exactly 5,000 MiB with one Put Blob, the largest Azure takes in a single request. A client sends it",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob"
+      ],
+      "call": {
+        "body": {
+          "data": {
+            "length": 5242880000,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5242880000
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "content-md5": "eB5eJF1ptWaXm4bijSPyxw==",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-bf139483d631\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-bf139483d631\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure-hns/put-too-large",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report a Put Blob of 5,000 MiB and one byte as an error: Azure answers 413 RequestBodyTooLarge from the Content-Length. A client may refuse it before sending; a larger blob takes blocks",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob"
+      ],
+      "call": {
+        "body": {
+          "data": {
+            "length": 5242880001,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 5242880001
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 413,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "RequestBodyTooLarge"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>RequestBodyTooLarge</Code><Message>The request body is too large and exceeds the maximum permissible limit.</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 413
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "RequestBodyTooLarge"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "body"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 413
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "RequestBodyTooLarge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "large/azure-hns/stage-largest",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Stage a block of exactly 4,000 MiB with Put Block, the largest block Azure takes. A client sends it",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "body": {
+          "data": {
+            "length": 4194304000,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "azure.stage_block"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4194304000
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure-hns/stage-too-large",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report a Put Block of 4,000 MiB and one byte as an error: Azure answers 413 RequestBodyTooLarge from the Content-Length. A client may refuse it before sending",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "body": {
+          "data": {
+            "length": 4194304001,
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc="
+          },
+          "encoding": "repeat"
+        },
+        "key": "object-tests/large/object.bin",
+        "op": "azure.stage_block"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "generated_body",
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4194304001
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 413,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "RequestBodyTooLarge"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>RequestBodyTooLarge</Code><Message>The request body is too large and exceeds the maximum permissible limit.</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 413
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "RequestBodyTooLarge"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "body"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 413
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "RequestBodyTooLarge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "large/azure-hns/get-large",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Read an object of 4 GiB and 17 bytes, past every 32-bit length, in one GET or in ranges, and report its body by its fingerprint: body_length and body_crc64nvme_base64. A client streams such a body rather than holding it",
+      "sources": [
+        "private/docs/large-bodies.md"
+      ],
+      "call": {
+        "body_result": "fingerprint",
+        "key": "object-tests/large/object.bin",
+        "op": "get"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-md5": "H1VC0PNTmj+yaCRN4U931g==",
+                  "content-type": "application/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-5295cdfd25ff\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-type": "BlockBlob",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-lease-state": "available",
+                  "x-ms-lease-status": "unlocked",
+                  "x-ms-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "repeat",
+                  "data": {
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4294967313
+                  }
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=[0-9]+-[0-9]*"
+                  }
+                },
+                {
+                  "at": "/headers/if-match",
+                  "optional": true,
+                  "rule": {
+                    "is": "equal",
+                    "value": "\"fixture-5295cdfd25ff\""
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-md5": "H1VC0PNTmj+yaCRN4U931g==",
+                  "content-type": "application/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-5295cdfd25ff\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-type": "BlockBlob",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-lease-state": "available",
+                  "x-ms-lease-status": "unlocked",
+                  "x-ms-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "repeat",
+                  "data": {
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4294967313
+                  }
+                },
+                "serves_ranges": true
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "bytes=[0-9]+-[0-9]*"
+                  }
+                },
+                {
+                  "at": "/headers/if-match",
+                  "optional": true,
+                  "rule": {
+                    "is": "equal",
+                    "value": "\"fixture-5295cdfd25ff\""
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-md5": "H1VC0PNTmj+yaCRN4U931g==",
+                  "content-type": "application/octet-stream",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-5295cdfd25ff\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-blob-type": "BlockBlob",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-lease-state": "available",
+                  "x-ms-lease-status": "unlocked",
+                  "x-ms-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "repeat",
+                  "data": {
+                    "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+                    "length": 4294967313
+                  }
+                },
+                "serves_ranges": true
+              }
+            }
+          ],
+          "repeats": true
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value",
+          "optional": false,
+          "rule": {
+            "is": "generated_body",
+            "pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=",
+            "length": 4294967313
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure/stage-from-url-over-100-mib",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Stage a block of 100 MiB and one byte with Put Block From URL. The reference's remarks give 100 MiB as the largest such block, but its table, and Azure, take up to 4,000 MiB",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block-from-url"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "key": "object-tests/large/object.bin",
+        "op": "azure.stage_block_from_url",
+        "source_key": "object-tests/large/source-5000-mib.bin",
+        "source_range": {
+          "end": 104857601,
+          "start": 0
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-5000-mib\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-104857600"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure/stage-from-url-largest",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Stage a block of exactly 4,000 MiB with Put Block From URL, the largest block Azure takes. A client sends it",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block-from-url"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "key": "object-tests/large/object.bin",
+        "op": "azure.stage_block_from_url",
+        "source_key": "object-tests/large/source-5000-mib.bin",
+        "source_range": {
+          "end": 4194304000,
+          "start": 0
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-5000-mib\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-4194303999"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure/stage-from-url-too-large",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a Put Block From URL of 4,000 MiB and one byte as an error: Azure answers 409 CannotVerifyCopySource, not the 413 of a Put Block that size. A client may refuse it before sending",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block-from-url"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "key": "object-tests/large/object.bin",
+        "op": "azure.stage_block_from_url",
+        "source_key": "object-tests/large/source-5000-mib.bin",
+        "source_range": {
+          "end": 4194304001,
+          "start": 0
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-5000-mib\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-4194304000"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>CannotVerifyCopySource</Code><Message>The source range is too large.</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "source_range"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ]
+    },
+    {
+      "id": "large/azure/copy-sync-largest",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Copy a source of exactly 256 MiB with Copy Blob From URL, the largest it copies",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/large/object.bin",
+        "op": "copy",
+        "source_key": "object-tests/large/source-256-mib.bin",
+        "sync": true
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-256-mib\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-requires-sync",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "true"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 202,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-copy-id": "fixture-copy-id",
+                  "x-ms-copy-status": "success"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/copy_status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "success"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure/copy-sync-too-large",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a Copy Blob From URL of a source of 256 MiB and one byte as an error. A client cannot know the source's size from the call, so it sends the request; a larger source takes Put Blob From URL or blocks",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/large/object.bin",
+        "op": "copy",
+        "source_key": "object-tests/large/source-256-mib-and-a-byte.bin",
+        "sync": true
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-256-mib-and-a-byte\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-requires-sync",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "true"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>CannotVerifyCopySource</Code><Message>The source is too large.</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure/put-from-url-largest",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Write a block blob from a source of exactly 5,000 MiB with Put Blob From URL, the largest it copies",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/large/object.bin",
+        "op": "azure.put_from_url",
+        "source_key": "object-tests/large/source-5000-mib.bin"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-5000-mib\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-blob-properties"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-etag\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure/put-from-url-too-large",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a Put Blob From URL of a source of 5,000 MiB and one byte as an error. A client cannot know the source's size from the call, so it sends the request; a larger source takes blocks",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/large/object.bin",
+        "op": "azure.put_from_url",
+        "source_key": "object-tests/large/source-5000-mib-and-a-byte.bin"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-5000-mib-and-a-byte\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-blob-properties"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>CannotVerifyCopySource</Code><Message>The source is too large.</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure-hns/stage-from-url-over-100-mib",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Stage a block of 100 MiB and one byte with Put Block From URL. The reference's remarks give 100 MiB as the largest such block, but its table, and Azure, take up to 4,000 MiB",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block-from-url"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "key": "object-tests/large/object.bin",
+        "op": "azure.stage_block_from_url",
+        "source_key": "object-tests/large/source-5000-mib.bin",
+        "source_range": {
+          "end": 104857601,
+          "start": 0
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-5000-mib\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-104857600"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure-hns/stage-from-url-largest",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Stage a block of exactly 4,000 MiB with Put Block From URL, the largest block Azure takes. A client sends it",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block-from-url"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "key": "object-tests/large/object.bin",
+        "op": "azure.stage_block_from_url",
+        "source_key": "object-tests/large/source-5000-mib.bin",
+        "source_range": {
+          "end": 4194304000,
+          "start": 0
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-5000-mib\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-4194303999"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure-hns/stage-from-url-too-large",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report a Put Block From URL of 4,000 MiB and one byte as an error: Azure answers 409 CannotVerifyCopySource, not the 413 of a Put Block that size. A client may refuse it before sending",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-block-from-url"
+      ],
+      "call": {
+        "block_id_base64": "MDAwMDAy",
+        "key": "object-tests/large/object.bin",
+        "op": "azure.stage_block_from_url",
+        "source_key": "object-tests/large/source-5000-mib.bin",
+        "source_range": {
+          "end": 4194304001,
+          "start": 0
+        }
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "block"
+                  }
+                },
+                {
+                  "at": "/query/blockid",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDAwMDAy"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-5000-mib\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-source-range",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "bytes=0-4194304000"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>CannotVerifyCopySource</Code><Message>The source range is too large.</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "source_range"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ]
+    },
+    {
+      "id": "large/azure-hns/copy-sync-largest",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Copy a source of exactly 256 MiB with Copy Blob From URL, the largest it copies",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/large/object.bin",
+        "op": "copy",
+        "source_key": "object-tests/large/source-256-mib.bin",
+        "sync": true
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-256-mib\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-requires-sync",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "true"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 202,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-copy-id": "fixture-copy-id",
+                  "x-ms-copy-status": "success"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/copy_status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "success"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure-hns/copy-sync-too-large",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report a Copy Blob From URL of a source of 256 MiB and one byte as an error. A client cannot know the source's size from the call, so it sends the request; a larger source takes Put Blob From URL or blocks",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/large/object.bin",
+        "op": "copy",
+        "source_key": "object-tests/large/source-256-mib-and-a-byte.bin",
+        "sync": true
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-256-mib-and-a-byte\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-requires-sync",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "true"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>CannotVerifyCopySource</Code><Message>The source is too large.</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure-hns/put-from-url-largest",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Write a block blob from a source of exactly 5,000 MiB with Put Blob From URL, the largest it copies",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/large/object.bin",
+        "op": "azure.put_from_url",
+        "source_key": "object-tests/large/source-5000-mib.bin"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-5000-mib\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-blob-properties"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-etag\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "large/azure-hns/put-from-url-too-large",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report a Put Blob From URL of a source of 5,000 MiB and one byte as an error. A client cannot know the source's size from the call, so it sends the request; a larger source takes blocks",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/large/object.bin",
+        "op": "azure.put_from_url",
+        "source_key": "object-tests/large/source-5000-mib-and-a-byte.bin"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/large/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/large/source-5000-mib-and-a-byte\\.bin"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source-authorization",
+                  "optional": true,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "Bearer [^ ]+"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-blob-properties"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 409,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>CannotVerifyCopySource</Code><Message>The source is too large.</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 409
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    }
+  ]
+}

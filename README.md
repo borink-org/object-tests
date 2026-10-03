@@ -14,6 +14,7 @@ There are also a few live tests that are just to see if you can actually make a 
 | `management.json` | Bucket and container operations over recorded HTTP |
 | `vectors.json` | Digests and signatures |
 | `live.json` | Probes against a live service |
+| `large.json` | Size limits and large reads, with bodies of gigabytes that the grader generates; graded only when asked for |
 
 The Azure cases authorize with Microsoft Entra ID only. The suite does not aim to test shared access signatures (SAS) or Shared Key, and has no cases or vectors for them.
 

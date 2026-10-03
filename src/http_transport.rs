@@ -1,5 +1,11 @@
 //! Bounded HTTP/1.1 exchanges on loopback. Connections close after each response.
-use crate::{Result, Session, model::*, normalize_http_request};
+use crate::{
+    Result, Session,
+    aws_chunked::AwsChunkedDecoder,
+    generated::{FingerprintStream, GeneratedBody},
+    model::*,
+    request::normalize_request_with_fingerprint,
+};
 use serde_json::{Value, json};
 use std::{
     io::{BufRead, BufReader, Read, Write},
@@ -9,7 +15,65 @@ use std::{
 };
 
 const MAX_HEADER_BYTES: usize = 64 * 1024;
-const MAX_BODY_BYTES: usize = 16 * 1024 * 1024;
+
+// A request body up to this size is kept for checks on its bytes. A larger one, which only a
+// large case sends, is fingerprinted as it arrives and not kept.
+const KEPT_BODY_BYTES: usize = 16 * 1024 * 1024;
+
+// The largest request body the transport reads, beyond every service limit a case tests.
+const MAX_BODY_BYTES: u64 = 64 * 1024 * 1024 * 1024;
+
+// A request body arrives in reads of at most this many bytes.
+const READ_BYTES: usize = 1 << 20;
+
+/// A request body as it arrives: its fingerprint, its bytes while they are few enough to keep,
+/// and, for an `aws-chunked` body, the payload it decodes to.
+struct ArrivingBody {
+    kept: Option<Vec<u8>>,
+    fingerprint: FingerprintStream,
+    aws_chunked: Option<AwsChunkedDecoder>,
+}
+
+impl ArrivingBody {
+    fn new(aws_chunked: bool) -> Self {
+        Self {
+            kept: Some(Vec::new()),
+            fingerprint: FingerprintStream::default(),
+            aws_chunked: aws_chunked.then(AwsChunkedDecoder::default),
+        }
+    }
+
+    fn absorb(&mut self, bytes: &[u8]) -> Result<()> {
+        self.fingerprint.update(bytes);
+        if let Some(decoder) = &mut self.aws_chunked {
+            decoder.absorb(bytes);
+        }
+        if self.fingerprint.finish().length > MAX_BODY_BYTES {
+            return Err("request body exceeds 64 GiB".into());
+        }
+        if let Some(kept) = &mut self.kept {
+            if kept.len() + bytes.len() <= KEPT_BODY_BYTES {
+                kept.extend_from_slice(bytes);
+            } else {
+                self.kept = None;
+            }
+        }
+        Ok(())
+    }
+
+    /// Reads `length` bytes of the body from `reader`.
+    fn read_from(&mut self, reader: &mut impl Read, length: u64) -> Result<()> {
+        let mut buffer = vec![0; READ_BYTES.min(usize::try_from(length).unwrap_or(READ_BYTES))];
+        let mut remaining = length;
+        while remaining > 0 {
+            let take = remaining.min(buffer.len() as u64) as usize;
+            reader.read_exact(&mut buffer[..take])?;
+            self.absorb(&buffer[..take])?;
+            remaining -= take as u64;
+        }
+        Ok(())
+    }
+}
 
 fn read_http_line(reader: &mut impl BufRead, limit: usize) -> Result<Vec<u8>> {
     let mut line = Vec::new();
@@ -22,8 +86,7 @@ fn read_http_line(reader: &mut impl BufRead, limit: usize) -> Result<Vec<u8>> {
     Ok(line)
 }
 
-fn read_chunked_body(reader: &mut impl BufRead) -> Result<Vec<u8>> {
-    let mut body = Vec::new();
+fn read_chunked_body(reader: &mut impl BufRead, body: &mut ArrivingBody) -> Result<()> {
     loop {
         let line = read_http_line(reader, MAX_HEADER_BYTES)?;
         let httparse::Status::Complete((_, length)) =
@@ -31,20 +94,13 @@ fn read_chunked_body(reader: &mut impl BufRead) -> Result<Vec<u8>> {
         else {
             return Err("incomplete HTTP chunk size".into());
         };
-        let length = usize::try_from(length)?;
         if length == 0 {
             if read_http_line(reader, MAX_HEADER_BYTES)? != b"\r\n" {
                 return Err("HTTP trailers are not supported by this transport".into());
             }
-            return Ok(body);
+            return Ok(());
         }
-        let previous_length = body.len();
-        let total_length = previous_length.checked_add(length).ok_or("body overflow")?;
-        if total_length > MAX_BODY_BYTES {
-            return Err("request exceeds 16 MiB".into());
-        }
-        body.resize(total_length, 0);
-        reader.read_exact(&mut body[previous_length..])?;
+        body.read_from(reader, length)?;
         let mut terminator = [0; 2];
         reader.read_exact(&mut terminator)?;
         if terminator != *b"\r\n" {
@@ -93,6 +149,7 @@ fn read_http_request(reader: &mut BufReader<impl Read + Write>) -> Result<Value>
     let mut content_length = None;
     let mut chunked = false;
     let mut expect_continue = false;
+    let mut aws_chunked = false;
     for header in request.headers.iter() {
         // A header value is bytes. Each byte becomes the character of the same number, as
         // ISO-8859-1 reads it, so a case can tell `é` sent as `e9` from `é` sent as UTF-8.
@@ -103,13 +160,20 @@ fn read_http_request(reader: &mut BufReader<impl Read + Write>) -> Result<Value>
                 if content_length.is_some() {
                     return Err("duplicate Content-Length".into());
                 }
-                content_length = Some(value.parse::<usize>()?);
+                content_length = Some(value.parse::<u64>()?);
             }
             "transfer-encoding" => {
                 if chunked || !value.eq_ignore_ascii_case("chunked") {
                     return Err("unsupported or duplicate Transfer-Encoding".into());
                 }
                 chunked = true;
+            }
+            // S3 decodes a body whose content encoding names aws-chunked, as `aws-chunked` or
+            // `aws-chunked,gzip`.
+            "content-encoding" => {
+                aws_chunked |= value
+                    .split(',')
+                    .any(|coding| coding.trim().eq_ignore_ascii_case("aws-chunked"));
             }
             "expect" => {
                 if !value.eq_ignore_ascii_case("100-continue") {
@@ -126,7 +190,7 @@ fn read_http_request(reader: &mut BufReader<impl Read + Write>) -> Result<Value>
     }
     let content_length = content_length.unwrap_or(0);
     if content_length > MAX_BODY_BYTES {
-        return Err("request exceeds 16 MiB".into());
+        return Err("request body exceeds 64 GiB".into());
     }
     // Like Azure, send no interim response when no content follows (RFC 9110, section 10.1.1).
     if expect_continue && (chunked || content_length > 0) {
@@ -135,19 +199,23 @@ fn read_http_request(reader: &mut BufReader<impl Read + Write>) -> Result<Value>
             .write_all(b"HTTP/1.1 100 Continue\r\n\r\n")?;
         reader.get_mut().flush()?;
     }
-    let body = if chunked {
-        read_chunked_body(reader)?
+    let mut body = ArrivingBody::new(aws_chunked);
+    if chunked {
+        read_chunked_body(reader, &mut body)?;
     } else {
-        let mut body = vec![0; content_length];
-        reader.read_exact(&mut body)?;
-        body
-    };
-    normalize_http_request(
+        body.read_from(reader, content_length)?;
+    }
+    let mut normalized = normalize_request_with_fingerprint(
         request.method.ok_or("missing HTTP method")?,
         request.path.ok_or("missing HTTP target")?,
         &headers,
-        &body,
-    )
+        body.kept.as_deref(),
+        body.fingerprint.finish(),
+    )?;
+    if let Some(decoder) = &body.aws_chunked {
+        decoder.insert_into(&mut normalized);
+    }
+    Ok(normalized)
 }
 
 /// Formats a time as ISO 8601 in UTC with whole seconds, as `2024-01-02T03:04:05Z`.
@@ -209,16 +277,115 @@ fn fill_body_time(body: Vec<u8>, time: Option<&BodyTime>, now: SystemTime) -> Ve
     filled
 }
 
+/// Frames each write as one chunk of a chunked body.
+struct ChunkedWriter<'a, W: Write>(&'a mut W);
+
+impl<W: Write> Write for ChunkedWriter<'_, W> {
+    fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+        if !bytes.is_empty() {
+            write!(self.0, "{:x}\r\n", bytes.len())?;
+            self.0.write_all(bytes)?;
+            write!(self.0, "\r\n")?;
+        }
+        Ok(bytes.len())
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        self.0.flush()
+    }
+}
+
+/// A response body to send: bytes the case holds, or a body generated as it is sent.
+enum OutgoingBody {
+    Held(Vec<u8>),
+    Generated(GeneratedBody),
+}
+
+impl OutgoingBody {
+    fn length(&self) -> u64 {
+        match self {
+            Self::Held(bytes) => bytes.len() as u64,
+            Self::Generated(generated) => generated.length,
+        }
+    }
+
+    fn write_window(&self, writer: &mut impl Write, start: u64, length: u64) -> Result<()> {
+        match self {
+            Self::Held(bytes) => {
+                writer.write_all(&bytes[start as usize..(start + length) as usize])?
+            }
+            Self::Generated(generated) => generated.write_window_to(writer, start, length)?,
+        }
+        Ok(())
+    }
+}
+
+/// The window a request asks for of a body of `total` bytes, from its `x-ms-range` or `Range`:
+/// `Some(Ok((start, length)))`, `Some(Err(()))` for a range past the end, or `None` for the
+/// whole body.
+fn requested_window(request: &Value, total: u64) -> Option<std::result::Result<(u64, u64), ()>> {
+    let range = ["x-ms-range", "range"]
+        .iter()
+        .find_map(|name| request["headers"][name].as_str())?;
+    let (first, last) = range.strip_prefix("bytes=")?.split_once('-')?;
+    let (start, end) = match (first.parse::<u64>().ok(), last.parse::<u64>().ok()) {
+        (Some(start), Some(last)) => (start, last.min(total.saturating_sub(1))),
+        (Some(start), None) if last.is_empty() => (start, total.saturating_sub(1)),
+        (None, Some(suffix)) if first.is_empty() => {
+            (total.saturating_sub(suffix), total.saturating_sub(1))
+        }
+        _ => return None,
+    };
+    if start >= total || end < start {
+        return Some(Err(()));
+    }
+    Some(Ok((start, end - start + 1)))
+}
+
 fn write_http_response(
     writer: &mut impl Write,
     request: &Value,
     response: Response,
     now: SystemTime,
 ) -> Result<()> {
-    let body = fill_body_time(response.body.bytes()?, response.body_time.as_ref(), now);
+    let body = match &response.body {
+        Body::Repeat(generated) => OutgoingBody::Generated(generated.clone()),
+        held => OutgoingBody::Held(fill_body_time(
+            held.bytes()?,
+            response.body_time.as_ref(),
+            now,
+        )),
+    };
     let is_head = request["method"] == "HEAD";
-    let mut content_length = body.len();
-    write!(writer, "HTTP/1.1 {} Fixture\r\n", response.status)?;
+    let mut content_length = body.length();
+    // A response that serves ranges answers a ranged read with that window of its body.
+    let window = if response.serves_ranges && !is_head {
+        requested_window(request, body.length())
+    } else {
+        None
+    };
+    let status = match window {
+        Some(Ok(_)) => 206,
+        Some(Err(())) => 416,
+        None => response.status,
+    };
+    write!(writer, "HTTP/1.1 {status} Fixture\r\n")?;
+    match window {
+        Some(Ok((start, length))) => {
+            write!(
+                writer,
+                "Content-Range: bytes {start}-{}/{}\r\n",
+                start + length - 1,
+                body.length()
+            )?;
+            content_length = length;
+        }
+        Some(Err(())) => {
+            write!(writer, "Content-Range: bytes */{}\r\n", body.length())?;
+            content_length = 0;
+        }
+        None => {}
+    }
     for (name, header) in response.headers {
         let value = match header {
             Header::Literal(value) => Some(value),
@@ -243,19 +410,21 @@ fn write_http_response(
         }
     }
     write!(writer, "Connection: close\r\n")?;
-    let has_body = response.status != 204 && response.status != 304;
-    let chunked = has_body && !is_head && response.framing == Framing::Chunked;
+    let has_body = status != 204 && status != 304;
+    let chunked = has_body && !is_head && window.is_none() && response.framing == Framing::Chunked;
     if chunked {
         write!(writer, "Transfer-Encoding: chunked\r\n\r\n")?;
-        // Two chunks, so a client must join them.
-        let (first_chunk, second_chunk) = body.split_at(body.len() / 2);
-        for chunk in [first_chunk, second_chunk]
-            .into_iter()
-            .filter(|chunk| !chunk.is_empty())
-        {
-            write!(writer, "{:x}\r\n", chunk.len())?;
-            writer.write_all(chunk)?;
-            write!(writer, "\r\n")?;
+        match &body {
+            // Two chunks, so a client must join them.
+            OutgoingBody::Held(bytes) => {
+                let (first_chunk, second_chunk) = bytes.split_at(bytes.len() / 2);
+                let mut chunks = ChunkedWriter(writer);
+                chunks.write_all(first_chunk)?;
+                chunks.write_all(second_chunk)?;
+            }
+            OutgoingBody::Generated(generated) => {
+                generated.write_to(&mut ChunkedWriter(writer), None)?;
+            }
         }
         write!(writer, "0\r\n\r\n")?;
     } else {
@@ -263,9 +432,17 @@ fn write_http_response(
             write!(writer, "Content-Length: {content_length}\r\n")?;
         }
         write!(writer, "\r\n")?;
-        if !is_head && has_body {
-            let sent_length = response.truncate_body_after.unwrap_or(body.len());
-            writer.write_all(&body[..sent_length])?;
+        if let Some(Ok((start, length))) = window {
+            body.write_window(writer, start, length)?;
+        } else if !is_head && has_body && window.is_none() {
+            let sent_length = response.truncate_body_after.map(|length| length as u64);
+            match &body {
+                OutgoingBody::Held(bytes) => {
+                    let sent_length = sent_length.unwrap_or(bytes.len() as u64) as usize;
+                    writer.write_all(&bytes[..sent_length])?;
+                }
+                OutgoingBody::Generated(generated) => generated.write_to(writer, sent_length)?,
+            }
         }
     }
     writer.flush()?;
@@ -453,6 +630,7 @@ mod tests {
             body: Body::Utf8("hello".into()),
             framing,
             truncate_body_after,
+            serves_ranges: false,
             body_time: None,
         };
         let mut written = Vec::new();
@@ -478,13 +656,160 @@ mod tests {
         for headers in [
             "Content-Length: 1\r\nContent-Length: 1\r\n",
             "Content-Length: 1\r\nTransfer-Encoding: chunked\r\n",
-            "Content-Length: 16777217\r\n",
+            "Content-Length: 68719476737\r\n",
             "Transfer-Encoding: gzip, chunked\r\n",
         ] {
             let request = format!("PUT /object HTTP/1.1\r\n{headers}\r\n");
             assert!(read_http_request(&mut make_test_connection(request.as_bytes())).is_err());
         }
-        let request = b"PUT /object HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n1000001\r\n";
+        let request = b"PUT /object HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n1000000001\r\n";
         assert!(read_http_request(&mut make_test_connection(request)).is_err());
+    }
+
+    #[test]
+    fn a_ranged_read_gets_its_window() {
+        let total = 10;
+        let window = |range: &str| requested_window(&json!({"headers": {"range": range}}), total);
+        assert_eq!(window("bytes=2-4"), Some(Ok((2, 3))));
+        assert_eq!(window("bytes=8-"), Some(Ok((8, 2))));
+        assert_eq!(window("bytes=-3"), Some(Ok((7, 3))));
+        assert_eq!(window("bytes=5-99"), Some(Ok((5, 5))));
+        assert_eq!(window("bytes=10-12"), Some(Err(())));
+        assert_eq!(window("items=1-2"), None);
+        let azure_first = json!({"headers": {"range": "bytes=0-1", "x-ms-range": "bytes=3-4"}});
+        assert_eq!(requested_window(&azure_first, total), Some(Ok((3, 2))));
+
+        let generated = GeneratedBody {
+            pattern_base64: "MDEyMzQ1Njc4OWFiY2RlZmc=".into(),
+            length: 3 * (1 << 20) + 5,
+        };
+        let whole = generated.bytes().unwrap();
+        for (start, length) in [(0, 17), (5, 40), ((1 << 20) - 3, 9), (3 << 20, 5)] {
+            let response = Response {
+                status: 200,
+                headers: Default::default(),
+                body: Body::Repeat(generated.clone()),
+                framing: Framing::Chunked,
+                truncate_body_after: None,
+                serves_ranges: true,
+                body_time: None,
+            };
+            let request = json!({
+                "method": "GET",
+                "headers": {"range": format!("bytes={start}-{}", start + length - 1)},
+            });
+            let mut written = Vec::new();
+            write_http_response(&mut written, &request, response, SystemTime::now()).unwrap();
+            let split = written
+                .windows(4)
+                .position(|window| window == b"\r\n\r\n")
+                .unwrap();
+            let head = String::from_utf8_lossy(&written[..split]);
+            assert!(head.starts_with("HTTP/1.1 206"), "{head}");
+            assert!(head.contains(&format!(
+                "Content-Range: bytes {start}-{}/{}",
+                start + length - 1,
+                generated.length
+            )));
+            assert!(
+                head.contains(&format!("Content-Length: {length}")),
+                "{head}"
+            );
+            assert_eq!(
+                &written[split + 4..],
+                &whole[start as usize..(start + length) as usize]
+            );
+        }
+    }
+
+    #[test]
+    fn a_body_over_16_mib_arrives_as_its_fingerprint_alone() {
+        let generated = GeneratedBody {
+            pattern_base64: "MDEyMzQ1Njc4OWFiY2RlZmc=".into(),
+            length: KEPT_BODY_BYTES as u64 + 1,
+        };
+        for chunked in [false, true] {
+            let mut request = if chunked {
+                b"PUT /object HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n".to_vec()
+            } else {
+                format!(
+                    "PUT /object HTTP/1.1\r\nContent-Length: {}\r\n\r\n",
+                    generated.length
+                )
+                .into_bytes()
+            };
+            if chunked {
+                generated
+                    .write_to(&mut ChunkedWriter(&mut request), None)
+                    .unwrap();
+                request.extend_from_slice(b"0\r\n\r\n");
+            } else {
+                generated.write_to(&mut request, None).unwrap();
+            }
+            let request = read_http_request(&mut make_test_connection(&request)).unwrap();
+            assert!(request.get("body_base64").is_none());
+            assert!(crate::generated::check_generated_body(&request, &generated).is_ok());
+        }
+
+        let small = read_http_request(&mut make_test_connection(
+            b"PUT /object HTTP/1.1\r\nContent-Length: 2\r\n\r\nhi",
+        ))
+        .unwrap();
+        assert_eq!(small["body_text"], "hi");
+        assert_eq!(small["body_length"], 2);
+    }
+
+    #[test]
+    fn a_generated_response_is_written_as_its_bytes() {
+        let generated = GeneratedBody {
+            pattern_base64: "YWJj".into(),
+            length: 3 * (1 << 20) + 2,
+        };
+        let expected = generated.bytes().unwrap();
+        for framing in [Framing::ContentLength, Framing::Chunked] {
+            let response = Response {
+                status: 200,
+                headers: Default::default(),
+                body: Body::Repeat(generated.clone()),
+                framing,
+                truncate_body_after: None,
+                serves_ranges: false,
+                body_time: None,
+            };
+            let mut written = Vec::new();
+            write_http_response(
+                &mut written,
+                &json!({"method": "GET"}),
+                response,
+                SystemTime::now(),
+            )
+            .unwrap();
+            let split = written
+                .windows(4)
+                .position(|window| window == b"\r\n\r\n")
+                .unwrap();
+            let (head, mut rest) = (&written[..split], &written[split + 4..]);
+            let body = if framing == Framing::Chunked {
+                let mut body = Vec::new();
+                loop {
+                    let line_end = rest
+                        .windows(2)
+                        .position(|window| window == b"\r\n")
+                        .unwrap();
+                    let length =
+                        usize::from_str_radix(std::str::from_utf8(&rest[..line_end]).unwrap(), 16)
+                            .unwrap();
+                    if length == 0 {
+                        break body;
+                    }
+                    body.extend_from_slice(&rest[line_end + 2..line_end + 2 + length]);
+                    rest = &rest[line_end + 2 + length + 2..];
+                }
+            } else {
+                assert!(String::from_utf8_lossy(head).contains("Content-Length: 3145730"));
+                rest.to_vec()
+            };
+            assert!(body == expected, "{framing:?}");
+        }
     }
 }

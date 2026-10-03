@@ -107,8 +107,9 @@ fn rule_matches_value(rule: &Rule, got: Option<&Value>, now: SystemTime) -> bool
                 _ => false,
             }
         }
-        // These hold the request as a whole, and report why they fail through check_assertions.
-        Rule::BlobBatch { .. } | Rule::BodyChecksum { .. } => {
+        // These hold the request or a result as a whole, and report why they fail through
+        // check_assertions.
+        Rule::BlobBatch { .. } | Rule::BodyChecksum { .. } | Rule::GeneratedBody { .. } => {
             got.is_some_and(|request| request_rule_failure(rule, request).is_none())
         }
         Rule::Fresh {
@@ -147,6 +148,17 @@ fn request_rule_failure(rule: &Rule, request: &Value) -> Option<String> {
         Rule::BodyChecksum { header, algorithm } => {
             crate::request_rules::check_body_checksum(request, header, algorithm).err()
         }
+        Rule::GeneratedBody {
+            pattern_base64,
+            length,
+        } => crate::generated::check_generated_body(
+            request,
+            &crate::generated::GeneratedBody {
+                pattern_base64: pattern_base64.clone(),
+                length: *length,
+            },
+        )
+        .err(),
         _ => None,
     }
 }

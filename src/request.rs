@@ -1,11 +1,16 @@
-use crate::Result;
+use crate::{
+    Result,
+    generated::{Fingerprint, fingerprint_of},
+};
 use base64::{Engine, engine::general_purpose::STANDARD};
 use serde_json::{Value, json};
 
 /// Converts an HTTP request into the fields used by JSON assertions.
 ///
 /// Decodes percent escapes once and preserves dot segments and literal query `+` signs. The
-/// query also stays as sent in `raw_query`, where a check can tell `%2B` from `+`.
+/// query also stays as sent in `raw_query`, where a check can tell `%2B` from `+`. The body is in
+/// `body_base64`, with `body_text` where it is UTF-8, and its fingerprint in `body_length` and
+/// `body_crc64nvme_base64`.
 ///
 /// # Errors
 /// Returns an error for malformed request targets, percent escapes or decoded UTF-8.
@@ -14,6 +19,18 @@ pub fn normalize_http_request(
     target: &str,
     headers: &[(String, String)],
     body: &[u8],
+) -> Result<Value> {
+    normalize_request_with_fingerprint(method, target, headers, Some(body), fingerprint_of(body))
+}
+
+/// Converts an HTTP request whose body arrived as a stream. A body too large to keep comes as its
+/// fingerprint alone, without `body_base64` or `body_text`.
+pub(crate) fn normalize_request_with_fingerprint(
+    method: &str,
+    target: &str,
+    headers: &[(String, String)],
+    kept_body: Option<&[u8]>,
+    fingerprint: Fingerprint,
 ) -> Result<Value> {
     fn percent_decode_utf8(value: &str) -> Result<String> {
         let bytes = value.as_bytes();
@@ -89,10 +106,13 @@ pub fn normalize_http_request(
         "path": percent_decode_utf8(path)?,
         "query": query_fields,
         "headers": header_fields,
-        "body_base64": STANDARD.encode(body),
     });
-    if let Ok(text) = std::str::from_utf8(body) {
-        request["body_text"] = json!(text);
+    fingerprint.insert_into(&mut request);
+    if let Some(body) = kept_body {
+        request["body_base64"] = json!(STANDARD.encode(body));
+        if let Ok(text) = std::str::from_utf8(body) {
+            request["body_text"] = json!(text);
+        }
     }
     Ok(request)
 }

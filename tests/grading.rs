@@ -40,6 +40,7 @@ fn corpus_is_strict_and_valid() {
         "management.json",
         "vectors.json",
         "live.json",
+        "large.json",
     ] {
         Suite::load(format!("{}/cases/{file}", env!("CARGO_MANIFEST_DIR"))).unwrap();
     }
@@ -712,6 +713,7 @@ fn selected_branch_requires_its_follow_up_before_the_common_tail() {
     corpus.cases[0].exchanges[0].alternatives[0].then = vec![Exchange {
         alternatives: vec![],
         optional: false,
+        repeats: false,
     }];
     assert!(corpus.validate().is_err());
 }
@@ -752,6 +754,51 @@ fn a_client_may_stop_before_an_optional_trailing_exchange() {
     case.exchanges.push(required);
     suite.cases[0] = case;
     assert!(suite.validate().is_err());
+}
+
+// A repeating exchange answers each request that matches it, gives way to the next exchange
+// for one that does not, and counts as done once it has answered.
+#[test]
+fn a_repeating_exchange_answers_until_a_request_needs_the_next() {
+    let mut case = load_test_suite().cases.remove(0);
+    case.exchanges[0].repeats = true;
+    let result = json!({"outcome": "ok", "value": {"body_base64": "aGVsbG8="}});
+
+    let mut repeated = create_azure_session(case.clone());
+    for _ in 0..3 {
+        assert!(
+            repeated
+                .respond(&create_get_request(), test_time())
+                .is_some()
+        );
+    }
+    let report = repeated.finish(&result, test_time());
+    assert_eq!(report["verdict"], "pass", "{report}");
+    assert_eq!(report["exchanges"], 3);
+
+    let mut followed = case.exchanges[0].clone();
+    followed.repeats = false;
+    for check in &mut followed.alternatives[0].request {
+        if check.at == "/method" {
+            check.rule = Rule::Equal {
+                value: json!("HEAD"),
+            };
+        }
+    }
+    case.exchanges.push(followed);
+    let mut moved_on = create_azure_session(case.clone());
+    assert!(
+        moved_on
+            .respond(&create_get_request(), test_time())
+            .is_some()
+    );
+    let mut head = create_get_request();
+    head["method"] = json!("HEAD");
+    assert!(moved_on.respond(&head, test_time()).is_some());
+    assert_eq!(moved_on.finish(&result, test_time())["verdict"], "pass");
+
+    let unanswered = create_azure_session(case);
+    assert_eq!(unanswered.finish(&result, test_time())["verdict"], "wrong");
 }
 
 #[test]
