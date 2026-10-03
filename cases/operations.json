@@ -372,13 +372,13 @@
     "operations/azure/delete-many-257": "Report a batch of 257 deletions, one more than Azure takes, as an error. Azure answers 202 with one part and no Content-ID, 400 ExceedsMaxBatchRequestCount, for the whole batch, not one part per deletion. A client may refuse it before sending",
     "operations/azure/delete-many-answers-out-of-order": "Match each part of a batch answer to its deletion by Content-ID, which links them, not by position. Azure has answered every recorded batch in order, up to 256 parts; this answer is written by hand",
     "operations/azure/delete-many-container-missing": "Report a batch in a missing container, which Azure answers 202 with 404 ContainerNotFound for each deletion, as that error for each key and none deleted, or as one error of kind container_not_found",
-    "operations/azure/delete-many-current-version": "Delete the current version of a key by its versionid in a batch, which Azure refuses with 403 OperationNotAllowedOnRootBlob",
+    "operations/azure/delete-many-current-version": "Delete the current version of a key by its versionid in a batch, which Azure refuses with 403 OperationNotAllowedOnRootBlob, even to a caller that may delete versions. Delete the key itself instead",
     "operations/azure/delete-many-denied": "Report each deletion of a batch that Azure refuses inside its 202 answer, here every one with 403 AuthorizationPermissionMismatch, as that key's error, not as deleted",
     "operations/azure/delete-many-lf-line-endings": "Read a batch answer whose lines end in LF alone correctly, or report it as an error, but never half-read it. Azure has not been seen to send it: HTTP and multipart require CRLF. This answer is the recorded one with every CR removed",
     "operations/azure/delete-many-server-busy": "Report a batch that Azure answers as a whole with 503 ServerBusy as an error, never as deleted keys. A client may retry up to five times first",
     "operations/azure/delete-many-snapshot": "Delete a snapshot of a key in a batch, named by snapshot in its subrequest's query, which leaves the blob",
     "operations/azure/delete-many-unauthenticated": "Report a batch whose token Azure does not accept as one error for the whole batch, as Azure answers it, not as an answer per key",
-    "operations/azure/delete-many-version": "Delete a previous version of one key and another key whole in one batch, the version named by versionid in its subrequest's query, which this account refuses for the version alone",
+    "operations/azure/delete-many-version": "Delete a previous version of one key and another key whole in one batch, the version named by versionid in its subrequest's query. A caller without blobs/deleteBlobVersion/action, which Storage Blob Data Contributor lacks, gets 403 OperationNotAllowedOnAutomaticSnapshot for the version alone",
     "operations/azure/delete-many-without-content-id": "Report a batch answer whose parts carry no Content-ID as an error. Without one, only the order of the parts would link a result to its key, and a guess could report one key deleted when another failed. Azure echoes the Content-ID of every subrequest; this answer is the recorded one with them removed",
     "operations/azure/delete-missing": "delete missing. A client reports it as not_found: the object is absent",
     "operations/azure/delete-precondition-failed": "delete precondition failed",
@@ -10595,7 +10595,7 @@
       "id": "operations/azure/delete-many-version",
       "profile": "azure",
       "lane": "core",
-      "purpose": "Delete a previous version of one key and another key whole in one batch, the version named by versionid in its subrequest's query, which this account refuses for the version alone",
+      "purpose": "Delete a previous version of one key and another key whole in one batch, the version named by versionid in its subrequest's query. A caller without blobs/deleteBlobVersion/action, which Storage Blob Data Contributor lacks, gets 403 OperationNotAllowedOnAutomaticSnapshot for the version alone",
       "sources": [
         "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
       ],
@@ -10736,7 +10736,7 @@
       "id": "operations/azure/delete-many-current-version",
       "profile": "azure",
       "lane": "core",
-      "purpose": "Delete the current version of a key by its versionid in a batch, which Azure refuses with 403 OperationNotAllowedOnRootBlob",
+      "purpose": "Delete the current version of a key by its versionid in a batch, which Azure refuses with 403 OperationNotAllowedOnRootBlob, even to a caller that may delete versions. Delete the key itself instead",
       "sources": [
         "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
       ],
