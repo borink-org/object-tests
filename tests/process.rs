@@ -82,6 +82,79 @@ fn real_http_exchange_and_head_length() {
     }
 }
 
+/// A case that PUTs a generated body and reads one back, both of `length` bytes.
+fn generated_round_trip_case(length: u64) -> (Case, Profile) {
+    let suite = Suite::load(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/cases.json")).unwrap();
+    let generated = json!({"pattern_base64": "MDEyMzQ1Njc4OWFiY2RlZmc=", "length": length});
+    let case: Case = serde_json::from_value(json!({
+        "id": "azure/generated-round-trip",
+        "profile": "azure",
+        "lane": "core",
+        "purpose": "Send and read back a generated body",
+        "sources": ["tests/process.rs"],
+        "call": {"op": "put", "key": "object", "body": {"encoding": "repeat", "data": generated}},
+        "exchanges": [
+            {"alternatives": [{
+                "request": [
+                    {"at": "/method", "rule": {"is": "equal", "value": "PUT"}},
+                    {"at": "", "rule": {"is": "generated_body", "pattern_base64": generated["pattern_base64"], "length": length}}
+                ],
+                "allow_headers": ["content-encoding", "x-amz-decoded-content-length"],
+                "response": {"status": 201}
+            }]},
+            // One plain read, or as many ranged reads as the client makes.
+            {"repeats": true, "alternatives": [
+                {
+                    "request": [{"at": "/method", "rule": {"is": "equal", "value": "GET"}}],
+                    "response": {"status": 200, "body": {"encoding": "repeat", "data": generated}}
+                },
+                {
+                    "request": [
+                        {"at": "/method", "rule": {"is": "equal", "value": "GET"}},
+                        {"at": "/headers/range", "rule": {"is": "matches", "pattern": "bytes=[0-9]+-[0-9]+"}}
+                    ],
+                    "response": {"status": 200, "serves_ranges": true, "body": {"encoding": "repeat", "data": generated}}
+                }
+            ]}
+        ],
+        "expect": [
+            {"at": "/outcome", "rule": {"is": "equal", "value": "ok"}},
+            {"at": "/value", "rule": {"is": "generated_body", "pattern_base64": generated["pattern_base64"], "length": length}}
+        ]
+    }))
+    .unwrap();
+    (case, suite.profiles["azure"].clone())
+}
+
+#[test]
+#[ignore = "requires permission to bind a loopback port"]
+fn generated_bodies_cross_the_grader_without_being_held() {
+    // Below the inline limit, the adapter gets the bytes; above it, the description. Both above
+    // the 16 MiB a request keeps.
+    for length in [1000, 64 << 20] {
+        let (case, profile) = generated_round_trip_case(length);
+        let report =
+            runner::grade_case(&case, &profile, &adapter_command("generated"), None).unwrap();
+        assert_eq!(report["verdict"], json!("pass"), "{report}");
+
+        for mode in ["generated-ranged", "generated-aws-chunked"] {
+            let report = runner::grade_case(&case, &profile, &adapter_command(mode), None).unwrap();
+            assert_eq!(report["verdict"], json!("pass"), "{mode}: {report}");
+        }
+
+        let report =
+            runner::grade_case(&case, &profile, &adapter_command("generated-corrupt"), None)
+                .unwrap();
+        assert_eq!(report["verdict"], json!("wrong"), "{length} bytes");
+        assert!(
+            report["request_failures"]
+                .to_string()
+                .contains("not the generated"),
+            "{report}"
+        );
+    }
+}
+
 #[test]
 fn non_object_output_is_a_protocol_failure() {
     let (case, profile) = load_vector_case();

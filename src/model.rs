@@ -1,6 +1,7 @@
 use crate::{
     Result,
     checks::{compile_full_match_regex, normalize_xml},
+    generated::GeneratedBody,
 };
 use base64::{Engine, engine::general_purpose::STANDARD};
 use serde::{Deserialize, Serialize};
@@ -115,6 +116,12 @@ pub struct Exchange {
     /// Only the last exchanges of a case can be optional.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub optional: bool,
+
+    /// `true` if the exchange answers as many requests as match it, at least one, such as the
+    /// ranged reads in which a client reads a large object. The first request it does not match
+    /// goes to the next exchange.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub repeats: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -154,6 +161,12 @@ pub struct Response {
     /// The `Content-Length` still states the whole body, so the client receives a short body.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub truncate_body_after: Option<usize>,
+
+    /// `true` if a request with a range gets that window of the body: 206 with `Content-Range`, or
+    /// 416 for a range that starts past the end. A request without one gets the whole body. The
+    /// range comes from `x-ms-range`, as Azure reads it first, or from `Range`.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub serves_ranges: bool,
 
     /// A time in the body relative to when the grader sends the response, such as the
     /// `Expiration` of an S3 Express session. A fixture cannot hold such a time, since any fixed
@@ -217,6 +230,9 @@ pub enum Body {
     Empty,
     Utf8(String),
     Base64(String),
+
+    /// A pattern repeated to a length, which the grader writes as it sends it.
+    Repeat(GeneratedBody),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -270,6 +286,14 @@ pub enum Rule {
         header: String,
         algorithm: ChecksumAlgorithm,
     },
+
+    /// A body generated from a pattern: the `body_length` and `body_crc64nvme_base64` at the
+    /// check's pointer must be its fingerprint. At the request's root, it checks the request body;
+    /// at `/value`, the body a read reported.
+    GeneratedBody {
+        pattern_base64: String,
+        length: u64,
+    },
 }
 
 /// A subrequest of an Azure Blob Batch, with its path and query decoded. No query means none.
@@ -298,11 +322,21 @@ pub enum DateFormat {
 }
 
 impl Body {
+    /// Returns the bytes of a body the case holds. A generated body is written as it is sent.
     pub fn bytes(&self) -> Result<Vec<u8>> {
         Ok(match self {
             Self::Empty => vec![],
             Self::Utf8(text) => text.as_bytes().to_vec(),
             Self::Base64(text) => STANDARD.decode(text)?,
+            Self::Repeat(_) => return Err("a generated body is written as it is sent".into()),
+        })
+    }
+
+    /// Returns the body's length in bytes.
+    pub fn length(&self) -> Result<u64> {
+        Ok(match self {
+            Self::Repeat(generated) => generated.length,
+            _ => self.bytes()?.len() as u64,
         })
     }
 }
@@ -343,6 +377,16 @@ fn validate_checks(checks: &[Check]) -> Result<()> {
                 if !is_valid_http_header_name(header) || !check.at.is_empty() =>
             {
                 return Err("a body checksum names its header, at the request's root".into());
+            }
+            Rule::GeneratedBody {
+                pattern_base64,
+                length,
+            } => {
+                GeneratedBody {
+                    pattern_base64: pattern_base64.clone(),
+                    length: *length,
+                }
+                .pattern()?;
             }
             _ => {}
         }
@@ -465,6 +509,21 @@ impl Response {
         if !(200..=599).contains(&self.status) {
             return Err("invalid response status".into());
         }
+        if self.serves_ranges && (self.status != 200 || self.truncate_body_after.is_some()) {
+            return Err("a response that serves ranges answers 200 with its whole body".into());
+        }
+        if let Body::Repeat(generated) = &self.body {
+            generated.pattern()?;
+            if self.body_time.is_some() {
+                return Err("a generated body holds no time".into());
+            }
+            if let Some(truncated_length) = self.truncate_body_after
+                && (self.framing == Framing::Chunked || truncated_length as u64 >= generated.length)
+            {
+                return Err("a truncated body must be shorter than its length-framed body".into());
+            }
+            return self.validate_headers();
+        }
         let body = self.body.bytes()?;
         if let Some(BodyTime { text, .. }) = &self.body_time
             && (text.is_empty()
@@ -479,7 +538,10 @@ impl Response {
         {
             return Err("a truncated body must be shorter than its length-framed body".into());
         }
+        self.validate_headers()
+    }
 
+    fn validate_headers(&self) -> Result<()> {
         let mut names = BTreeSet::new();
         for (name, header) in &self.headers {
             if name.eq_ignore_ascii_case("transfer-encoding") {

@@ -1,7 +1,7 @@
 # Grader reference
 
 ```nu
-./target/debug/object-tests grade cases/operations.json --profile s3 -- ADAPTER
+./target/release/object-tests grade cases/operations.json --profile s3 -- ADAPTER
 ```
 
 `--case`, `--provider` and `--profile` select cases. `--expected-unsupported FILE` lists cases, patterns with `*`, or `field:/value/...` result fields that may be unsupported; `--record-unsupported FILE` writes that list. Exit code `0` means every case passed.
@@ -36,6 +36,8 @@ Keys are unescaped, bodies base64, ranges an offset and an exclusive end. A `che
 An `s3.sign` header given as a list is sent once per value, in order. Its `payload_hash`, such as `UNSIGNED-PAYLOAD`, is signed in place of the body's SHA-256. A signer may report its canonical request as `canonical_request`, which a vector then checks.
 
 A read asks for a checksum with `checksum_mode` on S3, or `range_checksum` on an Azure range. It reports the checksum it checked as `checksum`: `{"algorithm", "value_base64"}`, with S3's `type`, such as `full_object`.
+
+A large body is not held but generated: a pattern repeated to a length, `{"encoding": "repeat", "data": {"pattern_base64", "length"}}`. A call names one in `body`, which the adapter streams into its client without holding it. One of at most 1 MiB arrives as `body_base64` instead. A call with `body_result: "fingerprint"` reports the body it read as `body_length` and `body_crc64nvme_base64`, the big-endian CRC64NVME in base64, in place of `body_base64`. The rule `generated_body` checks such a fingerprint at its pointer: at the request's root, where every request has one, or at `/value`. Only `large.json` holds such bodies, and an adapter's time there grows with the bytes a case moves. An `aws-chunked` request also gets `decoded_body_length` and `decoded_body_crc64nvme_base64` for its payload, which `generated_body` checks in its place, and `aws_chunked` with its chunk count and trailers. An exchange with `repeats` answers as many requests as match it. A response with `serves_ranges` answers a ranged GET with that window of its body.
 
 `source_account_url` names another Azure storage account that holds a copy source, by its blob service URL. The source is in the container of the endpoint's name, unless `source_container` names another.
 

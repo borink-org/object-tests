@@ -1,5 +1,6 @@
 //! Runs one adapter process per case and serves the case's loopback endpoint.
-use crate::{Result, Session, model::*};
+use crate::{Result, Session, generated::GeneratedBody, model::*};
+use base64::{Engine, engine::general_purpose::STANDARD};
 use serde_json::{Value, json};
 use std::{
     collections::BTreeMap,
@@ -19,6 +20,54 @@ const MAX_MESSAGE_BYTES: usize = 16 * 1024 * 1024;
 
 // Each case serves its loopback endpoint from this many threads.
 const HTTP_WORKERS: usize = 2;
+
+// A generated call body up to this size reaches the adapter as `body_base64`, so an adapter that
+// cannot generate a body still runs the cases with small ones.
+const INLINE_GENERATED_BYTES: u64 = 1 << 20;
+
+// An adapter gets this long, and a second more for every 64 MiB of generated body a case moves.
+const ADAPTER_SECONDS: u64 = 30;
+const GENERATED_BYTES_PER_SECOND: u64 = 64 << 20;
+
+/// Returns the call an adapter receives: a small generated body comes as its bytes.
+fn adapter_call(call: &Value) -> Result<Value> {
+    let mut call = call.clone();
+    if call["body"]["encoding"] == "repeat" {
+        let generated: GeneratedBody = serde_json::from_value(call["body"]["data"].clone())?;
+        if generated.length <= INLINE_GENERATED_BYTES {
+            let object = call.as_object_mut().ok_or("call")?;
+            object.remove("body");
+            object.insert(
+                "body_base64".into(),
+                json!(STANDARD.encode(generated.bytes()?)),
+            );
+        }
+    }
+    Ok(call)
+}
+
+/// Returns the bytes of generated body that a case moves: in its call, its request checks and
+/// its responses.
+fn generated_byte_count(case: &Case) -> u64 {
+    let call_bytes = serde_json::from_value::<GeneratedBody>(case.call["body"]["data"].clone())
+        .map_or(0, |generated| generated.length);
+    let mut exchange_bytes = 0;
+    let mut exchanges: Vec<&Exchange> = case.exchanges.iter().collect();
+    while let Some(exchange) = exchanges.pop() {
+        for alternative in &exchange.alternatives {
+            exchanges.extend(&alternative.then);
+            if let Body::Repeat(generated) = &alternative.response.body {
+                exchange_bytes += generated.length;
+            }
+            for check in &alternative.request {
+                if let Rule::GeneratedBody { length, .. } = check.rule {
+                    exchange_bytes += length;
+                }
+            }
+        }
+    }
+    call_bytes + exchange_bytes
+}
 
 // The proxy variables that HTTP clients read, such as ureq and the AWS CRT.
 const PROXY_VARIABLES: &[&str] = &[
@@ -155,8 +204,11 @@ pub fn grade_case(
         "mode": if live_endpoint.is_some() {"live"} else {"offline"},
         "provider": profile.provider,
         "endpoint": endpoint,
-        "call": case.call,
+        "call": adapter_call(&case.call)?,
     });
+    let adapter_time = Duration::from_secs(
+        ADAPTER_SECONDS + generated_byte_count(case) / GENERATED_BYTES_PER_SECOND,
+    );
     let stop = AtomicBool::new(false);
     let result = thread::scope(|scope| {
         if let Some(server) = &server {
@@ -184,7 +236,7 @@ pub fn grade_case(
                 });
             }
         }
-        let result = invoke_adapter_process(command, &message, Duration::from_secs(30));
+        let result = invoke_adapter_process(command, &message, adapter_time);
         stop.store(true, Ordering::Release);
         // A worker blocks in accept, so one connection per worker wakes it to see the stop.
         if let Some(server) = &server

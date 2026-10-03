@@ -1,5 +1,7 @@
 //! Matches client requests and results against JSON case assertions.
+mod aws_chunked;
 mod checks;
+pub mod generated;
 mod http_transport;
 mod request;
 mod request_rules;
@@ -34,6 +36,9 @@ pub struct Session {
     profile: Profile,
     pending: VecDeque<Exchange>,
     completed: usize,
+
+    /// How many requests the first pending exchange has answered, if it repeats.
+    front_answers: usize,
     pub(crate) failures: Vec<Value>,
 }
 
@@ -49,17 +54,44 @@ impl Session {
             decline_permitted: case.decline_permitted,
             profile,
             completed: 0,
+            front_answers: 0,
             failures: vec![],
         }
     }
 
     pub fn respond(&mut self, request: &Value, now: SystemTime) -> Option<Response> {
+        // A repeating exchange that has answered once gives way to the next exchange for a request
+        // it does not match.
+        if let Some(exchange) = self.pending.front()
+            && exchange.repeats
+            && self.front_answers > 0
+            && self.pending.len() > 1
+            && self.match_front(request, now).is_err()
+        {
+            self.pending.pop_front();
+            self.front_answers = 0;
+        }
+        match self.match_front(request, now) {
+            Ok(response) => Some(response),
+            Err(failure) => {
+                self.failures.push(failure);
+                None
+            }
+        }
+    }
+
+    /// Answers a request from the first pending exchange, or returns why none of its alternatives
+    /// matches.
+    fn match_front(
+        &mut self,
+        request: &Value,
+        now: SystemTime,
+    ) -> std::result::Result<Response, Value> {
         let Some(exchange) = self.pending.front() else {
-            self.failures.push(json!({
+            return Err(json!({
                 "exchange": self.completed,
                 "error": "unexpected request",
             }));
-            return None;
         };
         let mut differences = vec![];
         for alternative in &exchange.alternatives {
@@ -104,19 +136,23 @@ impl Session {
                 let response = alternative.response.clone();
                 let follow_up = alternative.then.clone();
                 self.completed += 1;
+                if exchange.repeats {
+                    self.front_answers += 1;
+                    return Ok(response);
+                }
                 self.pending.pop_front();
+                self.front_answers = 0;
                 for exchange in follow_up.into_iter().rev() {
                     self.pending.push_front(exchange);
                 }
-                return Some(response);
+                return Ok(response);
             }
             differences.push(json!(request_differences));
         }
-        self.failures.push(json!({
+        Err(json!({
             "exchange": self.completed,
             "alternatives": differences,
-        }));
-        None
+        }))
     }
 
     pub fn finish(&self, result: &Value, now: SystemTime) -> Value {
@@ -149,9 +185,18 @@ impl Session {
         } else {
             check_assertions(checks, result, now)
         };
+        // A repeating exchange that has answered once is done.
+        let answered_front = usize::from(
+            self.front_answers > 0
+                && self
+                    .pending
+                    .front()
+                    .is_some_and(|exchange| exchange.repeats),
+        );
         let required_pending = self
             .pending
             .iter()
+            .skip(answered_front)
             .filter(|exchange| !exchange.optional)
             .count();
         let missing = !refused && !declined_before_sending && required_pending > 0;
