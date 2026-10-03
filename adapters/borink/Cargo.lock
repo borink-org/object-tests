@@ -33,7 +33,7 @@ dependencies = [
 [[package]]
 name = "borink-object-storage-crypto"
 version = "0.0.3"
-source = "git+https://github.com/borink-org/object-storage.git?rev=3439c0d7eafbea8d0a54d8e0e2104baa9201d172#3439c0d7eafbea8d0a54d8e0e2104baa9201d172"
+source = "git+https://github.com/borink-org/object-storage.git?rev=55bde1e8a893494efb1c00c01b841fc7d2a7dea6#55bde1e8a893494efb1c00c01b841fc7d2a7dea6"
 dependencies = [
  "borink-object-storage-proto",
  "hmac",
@@ -45,12 +45,12 @@ dependencies = [
 [[package]]
 name = "borink-object-storage-proto"
 version = "0.0.3"
-source = "git+https://github.com/borink-org/object-storage.git?rev=3439c0d7eafbea8d0a54d8e0e2104baa9201d172#3439c0d7eafbea8d0a54d8e0e2104baa9201d172"
+source = "git+https://github.com/borink-org/object-storage.git?rev=55bde1e8a893494efb1c00c01b841fc7d2a7dea6#55bde1e8a893494efb1c00c01b841fc7d2a7dea6"
 
 [[package]]
 name = "borink-object-tests-adapter"
 version = "0.0.0"
-source = "git+https://github.com/borink-org/object-storage.git?rev=3439c0d7eafbea8d0a54d8e0e2104baa9201d172#3439c0d7eafbea8d0a54d8e0e2104baa9201d172"
+source = "git+https://github.com/borink-org/object-storage.git?rev=55bde1e8a893494efb1c00c01b841fc7d2a7dea6#55bde1e8a893494efb1c00c01b841fc7d2a7dea6"
 dependencies = [
  "base64 0.22.1",
  "borink-object-storage-crypto",
