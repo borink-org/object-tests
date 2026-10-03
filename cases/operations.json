@@ -203,9 +203,11 @@
     "operations/azure-hns/list-written-with-hashes": "list written with hashes",
     "operations/azure-hns/list-xml-escaped": "list xml escaped",
     "operations/azure-hns/put-container-missing": "put container missing. A client reports it as container_not_found: the bucket or container is absent, not the object",
+    "operations/azure-hns/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
     "operations/azure-hns/put-content-encoding-gzip": "Store Content-Encoding: gzip with a write, and the gzip bytes unchanged",
     "operations/azure-hns/put-content-properties": "Store Content-Type, Content-Language, Content-Disposition and Cache-Control with a write",
     "operations/azure-hns/put-content-type-edge-spaces": "Write a content type with spaces at either end, which HTTP drops, so the service stores it trimmed. A client may refuse it",
+    "operations/azure-hns/put-content-type-non-ascii": "Write a Content-Type with a parameter outside ASCII. An HNS account returns é as the byte e9, so the UTF-8 bytes do not read back; send an RFC 2047 encoded word, or refuse the value",
     "operations/azure-hns/put-crc64-mismatch": "put crc64 mismatch",
     "operations/azure-hns/put-created": "put created",
     "operations/azure-hns/put-created-empty": "put created empty",
@@ -488,9 +490,11 @@
     "operations/azure/list-written-with-hashes": "list written with hashes",
     "operations/azure/list-xml-escaped": "list xml escaped",
     "operations/azure/put-container-missing": "put container missing. A client reports it as container_not_found: the bucket or container is absent, not the object",
+    "operations/azure/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
     "operations/azure/put-content-encoding-gzip": "Store Content-Encoding: gzip with a write, and the gzip bytes unchanged",
     "operations/azure/put-content-properties": "Store Content-Type, Content-Language, Content-Disposition and Cache-Control with a write",
     "operations/azure/put-content-type-edge-spaces": "Write a content type with spaces at either end, which HTTP drops, so the service stores it trimmed. A client may refuse it",
+    "operations/azure/put-content-type-non-ascii": "Write a Content-Type with a parameter outside ASCII. A flat account returns the UTF-8 bytes as it got them, so they read back; an RFC 2047 encoded word is stored as written",
     "operations/azure/put-crc64-mismatch": "put crc64 mismatch",
     "operations/azure/put-created": "put created",
     "operations/azure/put-created-empty": "put created empty",
@@ -533,11 +537,13 @@
     "operations/azure/put-with-crc64": "put with crc64",
     "operations/azure/put-with-md5": "put with md5",
     "operations/azure/put-with-tags": "Write an object with tags",
+    "operations/azure/put-with-tags-duplicate-key": "Report a write whose x-ms-tags names one key twice as an error. A client may refuse it, or report it unsupported where its API cannot repeat a key",
     "operations/azure/put-with-tags-special-characters": "Write a blob with an index tag that holds a space and each of + - = . _ : /, percent-encoded in x-ms-tags",
     "operations/azure/put-with-tier": "Write an object straight into the Cool access tier",
     "operations/azure/set-tags": "Replace the tags of an object",
     "operations/azure/set-tags-10-tags": "Set 10 tags, the most an object takes",
     "operations/azure/set-tags-11-tags": "Report 11 tags, one more than an object takes, as an error. A client may refuse them",
+    "operations/azure/set-tags-duplicate-key": "Report blob index tags that name one key twice as an error. A client may refuse them, or report them unsupported where its API cannot repeat a key",
     "operations/azure/set-tags-invalid-character": "Report a blob index tag key with @, which Azure does not allow, as an error. A client may refuse it",
     "operations/azure/set-tags-key-128": "Set a tag whose key has 128 characters, the longest a key may be",
     "operations/azure/set-tags-key-129": "Report a tag key of 129 characters, one more than a key may have, as an error. A client may refuse it",
@@ -729,9 +735,11 @@
     "operations/s3-express/put-computing-crc64nvme": "Compute the CRC64NVME checksum of the body and send it, base64 of its big-endian bytes, in x-amz-checksum-crc64nvme or in a trailer of an aws-chunked body",
     "operations/s3-express/put-computing-sha1": "Compute the SHA1 checksum of the body and send it, base64 of its big-endian bytes, in x-amz-checksum-sha1 or in a trailer of an aws-chunked body",
     "operations/s3-express/put-computing-sha256": "Compute the SHA256 checksum of the body and send it, base64 of its big-endian bytes, in x-amz-checksum-sha256 or in a trailer of an aws-chunked body",
+    "operations/s3-express/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
     "operations/s3-express/put-content-encoding-gzip": "Report the refusal of Content-Encoding: gzip by a directory bucket",
     "operations/s3-express/put-content-properties": "Store Content-Type, Content-Language, Content-Disposition and Cache-Control with a write",
     "operations/s3-express/put-content-type-edge-spaces": "Write a content type with spaces at either end, which HTTP drops, so the service stores it trimmed. A client may refuse it",
+    "operations/s3-express/put-content-type-non-ascii": "Write a Content-Type with a parameter outside ASCII. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, so send an RFC 2047 encoded word, or refuse the value",
     "operations/s3-express/put-created": "put created",
     "operations/s3-express/put-created-empty": "put created empty",
     "operations/s3-express/put-created-key-double-slash": "put created, with the key \"double//slash.txt\"",
@@ -973,9 +981,11 @@
     "operations/s3/put-computing-sha1": "Compute the SHA1 checksum of the body and send it, base64 of its big-endian bytes, in x-amz-checksum-sha1 or in a trailer of an aws-chunked body",
     "operations/s3/put-computing-sha256": "Compute the SHA256 checksum of the body and send it, base64 of its big-endian bytes, in x-amz-checksum-sha256 or in a trailer of an aws-chunked body",
     "operations/s3/put-conditional-conflict": "Report a 409 ConditionalRequestConflict to a conditional put as an error. AWS advises retrying a put, so a client may retry up to 5 times first, and need not retry",
+    "operations/s3/put-content-disposition-non-ascii": "Write a Content-Disposition whose filename is outside ASCII. A general-purpose bucket returns header bytes as it got them, so the UTF-8 bytes read back; an RFC 6266 filename* or an RFC 2047 encoded word is stored as written",
     "operations/s3/put-content-encoding-gzip": "Store Content-Encoding: gzip with a write, and the gzip bytes unchanged",
     "operations/s3/put-content-properties": "Store Content-Type, Content-Language, Content-Disposition and Cache-Control with a write",
     "operations/s3/put-content-type-edge-spaces": "Write a content type with spaces at either end, which HTTP drops, so the service stores it trimmed. A client may refuse it",
+    "operations/s3/put-content-type-non-ascii": "Write a Content-Type with a parameter outside ASCII. A general-purpose bucket returns header bytes as it got them, so the UTF-8 bytes read back; an RFC 2047 encoded word is stored as written",
     "operations/s3/put-created": "put created",
     "operations/s3/put-created-empty": "put created empty",
     "operations/s3/put-created-key-double-slash": "put created, with the key \"double//slash.txt\"",
@@ -1013,6 +1023,7 @@
     "operations/s3/put-tagging": "Replace the tags of an object",
     "operations/s3/put-tagging-10-tags": "Set 10 tags, the most an object takes",
     "operations/s3/put-tagging-11-tags": "Report 11 tags, one more than an object takes, as an error. A client may refuse them",
+    "operations/s3/put-tagging-duplicate-key": "Report a tag set that names one key twice as an error. A client may refuse it, or report it unsupported where its API cannot repeat a key",
     "operations/s3/put-tagging-invalid-character": "Report a tag key with !, which S3 does not allow, as an error. A client may refuse it",
     "operations/s3/put-tagging-key-128": "Set a tag whose key has 128 characters, the longest a key may be",
     "operations/s3/put-tagging-key-129": "Report a tag key of 129 characters, one more than a key may have, as an error. A client may refuse it",
@@ -1029,6 +1040,7 @@
     "operations/s3/put-with-sha256": "Send a SHA256 checksum that the caller gives, in x-amz-checksum-sha256",
     "operations/s3/put-with-storage-class": "Write an object into the STANDARD_IA storage class",
     "operations/s3/put-with-tags": "Write an object with tags",
+    "operations/s3/put-with-tags-duplicate-key": "Report a write whose x-amz-tagging names one key twice as an error. A client may refuse it, or report it unsupported where its API cannot repeat a key",
     "operations/s3/put-with-tags-special-characters": "Write an object with a tag that holds a space and each of + - = . _ : / @, percent-encoded in x-amz-tagging, so that S3 reads + as a plus and not a space",
     "operations/s3/put-with-unknown-storage-class": "Refuse a storage class that S3 does not have",
     "operations/s3/stage": "stage",
@@ -36525,6 +36537,165 @@
       "refusal": null
     },
     {
+      "id": "operations/azure/put-with-tags-duplicate-key",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a write whose x-ms-tags names one key twice as an error. A client may refuse it, or report it unsupported where its API cannot repeat a key",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob"
+      ],
+      "call": {
+        "body_base64": "Zmlyc3Q=",
+        "key": "object-tests/tags/object.txt",
+        "op": "put",
+        "tags": [
+          {
+            "key": "project",
+            "value": "a"
+          },
+          {
+            "key": "project",
+            "value": "b"
+          }
+        ]
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/tags/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "Zmlyc3Q="
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-tags",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "project=a&project=b"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "DuplicateTagNames"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>DuplicateTagNames</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "DuplicateTagNames"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "tags"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "DuplicateTagNames"
+          }
+        }
+      ],
+      "decline_permitted": true
+    },
+    {
       "id": "operations/azure/get-tags",
       "profile": "azure",
       "lane": "core",
@@ -37799,6 +37970,167 @@
           }
         }
       ]
+    },
+    {
+      "id": "operations/azure/set-tags-duplicate-key",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report blob index tags that name one key twice as an error. A client may refuse them, or report them unsupported where its API cannot repeat a key",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/set-blob-tags"
+      ],
+      "call": {
+        "key": "object-tests/tags/object.txt",
+        "op": "azure.set_tags",
+        "tags": [
+          {
+            "key": "project",
+            "value": "a"
+          },
+          {
+            "key": "project",
+            "value": "b"
+          }
+        ]
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/tags/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Tags><TagSet><Tag><Key>project</Key><Value>a</Value></Tag><Tag><Key>project</Key><Value>b</Value></Tag></TagSet></Tags>"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "tags"
+                  }
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "application/xml",
+                      "application/xml; charset=UTF-8"
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "InvalidXmlDocument"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>InvalidXmlDocument</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidXmlDocument"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "tags"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidXmlDocument"
+          }
+        }
+      ],
+      "decline_permitted": true
     },
     {
       "id": "operations/azure/put-with-tier",
@@ -39093,6 +39425,281 @@
         }
       ],
       "refusal": null
+    },
+    {
+      "id": "operations/azure/put-content-type-non-ascii",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Write a Content-Type with a parameter outside ASCII. A flat account returns the UTF-8 bytes as it got them, so they read back; an RFC 2047 encoded word is stored as written",
+      "sources": [
+        "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
+      ],
+      "call": {
+        "body_base64": "MDEyMzQ1Njc4OQ==",
+        "content_type": "text/plain; name=\"été.txt\"",
+        "key": "object-tests/write/object.txt",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDEyMzQ1Njc4OQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "text/plain; name=\"Ã©tÃ©.txt\"",
+                      "text/plain; name=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\""
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "content-md5": "eB5eJF1ptWaXm4bijSPyxw==",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-b9991ef94e3d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true",
+                  "x-ms-version-id": "2024-01-01T00:00:00.2084665Z"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-b9991ef94e3d\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "2024-01-01T00:00:00.2084665Z"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/put-content-disposition-non-ascii",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
+      "sources": [
+        "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
+      ],
+      "call": {
+        "body_base64": "MDEyMzQ1Njc4OQ==",
+        "content_disposition": "attachment; filename=\"été.txt\"",
+        "key": "object-tests/write/object.txt",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDEyMzQ1Njc4OQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-content-disposition",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "attachment; filename=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\"",
+                      "attachment; filename*=UTF-8''%C3%A9t%C3%A9.txt"
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "content-md5": "eB5eJF1ptWaXm4bijSPyxw==",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-b9991ef94e3d\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true",
+                  "x-ms-version-id": "2024-01-01T00:00:00.2084665Z"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-b9991ef94e3d\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "2024-01-01T00:00:00.2084665Z"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "content_disposition"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidMetadata"
+          }
+        }
+      ]
     },
     {
       "id": "operations/azure/put-content-type-edge-spaces",
@@ -85170,6 +85777,307 @@
         }
       ],
       "refusal": null
+    },
+    {
+      "id": "operations/azure-hns/put-content-type-non-ascii",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Write a Content-Type with a parameter outside ASCII. An HNS account returns é as the byte e9, so the UTF-8 bytes do not read back; send an RFC 2047 encoded word, or refuse the value",
+      "sources": [
+        "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
+      ],
+      "call": {
+        "body_base64": "MDEyMzQ1Njc4OQ==",
+        "content_type": "text/plain; name=\"été.txt\"",
+        "key": "object-tests/write/object.txt",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDEyMzQ1Njc4OQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "text/plain; name=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "content-md5": "eB5eJF1ptWaXm4bijSPyxw==",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-bf139483d631\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-bf139483d631\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "content_type"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations/azure-hns/put-content-disposition-non-ascii",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Write a Content-Disposition whose filename is outside ASCII. Azure refuses a disposition byte outside ASCII with 400 InvalidMetadata, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
+      "sources": [
+        "azure-sdk-for-cpp/sdk/storage/azure-storage-blobs/src/blob_rest_client.cpp"
+      ],
+      "call": {
+        "body_base64": "MDEyMzQ1Njc4OQ==",
+        "content_disposition": "attachment; filename=\"été.txt\"",
+        "key": "object-tests/write/object.txt",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDEyMzQ1Njc4OQ=="
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-content-disposition",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "attachment; filename=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\"",
+                      "attachment; filename*=UTF-8''%C3%A9t%C3%A9.txt"
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "content-md5": "eB5eJF1ptWaXm4bijSPyxw==",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-bf139483d631\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-creation-time": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-bf139483d631\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "content_disposition"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidMetadata"
+          }
+        }
+      ]
     },
     {
       "id": "operations/azure-hns/put-content-type-edge-spaces",
@@ -132346,6 +133254,159 @@
       "refusal": null
     },
     {
+      "id": "operations/s3/put-with-tags-duplicate-key",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a write whose x-amz-tagging names one key twice as an error. A client may refuse it, or report it unsupported where its API cannot repeat a key",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html"
+      ],
+      "call": {
+        "body_base64": "Zmlyc3Q=",
+        "key": "object-tests/tags/object.txt",
+        "op": "put",
+        "tags": [
+          {
+            "key": "project",
+            "value": "a"
+          },
+          {
+            "key": "project",
+            "value": "b"
+          }
+        ]
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/tags/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "Zmlyc3Q="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-tagging",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "project=a&project=b"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InvalidArgument</Code><Message>Fixture error</Message></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidArgument"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "tags"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidArgument"
+          }
+        }
+      ],
+      "decline_permitted": true
+    },
+    {
       "id": "operations/s3/get-tagging",
       "profile": "s3",
       "lane": "core",
@@ -133700,6 +134761,175 @@
       ]
     },
     {
+      "id": "operations/s3/put-tagging-duplicate-key",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a tag set that names one key twice as an error. A client may refuse it, or report it unsupported where its API cannot repeat a key",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObjectTagging.html"
+      ],
+      "call": {
+        "key": "object-tests/tags/object.txt",
+        "op": "s3.put_tagging",
+        "tags": [
+          {
+            "key": "project",
+            "value": "a"
+          },
+          {
+            "key": "project",
+            "value": "b"
+          }
+        ]
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/tags/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_text",
+                  "optional": false,
+                  "rule": {
+                    "is": "xml",
+                    "value": "<Tagging xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><TagSet><Tag><Key>project</Key><Value>a</Value></Tag><Tag><Key>project</Key><Value>b</Value></Tag></TagSet></Tagging>"
+                  }
+                },
+                {
+                  "at": "/query/tagging",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-checksum-crc64nvme",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "[A-Za-z0-9+/]{11}="
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "body_checksum",
+                    "header": "x-amz-checksum-crc64nvme",
+                    "algorithm": "crc64nvme"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 400,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>InvalidTag</Code><Message>Fixture error</Message></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidTag"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "tags"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidTag"
+          }
+        }
+      ],
+      "decline_permitted": true
+    },
+    {
       "id": "operations/s3/put-internal-error",
       "profile": "s3",
       "lane": "core",
@@ -134229,6 +135459,223 @@
                   "rule": {
                     "is": "equal",
                     "value": "max-age=3600"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-fbe0ab688a03\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-fbe0ab688a03\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/put-content-type-non-ascii",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Write a Content-Type with a parameter outside ASCII. A general-purpose bucket returns header bytes as it got them, so the UTF-8 bytes read back; an RFC 2047 encoded word is stored as written",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MDEyMzQ1Njc4OQ==",
+        "content_type": "text/plain; name=\"été.txt\"",
+        "key": "object-tests/write/object.txt",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDEyMzQ1Njc4OQ=="
+                  }
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "text/plain; name=\"Ã©tÃ©.txt\"",
+                      "text/plain; name=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\""
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-fbe0ab688a03\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-fbe0ab688a03\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/put-content-disposition-non-ascii",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Write a Content-Disposition whose filename is outside ASCII. A general-purpose bucket returns header bytes as it got them, so the UTF-8 bytes read back; an RFC 6266 filename* or an RFC 2047 encoded word is stored as written",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MDEyMzQ1Njc4OQ==",
+        "content_disposition": "attachment; filename=\"été.txt\"",
+        "key": "object-tests/write/object.txt",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDEyMzQ1Njc4OQ=="
+                  }
+                },
+                {
+                  "at": "/headers/content-disposition",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "attachment; filename=\"Ã©tÃ©.txt\"",
+                      "attachment; filename=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\"",
+                      "attachment; filename*=UTF-8''%C3%A9t%C3%A9.txt"
+                    ]
                   }
                 }
               ],
@@ -199017,6 +200464,497 @@
         }
       ],
       "refusal": null
+    },
+    {
+      "id": "operations/s3-express/put-content-type-non-ascii",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Write a Content-Type with a parameter outside ASCII. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, so send an RFC 2047 encoded word, or refuse the value",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MDEyMzQ1Njc4OQ==",
+        "content_type": "text/plain; name=\"été.txt\"",
+        "key": "object-tests/write/object.txt",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDEyMzQ1Njc4OQ=="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "text/plain; name=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-68e2c5df0cb2\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-68e2c5df0cb2\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "content_type"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidRequest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations/s3-express/put-content-disposition-non-ascii",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Write a Content-Disposition whose filename is outside ASCII. A directory bucket refuses a header byte outside ASCII with 400 InvalidRequest, so send an RFC 6266 filename* or an RFC 2047 encoded word, or refuse the value",
+      "sources": [
+        "aws-sdk-cpp/generated/src/aws-cpp-sdk-s3-crt"
+      ],
+      "call": {
+        "body_base64": "MDEyMzQ1Njc4OQ==",
+        "content_disposition": "attachment; filename=\"été.txt\"",
+        "key": "object-tests/write/object.txt",
+        "op": "put"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "GET"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/"
+                  }
+                },
+                {
+                  "at": "/query/session",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CreateSessionResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Credentials><SessionToken>fixture-session-token</SessionToken><SecretAccessKey>fixture-secret-key</SecretAccessKey><AccessKeyId>fixture-access-key</AccessKeyId><Expiration>SESSION_EXPIRATION</Expiration></Credentials></CreateSessionResult>"
+                },
+                "body_time": {
+                  "text": "SESSION_EXPIRATION",
+                  "offset_seconds": 300
+                }
+              }
+            }
+          ]
+        },
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/write/object.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "MDEyMzQ1Njc4OQ=="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-session-token"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=fixture-access-key/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/content-disposition",
+                  "optional": false,
+                  "rule": {
+                    "is": "one_of",
+                    "values": [
+                      "attachment; filename=\"=?UTF-8?Q?=C3=A9t=C3=A9.txt?=\"",
+                      "attachment; filename*=UTF-8''%C3%A9t%C3%A9.txt"
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-68e2c5df0cb2\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "base64",
+                  "data": ""
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-68e2c5df0cb2\""
+          }
+        },
+        {
+          "at": "/value/version",
+          "optional": true,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              null,
+              ""
+            ]
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "content_disposition"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": 400
+          }
+        },
+        {
+          "at": "/code",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidRequest"
+          }
+        }
+      ]
     },
     {
       "id": "operations/s3-express/put-content-type-edge-spaces",
