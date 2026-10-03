@@ -32,6 +32,7 @@
     "operations/azure-hns/commit-with-tier": "Commit a block list into an access tier, named in x-ms-access-tier",
     "operations/azure-hns/copy": "Copy an object to another key in the same container",
     "operations/azure-hns/copy-across-containers": "Copy a blob from another container of the same account, which x-ms-copy-source names in its URL",
+    "operations/azure-hns/copy-content-properties": "Copy a blob with a content type, which Copy Blob ignores: the copy keeps the source's content properties. A client may send it, or refuse or decline the parameter",
     "operations/azure-hns/copy-if-none-match-exists": "Report a copy with If-None-Match: * onto a blob that exists as a failed condition on the destination",
     "operations/azure-hns/copy-missing-source": "Refuse a copy whose source does not exist",
     "operations/azure-hns/copy-pending": "Report a copy that Azure answers as pending with its copy ID, so that a caller can follow it with a HEAD or abort it",
@@ -41,6 +42,7 @@
     "operations/azure-hns/copy-source-if-unmodified-since-failed": "Report a copy whose source changed after the time in x-ms-source-if-unmodified-since as a failed condition, 412 SourceConditionNotMet",
     "operations/azure-hns/copy-source-key-encoded": "Copy from a key with a space, +, %, é, ? and #. The x-ms-copy-source URL percent-encodes every byte of the key outside letters, digits, -._~ and /",
     "operations/azure-hns/copy-sync": "Copy a blob with Copy Blob From URL, x-ms-requires-sync: true, which answers once the copy is done. The source must be readable by URL: by a SAS, or by a bearer token in x-ms-copy-source-authorization",
+    "operations/azure-hns/copy-sync-missing-source": "Report a Copy Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
     "operations/azure-hns/copy-tier": "Copy a blob into another access tier, named in x-ms-access-tier",
     "operations/azure-hns/create-append": "Create an empty append blob",
     "operations/azure-hns/create-page": "Create a page blob of 1,024 bytes, which an HNS account does not support",
@@ -223,6 +225,8 @@
     "operations/azure-hns/put-created-key-trailing-slash": "put created, with the key \"trailing-slash/\"",
     "operations/azure-hns/put-first-version": "put first version",
     "operations/azure-hns/put-from-url": "Write a block blob from the bytes at a URL with Put Blob From URL: a PUT with x-ms-blob-type: BlockBlob, x-ms-copy-source and no body, which answers once it is written",
+    "operations/azure-hns/put-from-url-content-properties": "Write a block blob from a URL with content properties of its own, sent as x-ms-blob-content-type and x-ms-blob-cache-control. Put Blob From URL stores them in place of the source's",
+    "operations/azure-hns/put-from-url-missing-source": "Report a Put Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
     "operations/azure-hns/put-if-match-current": "put if match current",
     "operations/azure-hns/put-if-none-match-missing": "put if none match missing",
     "operations/azure-hns/put-if-unmodified-since-past": "Refuse a write with 412 when the object changed after If-Unmodified-Since",
@@ -319,6 +323,7 @@
     "operations/azure/commit-with-tier": "Commit a block list into an access tier, named in x-ms-access-tier",
     "operations/azure/copy": "Copy an object to another key in the same container",
     "operations/azure/copy-across-containers": "Copy a blob from another container of the same account, which x-ms-copy-source names in its URL",
+    "operations/azure/copy-content-properties": "Copy a blob with a content type, which Copy Blob ignores: the copy keeps the source's content properties. A client may send it, or refuse or decline the parameter",
     "operations/azure/copy-if-none-match-exists": "Report a copy with If-None-Match: * onto a blob that exists as a failed condition on the destination",
     "operations/azure/copy-missing-source": "Refuse a copy whose source does not exist",
     "operations/azure/copy-pending": "Report a copy that Azure answers as pending with its copy ID, so that a caller can follow it with a HEAD or abort it",
@@ -329,6 +334,7 @@
     "operations/azure/copy-source-key-encoded": "Copy from a key with a space, +, %, é, ? and #. The x-ms-copy-source URL percent-encodes every byte of the key outside letters, digits, -._~ and /",
     "operations/azure/copy-source-version": "Copy an earlier version of a blob, named by versionid in the x-ms-copy-source URL",
     "operations/azure/copy-sync": "Copy a blob with Copy Blob From URL, x-ms-requires-sync: true, which answers once the copy is done. The source must be readable by URL: by a SAS, or by a bearer token in x-ms-copy-source-authorization",
+    "operations/azure/copy-sync-missing-source": "Report a Copy Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
     "operations/azure/copy-tier": "Copy a blob into another access tier, named in x-ms-access-tier",
     "operations/azure/create-append": "Create an empty append blob",
     "operations/azure/create-page": "Create a page blob of 1,024 bytes",
@@ -512,6 +518,8 @@
     "operations/azure/put-created-key-trailing-slash": "put created, with the key \"trailing-slash/\"",
     "operations/azure/put-first-version": "put first version",
     "operations/azure/put-from-url": "Write a block blob from the bytes at a URL with Put Blob From URL: a PUT with x-ms-blob-type: BlockBlob, x-ms-copy-source and no body, which answers once it is written",
+    "operations/azure/put-from-url-content-properties": "Write a block blob from a URL with content properties of its own, sent as x-ms-blob-content-type and x-ms-blob-cache-control. Put Blob From URL stores them in place of the source's",
+    "operations/azure/put-from-url-missing-source": "Report a Put Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
     "operations/azure/put-if-match-current": "put if match current",
     "operations/azure/put-if-none-match-missing": "put if none match missing",
     "operations/azure/put-if-unmodified-since-past": "Refuse a write with 412 when the object changed after If-Unmodified-Since",
@@ -617,10 +625,12 @@
     "operations/s3-express/complete-multipart-200-error": "complete multipart 200 error",
     "operations/s3-express/copy": "Copy an object to another key in the same bucket",
     "operations/s3-express/copy-200-internal-error": "Report a copy answered 200 with an InternalError in the body as an error, never as a success. A client may retry up to 5 times first, and need not retry",
+    "operations/s3-express/copy-clear-metadata": "Copy an object with no metadata in place of the source's: x-amz-metadata-directive: REPLACE with no x-amz-meta- header. A client API that cannot say no metadata may refuse or decline the call",
     "operations/s3-express/copy-missing-source": "Refuse a copy whose source does not exist",
     "operations/s3-express/copy-onto-itself": "Copy an object onto itself without changing it. A directory bucket accepts it, where a general-purpose bucket answers 400 InvalidRequest",
     "operations/s3-express/copy-onto-itself-replace-metadata": "Copy an object onto itself to replace its metadata, which S3 accepts with x-amz-metadata-directive: REPLACE",
     "operations/s3-express/copy-replace-metadata": "Copy an object with new metadata and a new content type. S3 keeps the source's unless x-amz-metadata-directive is REPLACE, so a client that sets either must send it",
+    "operations/s3-express/copy-replace-metadata-only": "Copy an object with new metadata and no content type. x-amz-metadata-directive: REPLACE replaces the content properties too: S3 gives the copy binary/octet-stream, not the source's content type, unless the caller names one",
     "operations/s3-express/copy-source-if-match": "Copy an object only if the source still has this ETag, named in x-amz-copy-source-if-match",
     "operations/s3-express/copy-source-if-match-failed": "Report a copy whose source does not have the ETag in x-amz-copy-source-if-match as a failed condition. S3 answers 412 PreconditionFailed and writes nothing",
     "operations/s3-express/copy-source-if-modified-since": "Copy an object only if the source changed after a time, named in x-amz-copy-source-if-modified-since as an HTTP date",
@@ -792,6 +802,7 @@
     "operations/s3-express/stage-copy-200-internal-error": "Report a part copy answered 200 with an InternalError in the body as an error, never as a success. A client may retry up to 5 times first, and need not retry",
     "operations/s3-express/stage-copy-range": "Copy bytes 0 to 2 of an object into a part, named in x-amz-copy-source-range with an inclusive end, as bytes=0-2",
     "operations/s3-express/stage-copy-range-beyond-source": "Copy a part whose range ends past the source. A directory bucket accepts it, where a general-purpose bucket answers 400 InvalidArgument",
+    "operations/s3-express/stage-copy-source-if-match-failed": "Report a part copy whose source does not have the ETag in x-amz-copy-source-if-match as a failed condition, 412 PreconditionFailed, of kind precondition",
     "operations/s3-express/stage-empty-part": "Stage an empty part, which S3 takes",
     "operations/s3-express/stage-key-double-slash": "stage, with the key \"double//slash.txt\"",
     "operations/s3-express/stage-key-hash": "stage, with the key \"hash#tag.txt\"",
@@ -843,10 +854,13 @@
     "operations/s3/copy": "Copy an object to another key in the same bucket",
     "operations/s3/copy-200-internal-error": "Report a copy answered 200 with an InternalError in the body as an error, never as a success. A client may retry up to 5 times first, and need not retry",
     "operations/s3/copy-across-buckets": "Copy an object from another bucket, which x-amz-copy-source names before the key",
+    "operations/s3/copy-clear-metadata": "Copy an object with no metadata in place of the source's: x-amz-metadata-directive: REPLACE with no x-amz-meta- header. A client API that cannot say no metadata may refuse or decline the call",
+    "operations/s3/copy-clear-tags": "Copy an object with no tags in place of the source's: x-amz-tagging-directive: REPLACE with an empty or no x-amz-tagging. A client API that cannot say no tags may refuse or decline the call",
     "operations/s3/copy-missing-source": "Refuse a copy whose source does not exist",
     "operations/s3/copy-onto-itself": "Report a copy of an object onto itself that changes nothing as an error. S3 answers 400 InvalidRequest",
     "operations/s3/copy-onto-itself-replace-metadata": "Copy an object onto itself to replace its metadata, which S3 accepts with x-amz-metadata-directive: REPLACE",
     "operations/s3/copy-replace-metadata": "Copy an object with new metadata and a new content type. S3 keeps the source's unless x-amz-metadata-directive is REPLACE, so a client that sets either must send it",
+    "operations/s3/copy-replace-metadata-only": "Copy an object with new metadata and no content type. x-amz-metadata-directive: REPLACE replaces the content properties too: S3 gives the copy binary/octet-stream, not the source's content type, unless the caller names one",
     "operations/s3/copy-replace-tags": "Copy an object with new tags. S3 copies the source's tags unless x-amz-tagging-directive is REPLACE, so a client that sets tags must send it",
     "operations/s3/copy-source-if-match": "Copy an object only if the source still has this ETag, named in x-amz-copy-source-if-match",
     "operations/s3/copy-source-if-match-failed": "Report a copy whose source does not have the ETag in x-amz-copy-source-if-match as a failed condition. S3 answers 412 PreconditionFailed and writes nothing",
@@ -1053,6 +1067,7 @@
     "operations/s3/stage-copy-200-internal-error": "Report a part copy answered 200 with an InternalError in the body as an error, never as a success. A client may retry up to 5 times first, and need not retry",
     "operations/s3/stage-copy-range": "Copy bytes 0 to 2 of an object into a part, named in x-amz-copy-source-range with an inclusive end, as bytes=0-2",
     "operations/s3/stage-copy-range-beyond-source": "Report a part copy whose range ends past the source as an error. S3 answers 400 InvalidArgument",
+    "operations/s3/stage-copy-source-if-match-failed": "Report a part copy whose source does not have the ETag in x-amz-copy-source-if-match as a failed condition, 412 PreconditionFailed, of kind precondition",
     "operations/s3/stage-empty-part": "Stage an empty part, which S3 takes",
     "operations/s3/stage-key-double-slash": "stage, with the key \"double//slash.txt\"",
     "operations/s3/stage-key-hash": "stage, with the key \"hash#tag.txt\"",
@@ -34670,6 +34685,116 @@
       "refusal": null
     },
     {
+      "id": "operations/azure/copy-sync-missing-source",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a Copy Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "copy",
+        "source_key": "object-tests/copy/absent.txt",
+        "sync": true
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/absent\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-requires-sync",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "true"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-authorization"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 404,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>CannotVerifyCopySource</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 404
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/azure/copy-pending",
       "profile": "azure",
       "lane": "core",
@@ -34772,6 +34897,133 @@
       "refusal": null
     },
     {
+      "id": "operations/azure/copy-content-properties",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Copy a blob with a content type, which Copy Blob ignores: the copy keeps the source's content properties. A client may send it, or refuse or decline the parameter",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob"
+      ],
+      "call": {
+        "content_type": "text/plain",
+        "key": "object-tests/copy/target.txt",
+        "op": "copy",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "text/plain"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 202,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-copy-id": "fixture-copy-id",
+                  "x-ms-copy-status": "success"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/copy_status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "success"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "content_type"
+          }
+        }
+      ],
+      "decline_permitted": true
+    },
+    {
       "id": "operations/azure/put-from-url",
       "profile": "azure",
       "lane": "core",
@@ -34868,6 +35120,236 @@
           "rule": {
             "is": "equal",
             "value": "\"fixture-etag\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/put-from-url-content-properties",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Write a block blob from a URL with content properties of its own, sent as x-ms-blob-content-type and x-ms-blob-cache-control. Put Blob From URL stores them in place of the source's",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob-from-url"
+      ],
+      "call": {
+        "cache_control": "max-age=3600",
+        "content_type": "text/plain",
+        "key": "object-tests/copy/target.txt",
+        "op": "azure.put_from_url",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "text/plain"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-cache-control",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "max-age=3600"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-authorization",
+                "x-ms-copy-source-blob-properties"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-etag\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/put-from-url-missing-source",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a Put Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "azure.put_from_url",
+        "source_key": "object-tests/copy/absent.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/absent\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-authorization",
+                "x-ms-copy-source-blob-properties"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 404,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>CannotVerifyCopySource</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 404
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
           }
         }
       ],
@@ -82811,6 +83293,116 @@
       "refusal": null
     },
     {
+      "id": "operations/azure-hns/copy-sync-missing-source",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report a Copy Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "copy",
+        "source_key": "object-tests/copy/absent.txt",
+        "sync": true
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/absent\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-requires-sync",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "true"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-authorization"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 404,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>CannotVerifyCopySource</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 404
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
       "id": "operations/azure-hns/copy-pending",
       "profile": "azure-hns",
       "lane": "core",
@@ -82913,6 +83505,133 @@
       "refusal": null
     },
     {
+      "id": "operations/azure-hns/copy-content-properties",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Copy a blob with a content type, which Copy Blob ignores: the copy keeps the source's content properties. A client may send it, or refuse or decline the parameter",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob"
+      ],
+      "call": {
+        "content_type": "text/plain",
+        "key": "object-tests/copy/target.txt",
+        "op": "copy",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "text/plain"
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 202,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-copy-id": "fixture-copy-id",
+                  "x-ms-copy-status": "success"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/copy_status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "success"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "content_type"
+          }
+        }
+      ],
+      "decline_permitted": true
+    },
+    {
       "id": "operations/azure-hns/put-from-url",
       "profile": "azure-hns",
       "lane": "core",
@@ -83009,6 +83728,236 @@
           "rule": {
             "is": "equal",
             "value": "\"fixture-etag\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure-hns/put-from-url-content-properties",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Write a block blob from a URL with content properties of its own, sent as x-ms-blob-content-type and x-ms-blob-cache-control. Put Blob From URL stores them in place of the source's",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob-from-url"
+      ],
+      "call": {
+        "cache_control": "max-age=3600",
+        "content_type": "text/plain",
+        "key": "object-tests/copy/target.txt",
+        "op": "azure.put_from_url",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "text/plain"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-cache-control",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "max-age=3600"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-authorization",
+                "x-ms-copy-source-blob-properties"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 201,
+                "headers": {
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT",
+                  "x-ms-request-server-encrypted": "true"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        },
+        {
+          "at": "/value/etag",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "\"fixture-etag\""
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure-hns/put-from-url-missing-source",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report a Put Blob From URL whose source does not exist as an error. Azure answers 404 CannotVerifyCopySource, a code of its own, not BlobNotFound",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob-from-url"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "azure.put_from_url",
+        "source_key": "object-tests/copy/absent.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "https?://[^/]+/fixture/object-tests/copy/absent\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-ms-blob-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "BlockBlob"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "x-ms-copy-source-authorization",
+                "x-ms-copy-source-blob-properties"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 404,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "CannotVerifyCopySource"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>CannotVerifyCopySource</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 404
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "CannotVerifyCopySource"
           }
         }
       ],
@@ -129151,6 +130100,462 @@
       "refusal": null
     },
     {
+      "id": "operations/s3/copy-replace-metadata-only",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Copy an object with new metadata and no content type. x-amz-metadata-directive: REPLACE replaces the content properties too: S3 gives the copy binary/octet-stream, not the source's content type, unless the caller names one",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "metadata": {
+          "colour": "blue"
+        },
+        "op": "copy",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-metadata-directive",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "REPLACE"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-colour",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "blue"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CopyObjectResult><LastModified>2024-01-01T00:00:00.000Z</LastModified><ETag>&quot;fixture-etag&quot;</ETag></CopyObjectResult>"
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "HEAD"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/source.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "then": [
+                {
+                  "alternatives": [
+                    {
+                      "request": [
+                        {
+                          "at": "/method",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "PUT"
+                          }
+                        },
+                        {
+                          "at": "/path",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "/fixture/object-tests/copy/target.txt"
+                          }
+                        },
+                        {
+                          "at": "/body_base64",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": ""
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-copy-source",
+                          "optional": false,
+                          "rule": {
+                            "is": "matches",
+                            "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-metadata-directive",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "REPLACE"
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-meta-colour",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "blue"
+                          }
+                        }
+                      ],
+                      "allow_headers": [
+                        "content-type"
+                      ],
+                      "allow_query": [],
+                      "response": {
+                        "status": 200,
+                        "headers": {
+                          "content-type": "application/xml",
+                          "date": {
+                            "from": "now"
+                          }
+                        },
+                        "body": {
+                          "encoding": "utf8",
+                          "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CopyObjectResult><LastModified>2024-01-01T00:00:00.000Z</LastModified><ETag>&quot;fixture-etag&quot;</ETag></CopyObjectResult>"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-length": "5",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/copy-clear-metadata",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Copy an object with no metadata in place of the source's: x-amz-metadata-directive: REPLACE with no x-amz-meta- header. A client API that cannot say no metadata may refuse or decline the call",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "metadata": {},
+        "op": "copy",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-metadata-directive",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "REPLACE"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CopyObjectResult><LastModified>2024-01-01T00:00:00.000Z</LastModified><ETag>&quot;fixture-etag&quot;</ETag></CopyObjectResult>"
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "HEAD"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/source.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "then": [
+                {
+                  "alternatives": [
+                    {
+                      "request": [
+                        {
+                          "at": "/method",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "PUT"
+                          }
+                        },
+                        {
+                          "at": "/path",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "/fixture/object-tests/copy/target.txt"
+                          }
+                        },
+                        {
+                          "at": "/body_base64",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": ""
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-copy-source",
+                          "optional": false,
+                          "rule": {
+                            "is": "matches",
+                            "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-metadata-directive",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "REPLACE"
+                          }
+                        }
+                      ],
+                      "allow_headers": [
+                        "content-type"
+                      ],
+                      "allow_query": [],
+                      "response": {
+                        "status": 200,
+                        "headers": {
+                          "content-type": "application/xml",
+                          "date": {
+                            "from": "now"
+                          }
+                        },
+                        "body": {
+                          "encoding": "utf8",
+                          "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CopyObjectResult><LastModified>2024-01-01T00:00:00.000Z</LastModified><ETag>&quot;fixture-etag&quot;</ETag></CopyObjectResult>"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-length": "5",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ],
+      "decline_permitted": true
+    },
+    {
       "id": "operations/s3/copy-replace-tags",
       "profile": "s3",
       "lane": "core",
@@ -129373,6 +130778,254 @@
         }
       ],
       "refusal": null
+    },
+    {
+      "id": "operations/s3/copy-clear-tags",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Copy an object with no tags in place of the source's: x-amz-tagging-directive: REPLACE with an empty or no x-amz-tagging. A client API that cannot say no tags may refuse or decline the call",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "op": "copy",
+        "source_key": "object-tests/copy/source.txt",
+        "tags": {}
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-tagging-directive",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "REPLACE"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-tagging",
+                  "optional": true,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CopyObjectResult><LastModified>2024-01-01T00:00:00.000Z</LastModified><ETag>&quot;fixture-etag&quot;</ETag></CopyObjectResult>"
+                }
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "HEAD"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/source.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                }
+              ],
+              "then": [
+                {
+                  "alternatives": [
+                    {
+                      "request": [
+                        {
+                          "at": "/method",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "PUT"
+                          }
+                        },
+                        {
+                          "at": "/path",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "/fixture/object-tests/copy/target.txt"
+                          }
+                        },
+                        {
+                          "at": "/body_base64",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": ""
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-copy-source",
+                          "optional": false,
+                          "rule": {
+                            "is": "matches",
+                            "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-tagging-directive",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "REPLACE"
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-tagging",
+                          "optional": true,
+                          "rule": {
+                            "is": "equal",
+                            "value": ""
+                          }
+                        }
+                      ],
+                      "allow_headers": [
+                        "content-type"
+                      ],
+                      "allow_query": [],
+                      "response": {
+                        "status": 200,
+                        "headers": {
+                          "content-type": "application/xml",
+                          "date": {
+                            "from": "now"
+                          }
+                        },
+                        "body": {
+                          "encoding": "utf8",
+                          "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CopyObjectResult><LastModified>2024-01-01T00:00:00.000Z</LastModified><ETag>&quot;fixture-etag&quot;</ETag></CopyObjectResult>"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-length": "5",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "tags"
+          }
+        }
+      ],
+      "decline_permitted": true
     },
     {
       "id": "operations/s3/copy-storage-class",
@@ -141041,6 +142694,142 @@
           "rule": {
             "is": "equal",
             "value": "InternalError"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3/stage-copy-source-if-match-failed",
+      "profile": "s3",
+      "lane": "core",
+      "purpose": "Report a part copy whose source does not have the ETag in x-amz-copy-source-if-match as a failed condition, 412 PreconditionFailed, of kind precondition",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html"
+      ],
+      "call": {
+        "key": "object-tests/multipart/object.bin",
+        "op": "s3.upload_part_copy",
+        "part_number": 1,
+        "source_if_match": "\"fixture-0123456789ab\"",
+        "source_key": "object-tests/copy/source.txt",
+        "upload_id": "fixture-upload+/276ca18046f9="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/partNumber",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/276ca18046f9="
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source-if-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "\"fixture-0123456789ab\""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 412,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>PreconditionFailed</Code><Message>Fixture error</Message></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 412
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "PreconditionFailed"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "precondition"
           }
         }
       ],
@@ -194390,6 +196179,604 @@
       "refusal": null
     },
     {
+      "id": "operations/s3-express/copy-replace-metadata-only",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Copy an object with new metadata and no content type. x-amz-metadata-directive: REPLACE replaces the content properties too: S3 gives the copy binary/octet-stream, not the source's content type, unless the caller names one",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "metadata": {
+          "colour": "blue"
+        },
+        "op": "copy",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-metadata-directive",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "REPLACE"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-meta-colour",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "blue"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CopyObjectResult><LastModified>2024-01-01T00:00:00.000Z</LastModified><ETag>&quot;fixture-etag&quot;</ETag></CopyObjectResult>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "HEAD"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/source.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "then": [
+                {
+                  "alternatives": [
+                    {
+                      "request": [
+                        {
+                          "at": "/method",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "PUT"
+                          }
+                        },
+                        {
+                          "at": "/path",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "/object-tests/copy/target.txt"
+                          }
+                        },
+                        {
+                          "at": "/body_base64",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": ""
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-copy-source",
+                          "optional": false,
+                          "rule": {
+                            "is": "matches",
+                            "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                          }
+                        },
+                        {
+                          "at": "/headers/host",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                          }
+                        },
+                        {
+                          "at": "/headers/authorization",
+                          "optional": false,
+                          "rule": {
+                            "is": "matches",
+                            "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-s3session-token",
+                          "optional": false,
+                          "rule": {
+                            "is": "absent"
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-metadata-directive",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "REPLACE"
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-meta-colour",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "blue"
+                          }
+                        }
+                      ],
+                      "allow_headers": [
+                        "content-type"
+                      ],
+                      "allow_query": [],
+                      "response": {
+                        "status": 200,
+                        "headers": {
+                          "content-type": "application/xml",
+                          "date": {
+                            "from": "now"
+                          }
+                        },
+                        "body": {
+                          "encoding": "utf8",
+                          "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CopyObjectResult><LastModified>2024-01-01T00:00:00.000Z</LastModified><ETag>&quot;fixture-etag&quot;</ETag></CopyObjectResult>"
+                        },
+                        "framing": "chunked"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-length": "5",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/copy-clear-metadata",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Copy an object with no metadata in place of the source's: x-amz-metadata-directive: REPLACE with no x-amz-meta- header. A client API that cannot say no metadata may refuse or decline the call",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html"
+      ],
+      "call": {
+        "key": "object-tests/copy/target.txt",
+        "metadata": {},
+        "op": "copy",
+        "source_key": "object-tests/copy/source.txt"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/target.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-metadata-directive",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "REPLACE"
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CopyObjectResult><LastModified>2024-01-01T00:00:00.000Z</LastModified><ETag>&quot;fixture-etag&quot;</ETag></CopyObjectResult>"
+                },
+                "framing": "chunked"
+              }
+            },
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "HEAD"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/copy/source.txt"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                }
+              ],
+              "then": [
+                {
+                  "alternatives": [
+                    {
+                      "request": [
+                        {
+                          "at": "/method",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "PUT"
+                          }
+                        },
+                        {
+                          "at": "/path",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "/object-tests/copy/target.txt"
+                          }
+                        },
+                        {
+                          "at": "/body_base64",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": ""
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-copy-source",
+                          "optional": false,
+                          "rule": {
+                            "is": "matches",
+                            "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                          }
+                        },
+                        {
+                          "at": "/headers/host",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                          }
+                        },
+                        {
+                          "at": "/headers/authorization",
+                          "optional": false,
+                          "rule": {
+                            "is": "matches",
+                            "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-s3session-token",
+                          "optional": false,
+                          "rule": {
+                            "is": "absent"
+                          }
+                        },
+                        {
+                          "at": "/headers/x-amz-metadata-directive",
+                          "optional": false,
+                          "rule": {
+                            "is": "equal",
+                            "value": "REPLACE"
+                          }
+                        }
+                      ],
+                      "allow_headers": [
+                        "content-type"
+                      ],
+                      "allow_query": [],
+                      "response": {
+                        "status": 200,
+                        "headers": {
+                          "content-type": "application/xml",
+                          "date": {
+                            "from": "now"
+                          }
+                        },
+                        "body": {
+                          "encoding": "utf8",
+                          "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CopyObjectResult><LastModified>2024-01-01T00:00:00.000Z</LastModified><ETag>&quot;fixture-etag&quot;</ETag></CopyObjectResult>"
+                        },
+                        "framing": "chunked"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 200,
+                "headers": {
+                  "content-length": "5",
+                  "date": {
+                    "from": "now"
+                  },
+                  "etag": "\"fixture-etag\"",
+                  "last-modified": "Mon, 01 Jan 2024 00:00:00 GMT"
+                },
+                "body": {
+                  "encoding": "empty"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "ok"
+          }
+        }
+      ],
+      "refusal": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "refused"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "matches",
+            "pattern": ".+"
+          }
+        },
+        {
+          "at": "/parameter",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "metadata"
+          }
+        }
+      ],
+      "decline_permitted": true
+    },
+    {
       "id": "operations/s3-express/copy-source-if-match",
       "profile": "s3-express",
       "lane": "core",
@@ -210590,6 +212977,165 @@
           "rule": {
             "is": "equal",
             "value": "InternalError"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/s3-express/stage-copy-source-if-match-failed",
+      "profile": "s3-express",
+      "lane": "core",
+      "purpose": "Report a part copy whose source does not have the ETag in x-amz-copy-source-if-match as a failed condition, 412 PreconditionFailed, of kind precondition",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html"
+      ],
+      "call": {
+        "key": "object-tests/multipart/object.bin",
+        "op": "s3.upload_part_copy",
+        "part_number": 1,
+        "source_if_match": "\"fixture-0123456789ab\"",
+        "source_key": "object-tests/copy/source.txt",
+        "upload_id": "fixture-upload+/c60fb1e2e00d="
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "PUT"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/object-tests/multipart/object.bin"
+                  }
+                },
+                {
+                  "at": "/body_base64",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": ""
+                  }
+                },
+                {
+                  "at": "/query/partNumber",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "1"
+                  }
+                },
+                {
+                  "at": "/query/uploadId",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture-upload+/c60fb1e2e00d="
+                  }
+                },
+                {
+                  "at": "/headers/host",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "fixture--euc1-az1--x-s3.s3express-euc1-az1.fixture.invalid"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-s3session-token",
+                  "optional": false,
+                  "rule": {
+                    "is": "absent"
+                  }
+                },
+                {
+                  "at": "/headers/authorization",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "AWS4-HMAC-SHA256 Credential=offline/[0-9]{8}/eu-central-1/s3express/aws4_request, SignedHeaders=.+, Signature=[a-f0-9]{64}"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "/?fixture[^/]*/object-tests/copy/source\\.txt"
+                  }
+                },
+                {
+                  "at": "/headers/x-amz-copy-source-if-match",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "\"fixture-0123456789ab\""
+                  }
+                }
+              ],
+              "allow_headers": [
+                "content-type"
+              ],
+              "allow_query": [],
+              "response": {
+                "status": 412,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>PreconditionFailed</Code><Message>Fixture error</Message></Error>"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 412
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "PreconditionFailed"
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "precondition"
           }
         }
       ],
