@@ -62,11 +62,13 @@
     "operations/azure-hns/delete-many": "Delete several objects in one batch and report each result",
     "operations/azure-hns/delete-many-256": "Delete 256 keys in one batch, the most Azure takes",
     "operations/azure-hns/delete-many-257": "Report a batch of 257 deletions, one more than Azure takes, as an error. Azure answers 202 with one part and no Content-ID, 400 ExceedsMaxBatchRequestCount, for the whole batch, not one part per deletion. A client may refuse it before sending",
-    "operations/azure-hns/delete-many-answers-out-of-order": "Match each part of a batch answer to its deletion by Content-ID, not by position: Azure may answer the parts in any order",
+    "operations/azure-hns/delete-many-answers-out-of-order": "Match each part of a batch answer to its deletion by Content-ID, which links them, not by position. Azure has answered every recorded batch in order, up to 256 parts; this answer is written by hand",
+    "operations/azure-hns/delete-many-container-missing": "Report a batch in a missing container, which Azure answers 202 with 404 ContainerNotFound for each deletion, as that error for each key and none deleted, or as one error of kind container_not_found",
     "operations/azure-hns/delete-many-denied": "Report each deletion of a batch that Azure refuses inside its 202 answer, here every one with 403 AuthorizationPermissionMismatch, as that key's error, not as deleted",
-    "operations/azure-hns/delete-many-lf-line-endings": "Read a batch answer whose lines end in LF alone, which a multipart reader should accept",
+    "operations/azure-hns/delete-many-lf-line-endings": "Read a batch answer whose lines end in LF alone correctly, or report it as an error, but never half-read it. Azure has not been seen to send it: HTTP and multipart require CRLF. This answer is the recorded one with every CR removed",
     "operations/azure-hns/delete-many-server-busy": "Report a batch that Azure answers as a whole with 503 ServerBusy as an error, never as deleted keys. A client may retry up to five times first",
-    "operations/azure-hns/delete-many-without-content-id": "Match the parts of a batch answer that carry no Content-ID to the deletions by position",
+    "operations/azure-hns/delete-many-unauthenticated": "Report a batch whose token Azure does not accept as one error for the whole batch, as Azure answers it, not as an answer per key",
+    "operations/azure-hns/delete-many-without-content-id": "Report a batch answer whose parts carry no Content-ID as an error. Without one, only the order of the parts would link a result to its key, and a guess could report one key deleted when another failed. Azure echoes the Content-ID of every subrequest; this answer is the recorded one with them removed",
     "operations/azure-hns/delete-missing": "delete missing. A client reports it as not_found: the object is absent",
     "operations/azure-hns/delete-precondition-failed": "delete precondition failed",
     "operations/azure-hns/delete-precondition-failed-code-in-body": "delete precondition failed, with the error code only in the XML body",
@@ -348,11 +350,13 @@
     "operations/azure/delete-many": "Delete several objects in one batch and report each result",
     "operations/azure/delete-many-256": "Delete 256 keys in one batch, the most Azure takes",
     "operations/azure/delete-many-257": "Report a batch of 257 deletions, one more than Azure takes, as an error. Azure answers 202 with one part and no Content-ID, 400 ExceedsMaxBatchRequestCount, for the whole batch, not one part per deletion. A client may refuse it before sending",
-    "operations/azure/delete-many-answers-out-of-order": "Match each part of a batch answer to its deletion by Content-ID, not by position: Azure may answer the parts in any order",
+    "operations/azure/delete-many-answers-out-of-order": "Match each part of a batch answer to its deletion by Content-ID, which links them, not by position. Azure has answered every recorded batch in order, up to 256 parts; this answer is written by hand",
+    "operations/azure/delete-many-container-missing": "Report a batch in a missing container, which Azure answers 202 with 404 ContainerNotFound for each deletion, as that error for each key and none deleted, or as one error of kind container_not_found",
     "operations/azure/delete-many-denied": "Report each deletion of a batch that Azure refuses inside its 202 answer, here every one with 403 AuthorizationPermissionMismatch, as that key's error, not as deleted",
-    "operations/azure/delete-many-lf-line-endings": "Read a batch answer whose lines end in LF alone, which a multipart reader should accept",
+    "operations/azure/delete-many-lf-line-endings": "Read a batch answer whose lines end in LF alone correctly, or report it as an error, but never half-read it. Azure has not been seen to send it: HTTP and multipart require CRLF. This answer is the recorded one with every CR removed",
     "operations/azure/delete-many-server-busy": "Report a batch that Azure answers as a whole with 503 ServerBusy as an error, never as deleted keys. A client may retry up to five times first",
-    "operations/azure/delete-many-without-content-id": "Match the parts of a batch answer that carry no Content-ID to the deletions by position",
+    "operations/azure/delete-many-unauthenticated": "Report a batch whose token Azure does not accept as one error for the whole batch, as Azure answers it, not as an answer per key",
+    "operations/azure/delete-many-without-content-id": "Report a batch answer whose parts carry no Content-ID as an error. Without one, only the order of the parts would link a result to its key, and a guess could report one key deleted when another failed. Azure echoes the Content-ID of every subrequest; this answer is the recorded one with them removed",
     "operations/azure/delete-missing": "delete missing. A client reports it as not_found: the object is absent",
     "operations/azure/delete-precondition-failed": "delete precondition failed",
     "operations/azure/delete-precondition-failed-code-in-body": "delete precondition failed, with the error code only in the XML body",
@@ -5144,11 +5148,12 @@
       "id": "operations/azure/delete-many-answers-out-of-order",
       "profile": "azure",
       "lane": "core",
-      "purpose": "Match each part of a batch answer to its deletion by Content-ID, not by position: Azure may answer the parts in any order",
+      "purpose": "Match each part of a batch answer to its deletion by Content-ID, which links them, not by position. Azure has answered every recorded batch in order, up to 256 parts; this answer is written by hand",
       "sources": [
         "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
       ],
       "origin": "constructed",
+      "derived_from": "operations/azure/delete-many",
       "call": {
         "keys": [
           "object-tests/batch/a.txt",
@@ -5236,7 +5241,7 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 2\r\n\r\nHTTP/1.1 404 The specified blob does not exist.\r\nx-ms-request-id: fixture\r\nx-ms-error-code: BlobNotFound\r\nx-ms-version: 2023-11-03\r\nContent-Length: 110\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 0\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 1\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n\r\n--batchresponse_fixture--"
+                  "data": "--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 2\r\n\r\nHTTP/1.1 404 The specified blob does not exist.\r\nx-ms-request-id: fixture\r\nx-ms-error-code: BlobNotFound\r\nx-ms-version: 2023-11-03\r\nContent-Length: 110\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 0\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 1\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n--batchresponse_fixture--"
                 },
                 "framing": "chunked"
               }
@@ -5285,11 +5290,12 @@
       "id": "operations/azure/delete-many-lf-line-endings",
       "profile": "azure",
       "lane": "core",
-      "purpose": "Read a batch answer whose lines end in LF alone, which a multipart reader should accept",
+      "purpose": "Read a batch answer whose lines end in LF alone correctly, or report it as an error, but never half-read it. Azure has not been seen to send it: HTTP and multipart require CRLF. This answer is the recorded one with every CR removed",
       "sources": [
         "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
       ],
       "origin": "constructed",
+      "derived_from": "operations/azure/delete-many",
       "call": {
         "keys": [
           "object-tests/batch/a.txt",
@@ -5377,7 +5383,7 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 0\n\nHTTP/1.1 202 Accepted\nx-ms-request-id: fixture\nx-ms-delete-type-permanent: true\nx-ms-version: 2023-11-03\n\n\n--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 1\n\nHTTP/1.1 202 Accepted\nx-ms-request-id: fixture\nx-ms-delete-type-permanent: true\nx-ms-version: 2023-11-03\n\n\n--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 2\n\nHTTP/1.1 404 The specified blob does not exist.\nx-ms-request-id: fixture\nx-ms-error-code: BlobNotFound\nx-ms-version: 2023-11-03\nContent-Length: 110\nContent-Type: application/xml\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\n--batchresponse_fixture--"
+                  "data": "--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 0\n\nHTTP/1.1 202 Accepted\nx-ms-request-id: fixture\nx-ms-delete-type-permanent: true\nx-ms-version: 2023-11-03\n\n--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 1\n\nHTTP/1.1 202 Accepted\nx-ms-request-id: fixture\nx-ms-delete-type-permanent: true\nx-ms-version: 2023-11-03\n\n--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 2\n\nHTTP/1.1 404 The specified blob does not exist.\nx-ms-request-id: fixture\nx-ms-error-code: BlobNotFound\nx-ms-version: 2023-11-03\nContent-Length: 110\nContent-Type: application/xml\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\n--batchresponse_fixture--"
                 },
                 "framing": "chunked"
               }
@@ -5390,13 +5396,16 @@
           "at": "/outcome",
           "optional": false,
           "rule": {
-            "is": "equal",
-            "value": "ok"
+            "is": "one_of",
+            "values": [
+              "ok",
+              "error"
+            ]
           }
         },
         {
           "at": "/value/deleted",
-          "optional": false,
+          "optional": true,
           "rule": {
             "is": "equal",
             "value": [
@@ -5407,7 +5416,7 @@
         },
         {
           "at": "/value/errors",
-          "optional": false,
+          "optional": true,
           "rule": {
             "is": "equal",
             "value": [
@@ -5426,11 +5435,12 @@
       "id": "operations/azure/delete-many-without-content-id",
       "profile": "azure",
       "lane": "core",
-      "purpose": "Match the parts of a batch answer that carry no Content-ID to the deletions by position",
+      "purpose": "Report a batch answer whose parts carry no Content-ID as an error. Without one, only the order of the parts would link a result to its key, and a guess could report one key deleted when another failed. Azure echoes the Content-ID of every subrequest; this answer is the recorded one with them removed",
       "sources": [
         "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
       ],
       "origin": "constructed",
+      "derived_from": "operations/azure/delete-many",
       "call": {
         "keys": [
           "object-tests/batch/a.txt",
@@ -5518,7 +5528,7 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 404 The specified blob does not exist.\r\nx-ms-request-id: fixture\r\nx-ms-error-code: BlobNotFound\r\nx-ms-version: 2023-11-03\r\nContent-Length: 110\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture--"
+                  "data": "--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 404 The specified blob does not exist.\r\nx-ms-request-id: fixture\r\nx-ms-error-code: BlobNotFound\r\nx-ms-version: 2023-11-03\r\nContent-Length: 110\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture--"
                 },
                 "framing": "chunked"
               }
@@ -5532,32 +5542,7 @@
           "optional": false,
           "rule": {
             "is": "equal",
-            "value": "ok"
-          }
-        },
-        {
-          "at": "/value/deleted",
-          "optional": false,
-          "rule": {
-            "is": "equal",
-            "value": [
-              "object-tests/batch/a.txt",
-              "object-tests/batch/b.txt"
-            ]
-          }
-        },
-        {
-          "at": "/value/errors",
-          "optional": false,
-          "rule": {
-            "is": "equal",
-            "value": [
-              {
-                "code": "BlobNotFound",
-                "key": "object-tests/batch/absent.txt",
-                "status": 404
-              }
-            ]
+            "value": "error"
           }
         }
       ],
@@ -5572,6 +5557,7 @@
         "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
       ],
       "origin": "transient",
+      "derived_from": "operations/azure/delete-many",
       "call": {
         "keys": [
           "object-tests/batch/a.txt",
@@ -10243,6 +10229,295 @@
           }
         }
       ]
+    },
+    {
+      "id": "operations/azure/delete-many-unauthenticated",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a batch whose token Azure does not accept as one error for the whole batch, as Azure answers it, not as an answer per key",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
+      ],
+      "call": {
+        "keys": [
+          "object-tests/batch/a.txt",
+          "object-tests/batch/b.txt",
+          "object-tests/batch/absent.txt"
+        ],
+        "op": "delete_many"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "multipart/mixed; boundary=batch_[0-9A-Za-z-]+"
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "batch"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "blob_batch",
+                    "subrequests": [
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/a.txt"
+                      },
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/b.txt"
+                      },
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/absent.txt"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 401,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "InvalidAuthenticationInfo"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>InvalidAuthenticationInfo</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 401
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidAuthenticationInfo"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure/delete-many-container-missing",
+      "profile": "azure",
+      "lane": "core",
+      "purpose": "Report a batch in a missing container, which Azure answers 202 with 404 ContainerNotFound for each deletion, as that error for each key and none deleted, or as one error of kind container_not_found",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
+      ],
+      "call": {
+        "keys": [
+          "object-tests/batch/a.txt",
+          "object-tests/batch/b.txt",
+          "object-tests/batch/absent.txt"
+        ],
+        "op": "delete_many"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "multipart/mixed; boundary=batch_[0-9A-Za-z-]+"
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "batch"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "blob_batch",
+                    "subrequests": [
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/a.txt"
+                      },
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/b.txt"
+                      },
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/absent.txt"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 202,
+                "headers": {
+                  "content-type": "multipart/mixed; boundary=batchresponse_fixture",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 0\r\n\r\nHTTP/1.1 404 The specified container does not exist.\r\nx-ms-error-code: ContainerNotFound\r\nx-ms-request-id: fixture\r\nx-ms-version: 2023-11-03\r\nContent-Length: 115\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ContainerNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 1\r\n\r\nHTTP/1.1 404 The specified container does not exist.\r\nx-ms-error-code: ContainerNotFound\r\nx-ms-request-id: fixture\r\nx-ms-version: 2023-11-03\r\nContent-Length: 115\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ContainerNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 2\r\n\r\nHTTP/1.1 404 The specified container does not exist.\r\nx-ms-error-code: ContainerNotFound\r\nx-ms-request-id: fixture\r\nx-ms-version: 2023-11-03\r\nContent-Length: 115\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ContainerNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture--"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "ok",
+              "error"
+            ]
+          }
+        },
+        {
+          "at": "/value/deleted",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": []
+          }
+        },
+        {
+          "at": "/value/errors",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": [
+              {
+                "code": "ContainerNotFound",
+                "key": "object-tests/batch/a.txt",
+                "status": 404
+              },
+              {
+                "code": "ContainerNotFound",
+                "key": "object-tests/batch/b.txt",
+                "status": 404
+              },
+              {
+                "code": "ContainerNotFound",
+                "key": "object-tests/batch/absent.txt",
+                "status": 404
+              }
+            ]
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "container_not_found"
+          }
+        }
+      ],
+      "refusal": null
     },
     {
       "id": "operations/azure/delete-leased-if-match-without-lease-id",
@@ -34403,6 +34678,7 @@
         "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob"
       ],
       "origin": "transient",
+      "derived_from": "operations/azure/copy",
       "call": {
         "key": "object-tests/copy/target.txt",
         "op": "copy",
@@ -34606,6 +34882,7 @@
         "https://learn.microsoft.com/en-us/rest/api/storageservices/abort-copy-blob"
       ],
       "origin": "transient",
+      "derived_from": "operations/azure/abort-copy-finished",
       "call": {
         "copy_id": "fixture-copy-id",
         "key": "object-tests/copy/target.txt",
@@ -49491,11 +49768,12 @@
       "id": "operations/azure-hns/delete-many-answers-out-of-order",
       "profile": "azure-hns",
       "lane": "core",
-      "purpose": "Match each part of a batch answer to its deletion by Content-ID, not by position: Azure may answer the parts in any order",
+      "purpose": "Match each part of a batch answer to its deletion by Content-ID, which links them, not by position. Azure has answered every recorded batch in order, up to 256 parts; this answer is written by hand",
       "sources": [
         "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
       ],
       "origin": "constructed",
+      "derived_from": "operations/azure-hns/delete-many",
       "call": {
         "keys": [
           "object-tests/batch/a.txt",
@@ -49583,7 +49861,7 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 2\r\n\r\nHTTP/1.1 404 The specified blob does not exist.\r\nx-ms-request-id: fixture\r\nx-ms-error-code: BlobNotFound\r\nx-ms-version: 2023-11-03\r\nContent-Length: 110\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 0\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 1\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n\r\n--batchresponse_fixture--"
+                  "data": "--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 2\r\n\r\nHTTP/1.1 404 The specified blob does not exist.\r\nx-ms-request-id: fixture\r\nx-ms-error-code: BlobNotFound\r\nx-ms-version: 2023-11-03\r\nContent-Length: 110\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 0\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 1\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n--batchresponse_fixture--"
                 },
                 "framing": "chunked"
               }
@@ -49632,11 +49910,12 @@
       "id": "operations/azure-hns/delete-many-lf-line-endings",
       "profile": "azure-hns",
       "lane": "core",
-      "purpose": "Read a batch answer whose lines end in LF alone, which a multipart reader should accept",
+      "purpose": "Read a batch answer whose lines end in LF alone correctly, or report it as an error, but never half-read it. Azure has not been seen to send it: HTTP and multipart require CRLF. This answer is the recorded one with every CR removed",
       "sources": [
         "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
       ],
       "origin": "constructed",
+      "derived_from": "operations/azure-hns/delete-many",
       "call": {
         "keys": [
           "object-tests/batch/a.txt",
@@ -49724,7 +50003,7 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 0\n\nHTTP/1.1 202 Accepted\nx-ms-request-id: fixture\nx-ms-delete-type-permanent: true\nx-ms-version: 2023-11-03\n\n\n--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 1\n\nHTTP/1.1 202 Accepted\nx-ms-request-id: fixture\nx-ms-delete-type-permanent: true\nx-ms-version: 2023-11-03\n\n\n--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 2\n\nHTTP/1.1 404 The specified blob does not exist.\nx-ms-request-id: fixture\nx-ms-error-code: BlobNotFound\nx-ms-version: 2023-11-03\nContent-Length: 110\nContent-Type: application/xml\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\n--batchresponse_fixture--"
+                  "data": "--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 0\n\nHTTP/1.1 202 Accepted\nx-ms-request-id: fixture\nx-ms-delete-type-permanent: true\nx-ms-version: 2023-11-03\n\n--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 1\n\nHTTP/1.1 202 Accepted\nx-ms-request-id: fixture\nx-ms-delete-type-permanent: true\nx-ms-version: 2023-11-03\n\n--batchresponse_fixture\nContent-Type: application/http\nContent-ID: 2\n\nHTTP/1.1 404 The specified blob does not exist.\nx-ms-request-id: fixture\nx-ms-error-code: BlobNotFound\nx-ms-version: 2023-11-03\nContent-Length: 110\nContent-Type: application/xml\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\n--batchresponse_fixture--"
                 },
                 "framing": "chunked"
               }
@@ -49737,13 +50016,16 @@
           "at": "/outcome",
           "optional": false,
           "rule": {
-            "is": "equal",
-            "value": "ok"
+            "is": "one_of",
+            "values": [
+              "ok",
+              "error"
+            ]
           }
         },
         {
           "at": "/value/deleted",
-          "optional": false,
+          "optional": true,
           "rule": {
             "is": "equal",
             "value": [
@@ -49754,7 +50036,7 @@
         },
         {
           "at": "/value/errors",
-          "optional": false,
+          "optional": true,
           "rule": {
             "is": "equal",
             "value": [
@@ -49773,11 +50055,12 @@
       "id": "operations/azure-hns/delete-many-without-content-id",
       "profile": "azure-hns",
       "lane": "core",
-      "purpose": "Match the parts of a batch answer that carry no Content-ID to the deletions by position",
+      "purpose": "Report a batch answer whose parts carry no Content-ID as an error. Without one, only the order of the parts would link a result to its key, and a guess could report one key deleted when another failed. Azure echoes the Content-ID of every subrequest; this answer is the recorded one with them removed",
       "sources": [
         "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
       ],
       "origin": "constructed",
+      "derived_from": "operations/azure-hns/delete-many",
       "call": {
         "keys": [
           "object-tests/batch/a.txt",
@@ -49865,7 +50148,7 @@
                 },
                 "body": {
                   "encoding": "utf8",
-                  "data": "--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 404 The specified blob does not exist.\r\nx-ms-request-id: fixture\r\nx-ms-error-code: BlobNotFound\r\nx-ms-version: 2023-11-03\r\nContent-Length: 110\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture--"
+                  "data": "--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 202 Accepted\r\nx-ms-request-id: fixture\r\nx-ms-delete-type-permanent: true\r\nx-ms-version: 2023-11-03\r\n\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 404 The specified blob does not exist.\r\nx-ms-request-id: fixture\r\nx-ms-error-code: BlobNotFound\r\nx-ms-version: 2023-11-03\r\nContent-Length: 110\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture--"
                 },
                 "framing": "chunked"
               }
@@ -49879,32 +50162,7 @@
           "optional": false,
           "rule": {
             "is": "equal",
-            "value": "ok"
-          }
-        },
-        {
-          "at": "/value/deleted",
-          "optional": false,
-          "rule": {
-            "is": "equal",
-            "value": [
-              "object-tests/batch/a.txt",
-              "object-tests/batch/b.txt"
-            ]
-          }
-        },
-        {
-          "at": "/value/errors",
-          "optional": false,
-          "rule": {
-            "is": "equal",
-            "value": [
-              {
-                "code": "BlobNotFound",
-                "key": "object-tests/batch/absent.txt",
-                "status": 404
-              }
-            ]
+            "value": "error"
           }
         }
       ],
@@ -49919,6 +50177,7 @@
         "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
       ],
       "origin": "transient",
+      "derived_from": "operations/azure-hns/delete-many",
       "call": {
         "keys": [
           "object-tests/batch/a.txt",
@@ -54590,6 +54849,295 @@
           }
         }
       ]
+    },
+    {
+      "id": "operations/azure-hns/delete-many-unauthenticated",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report a batch whose token Azure does not accept as one error for the whole batch, as Azure answers it, not as an answer per key",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
+      ],
+      "call": {
+        "keys": [
+          "object-tests/batch/a.txt",
+          "object-tests/batch/b.txt",
+          "object-tests/batch/absent.txt"
+        ],
+        "op": "delete_many"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "multipart/mixed; boundary=batch_[0-9A-Za-z-]+"
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "batch"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "blob_batch",
+                    "subrequests": [
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/a.txt"
+                      },
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/b.txt"
+                      },
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/absent.txt"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 401,
+                "headers": {
+                  "content-type": "application/xml",
+                  "date": {
+                    "from": "now"
+                  },
+                  "x-ms-error-code": "InvalidAuthenticationInfo"
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "<Error><Code>InvalidAuthenticationInfo</Code><Message>Fixture error</Message></Error>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "error"
+          }
+        },
+        {
+          "at": "/status",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": 401
+          }
+        },
+        {
+          "at": "/code",
+          "optional": false,
+          "rule": {
+            "is": "equal",
+            "value": "InvalidAuthenticationInfo"
+          }
+        }
+      ],
+      "refusal": null
+    },
+    {
+      "id": "operations/azure-hns/delete-many-container-missing",
+      "profile": "azure-hns",
+      "lane": "core",
+      "purpose": "Report a batch in a missing container, which Azure answers 202 with 404 ContainerNotFound for each deletion, as that error for each key and none deleted, or as one error of kind container_not_found",
+      "sources": [
+        "https://learn.microsoft.com/en-us/rest/api/storageservices/blob-batch"
+      ],
+      "call": {
+        "keys": [
+          "object-tests/batch/a.txt",
+          "object-tests/batch/b.txt",
+          "object-tests/batch/absent.txt"
+        ],
+        "op": "delete_many"
+      },
+      "exchanges": [
+        {
+          "alternatives": [
+            {
+              "request": [
+                {
+                  "at": "/method",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "POST"
+                  }
+                },
+                {
+                  "at": "/path",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "/fixture"
+                  }
+                },
+                {
+                  "at": "/headers/content-type",
+                  "optional": false,
+                  "rule": {
+                    "is": "matches",
+                    "pattern": "multipart/mixed; boundary=batch_[0-9A-Za-z-]+"
+                  }
+                },
+                {
+                  "at": "/query/restype",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "container"
+                  }
+                },
+                {
+                  "at": "/query/comp",
+                  "optional": false,
+                  "rule": {
+                    "is": "equal",
+                    "value": "batch"
+                  }
+                },
+                {
+                  "at": "",
+                  "optional": false,
+                  "rule": {
+                    "is": "blob_batch",
+                    "subrequests": [
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/a.txt"
+                      },
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/b.txt"
+                      },
+                      {
+                        "method": "DELETE",
+                        "path": "/fixture/object-tests/batch/absent.txt"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "allow_headers": [],
+              "allow_query": [],
+              "response": {
+                "status": 202,
+                "headers": {
+                  "content-type": "multipart/mixed; boundary=batchresponse_fixture",
+                  "date": {
+                    "from": "now"
+                  }
+                },
+                "body": {
+                  "encoding": "utf8",
+                  "data": "--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 0\r\n\r\nHTTP/1.1 404 The specified container does not exist.\r\nx-ms-error-code: ContainerNotFound\r\nx-ms-request-id: fixture\r\nx-ms-version: 2023-11-03\r\nContent-Length: 115\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ContainerNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 1\r\n\r\nHTTP/1.1 404 The specified container does not exist.\r\nx-ms-error-code: ContainerNotFound\r\nx-ms-request-id: fixture\r\nx-ms-version: 2023-11-03\r\nContent-Length: 115\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ContainerNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture\r\nContent-Type: application/http\r\nContent-ID: 2\r\n\r\nHTTP/1.1 404 The specified container does not exist.\r\nx-ms-error-code: ContainerNotFound\r\nx-ms-request-id: fixture\r\nx-ms-version: 2023-11-03\r\nContent-Length: 115\r\nContent-Type: application/xml\r\n\r\n<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ContainerNotFound</Code><Message>Fixture error</Message></Error>\r\n--batchresponse_fixture--"
+                },
+                "framing": "chunked"
+              }
+            }
+          ]
+        }
+      ],
+      "expect": [
+        {
+          "at": "/outcome",
+          "optional": false,
+          "rule": {
+            "is": "one_of",
+            "values": [
+              "ok",
+              "error"
+            ]
+          }
+        },
+        {
+          "at": "/value/deleted",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": []
+          }
+        },
+        {
+          "at": "/value/errors",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": [
+              {
+                "code": "ContainerNotFound",
+                "key": "object-tests/batch/a.txt",
+                "status": 404
+              },
+              {
+                "code": "ContainerNotFound",
+                "key": "object-tests/batch/b.txt",
+                "status": 404
+              },
+              {
+                "code": "ContainerNotFound",
+                "key": "object-tests/batch/absent.txt",
+                "status": 404
+              }
+            ]
+          }
+        },
+        {
+          "at": "/kind",
+          "optional": true,
+          "rule": {
+            "is": "equal",
+            "value": "container_not_found"
+          }
+        }
+      ],
+      "refusal": null
     },
     {
       "id": "operations/azure-hns/delete-leased-if-match-without-lease-id",
@@ -82277,6 +82825,7 @@
         "https://learn.microsoft.com/en-us/rest/api/storageservices/copy-blob"
       ],
       "origin": "transient",
+      "derived_from": "operations/azure-hns/copy",
       "call": {
         "key": "object-tests/copy/target.txt",
         "op": "copy",
@@ -82480,6 +83029,7 @@
         "https://learn.microsoft.com/en-us/rest/api/storageservices/abort-copy-blob"
       ],
       "origin": "transient",
+      "derived_from": "operations/azure-hns/abort-copy-finished",
       "call": {
         "copy_id": "fixture-copy-id",
         "key": "object-tests/copy/target.txt",
@@ -95099,6 +95649,7 @@
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html"
       ],
       "origin": "transient",
+      "derived_from": "operations/s3/commit",
       "call": {
         "key": "object-tests/multipart/object.bin",
         "op": "s3.complete_multipart",
@@ -98142,6 +98693,7 @@
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObjects.html"
       ],
       "origin": "transient",
+      "derived_from": "operations/s3/delete-many",
       "call": {
         "keys": [
           "object-tests/batch/a.txt",
@@ -127879,6 +128431,7 @@
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html"
       ],
       "origin": "transient",
+      "derived_from": "operations/s3/copy",
       "call": {
         "key": "object-tests/copy/target.txt",
         "op": "copy",
@@ -140027,6 +140580,7 @@
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html"
       ],
       "origin": "transient",
+      "derived_from": "operations/s3/stage-copy",
       "call": {
         "key": "object-tests/multipart/object.bin",
         "op": "s3.upload_part_copy",
@@ -150017,6 +150571,7 @@
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html"
       ],
       "origin": "transient",
+      "derived_from": "operations/s3-express/commit",
       "call": {
         "key": "object-tests/multipart/object.bin",
         "op": "s3.complete_multipart",
@@ -153154,6 +153709,7 @@
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObjects.html"
       ],
       "origin": "transient",
+      "derived_from": "operations/s3-express/delete-many",
       "call": {
         "keys": [
           "object-tests/batch/a.txt",
@@ -192863,6 +193419,7 @@
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html"
       ],
       "origin": "transient",
+      "derived_from": "operations/s3-express/copy",
       "call": {
         "key": "object-tests/copy/target.txt",
         "op": "copy",
@@ -209441,6 +209998,7 @@
         "https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html"
       ],
       "origin": "transient",
+      "derived_from": "operations/s3-express/stage-copy",
       "call": {
         "key": "object-tests/multipart/object.bin",
         "op": "s3.upload_part_copy",

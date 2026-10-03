@@ -13,6 +13,8 @@ There are also a few live tests that are just to see if you can actually make a 
 | `vectors.json` | Digests and signatures |
 | `live.json` | Probes against a live service |
 
+[REFERENCE.md](REFERENCE.md) describes the grader, the adapter protocol and its vocabulary, such as the error kinds and result fields, and the case format.
+
 ## Example test of `borink-object-storage`
 
 `adapters/borink` builds the adapter that borink-org/object-storage keeps in [`hosts/object-tests`](https://github.com/borink-org/object-storage/tree/master/hosts/object-tests), at the commit its `Cargo.toml` pins. That adapter lives beside the crates whose API it calls, and object-storage grades every change against this suite.

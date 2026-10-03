@@ -82,6 +82,11 @@ pub struct Case {
     #[serde(default, skip_serializing_if = "Origin::is_observed")]
     pub origin: Origin,
 
+    /// For a case whose responses are not observed, the recorded case whose responses it
+    /// edits, so that a reader can tell what a service sent from what was written by hand.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub derived_from: Option<String>,
+
     /// The operation input passed unchanged to the adapter.
     pub call: Value,
 
